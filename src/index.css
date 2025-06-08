@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium text-gray-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md transition-shadow;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 shadow-sm;
+  }
+  
+  /* Pet-themed custom components */
+  .paw-badge {
+    @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .paw-badge-primary {
+    @apply bg-indigo-100 text-indigo-800;
+  }
+  
+  .paw-badge-secondary {
+    @apply bg-purple-100 text-purple-800;
+  }
+  
+  .paw-card {
+    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md transition-all duration-200 relative overflow-hidden;
+  }
+  
+  .paw-card::after {
+    @apply absolute bottom-0 right-0 text-indigo-50 opacity-10;
+    content: '🐾';
+    font-size: 5rem;
+    transform: rotate(-15deg) translate(20%, 20%);
+  }
+  
+  .paw-input {
+    @apply w-full pl-10 pr-10 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 shadow-sm;
+  }
+  
+  .paw-button {
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow;
+  }
+  
+  .paw-button-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800;
+  }
+  
+  .paw-button-secondary {
+    @apply bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300;
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  .animate-bounce-slow {
+    animation: bounce 3s infinite;
+  }
+  
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out infinite;
+  }
+  
+  .animate-paw-walk {
+    animation: pawWalk 10s linear infinite;
+  }
+  
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  
+  @keyframes pawWalk {
+    0% { transform: translateX(-100%) rotate(0deg); }
+    100% { transform: translateX(100vw) rotate(0deg); }
+  }
+  
+  /* Custom scrollbar */
+  .scrollbar-pet::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollbar-pet::-webkit-scrollbar-track {
+    @apply bg-indigo-50 rounded-full;
+  }
+  
+  .scrollbar-pet::-webkit-scrollbar-thumb {
+    @apply bg-indigo-300 rounded-full;
+  }
+  
+  .scrollbar-pet::-webkit-scrollbar-thumb:hover {
+    @apply bg-indigo-400;
+  }
+}
