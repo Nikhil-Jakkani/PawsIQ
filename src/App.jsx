@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Users from './pages/Users.jsx';
+import UserProfiles from './pages/users/UserProfiles.jsx';
 import Providers from './pages/Providers.jsx';
+import ProviderOnboarding from './pages/providers/ProviderOnboarding.jsx';
+import ProviderVerification from './pages/providers/ProviderVerification.jsx';
 import Appointments from './pages/Appointments.jsx';
 import Marketplace from './pages/Marketplace.jsx';
 import Transactions from './pages/Transactions.jsx';
@@ -65,10 +68,34 @@ function App() {
             } 
           />
           <Route 
+            path="/users/profiles" 
+            element={
+              <ProtectedRoute>
+                <UserProfiles />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/providers" 
             element={
               <ProtectedRoute>
                 <Providers />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers/onboarding" 
+            element={
+              <ProtectedRoute>
+                <ProviderOnboarding />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers/verification" 
+            element={
+              <ProtectedRoute>
+                <ProviderVerification />
               </ProtectedRoute>
             } 
           />

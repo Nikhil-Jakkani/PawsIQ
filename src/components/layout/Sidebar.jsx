@@ -17,7 +17,31 @@ import {
   FaBars,
   FaTimes,
   FaSignOutAlt,
-  FaUser
+  FaUser,
+  FaIdCard,
+  FaClipboardCheck,
+  FaMoneyBillWave,
+  FaBoxOpen,
+  FaEnvelope,
+  FaLock,
+  FaHeadset,
+  FaDatabase,
+  FaPercentage,
+  FaStar,
+  FaExclamationTriangle,
+  FaEdit,
+  FaCalendarCheck,
+  FaFileInvoiceDollar,
+  FaTag,
+  FaComments,
+  FaChartLine,
+  FaWrench,
+  FaUserShield,
+  FaTicketAlt,
+  FaToggleOn,
+  FaFileAlt,
+  FaChevronDown,
+  FaChevronRight
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import logoImage from '../../assets/icons/logo.jpg';
@@ -25,21 +49,172 @@ import logoImage from '../../assets/icons/logo.jpg';
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
   const { currentUser, logout } = useAuth();
+  const [expandedCategory, setExpandedCategory] = useState(null);
   
-  const menuItems = [
-    { path: '/dashboard', icon: <FaHome />, label: 'Dashboard' },
-    { path: '/users', icon: <FaUsers />, label: 'Users' },
-    { path: '/providers', icon: <FaHospital />, label: 'Providers' },
-    { path: '/appointments', icon: <FaCalendarAlt />, label: 'Appointments & Bookings' },
-    { path: '/marketplace', icon: <FaShoppingCart />, label: 'Marketplace' },
-    { path: '/transactions', icon: <FaCreditCard />, label: 'Transactions & Payments' },
-    { path: '/content', icon: <FaCommentAlt />, label: 'Content Moderation' },
-    { path: '/analytics', icon: <FaChartBar />, label: 'Analytics' },
-    { path: '/notifications', icon: <FaBell />, label: 'Notifications' },
-    { path: '/settings', icon: <FaCog />, label: 'Settings' },
-    { path: '/security', icon: <FaShieldAlt />, label: 'Security & Logs' },
-    { path: '/support', icon: <FaQuestionCircle />, label: 'Support & Tickets' },
+  const menuCategories = [
+    {
+      id: 'dashboard',
+      icon: <FaHome />,
+      label: 'Dashboard',
+      path: '/dashboard',
+      items: []
+    },
+    {
+      id: 'users',
+      icon: <FaUsers />,
+      label: 'User Management',
+      path: '/users',
+      items: [
+        { path: '/users/profiles', icon: <FaIdCard />, label: 'User Profiles' },
+        { path: '/users/roles', icon: <FaUserShield />, label: 'User Roles' },
+        { path: '/users/activity', icon: <FaDatabase />, label: 'Activity Logs' }
+      ]
+    },
+    {
+      id: 'providers',
+      icon: <FaHospital />,
+      label: 'Provider Management',
+      path: '/providers',
+      items: [
+        { path: '/providers/onboarding', icon: <FaClipboardCheck />, label: 'Onboarding' },
+        { path: '/providers/verification', icon: <FaShieldAlt />, label: 'Verification' },
+        { path: '/providers/commission', icon: <FaPercentage />, label: 'Commission Rates' },
+        { path: '/providers/performance', icon: <FaStar />, label: 'Ratings & Reviews' },
+        { path: '/providers/flags', icon: <FaExclamationTriangle />, label: 'Flag Providers' }
+      ]
+    },
+    {
+      id: 'pets',
+      icon: <FaPaw />,
+      label: 'Pet Profiles',
+      path: '/pets',
+      items: [
+        { path: '/pets/profiles', icon: <FaIdCard />, label: 'View Profiles' },
+        { path: '/pets/moderation', icon: <FaEdit />, label: 'Content Moderation' },
+        { path: '/pets/lost', icon: <FaExclamationTriangle />, label: 'Lost Pet Reports' }
+      ]
+    },
+    {
+      id: 'appointments',
+      icon: <FaCalendarAlt />,
+      label: 'Booking Management',
+      path: '/appointments',
+      items: [
+        { path: '/appointments/all', icon: <FaCalendarCheck />, label: 'All Bookings' },
+        { path: '/appointments/manage', icon: <FaEdit />, label: 'Manage Bookings' },
+        { path: '/appointments/issues', icon: <FaExclamationTriangle />, label: 'Disputes & No-shows' },
+        { path: '/appointments/pricing', icon: <FaTag />, label: 'Pricing & Discounts' }
+      ]
+    },
+    {
+      id: 'transactions',
+      icon: <FaCreditCard />,
+      label: 'Payments & Transactions',
+      path: '/transactions',
+      items: [
+        { path: '/transactions/payments', icon: <FaMoneyBillWave />, label: 'Manage Payments' },
+        { path: '/transactions/reports', icon: <FaFileInvoiceDollar />, label: 'Financial Reports' },
+        { path: '/transactions/pricing', icon: <FaTag />, label: 'Subscription Pricing' },
+        { path: '/transactions/refunds', icon: <FaMoneyBillWave />, label: 'Refunds & Credits' },
+        { path: '/transactions/balances', icon: <FaCreditCard />, label: 'Outstanding Balances' }
+      ]
+    },
+    {
+      id: 'marketplace',
+      icon: <FaShoppingCart />,
+      label: 'Marketplace',
+      path: '/marketplace',
+      items: [
+        { path: '/marketplace/products', icon: <FaBoxOpen />, label: 'Products & Services' },
+        { path: '/marketplace/inventory', icon: <FaBoxOpen />, label: 'Inventory Management' },
+        { path: '/marketplace/promotions', icon: <FaTag />, label: 'Promotions & Discounts' },
+        { path: '/marketplace/sellers', icon: <FaUsers />, label: 'Seller Accounts' }
+      ]
+    },
+    {
+      id: 'content',
+      icon: <FaCommentAlt />,
+      label: 'Content Moderation',
+      path: '/content',
+      items: [
+        { path: '/content/approval', icon: <FaClipboardCheck />, label: 'Content Approval' },
+        { path: '/content/social', icon: <FaComments />, label: 'Social Features' },
+        { path: '/content/lost-found', icon: <FaExclamationTriangle />, label: 'Lost & Found' },
+        { path: '/content/filters', icon: <FaShieldAlt />, label: 'Content Filters' }
+      ]
+    },
+    {
+      id: 'analytics',
+      icon: <FaChartBar />,
+      label: 'Analytics & Reporting',
+      path: '/analytics',
+      items: [
+        { path: '/analytics/dashboard', icon: <FaChartLine />, label: 'Metrics Dashboard' },
+        { path: '/analytics/reports', icon: <FaFileInvoiceDollar />, label: 'Custom Reports' }
+      ]
+    },
+    {
+      id: 'notifications',
+      icon: <FaBell />,
+      label: 'Notifications',
+      path: '/notifications',
+      items: [
+        { path: '/notifications/push', icon: <FaBell />, label: 'Push Notifications' },
+        { path: '/notifications/email', icon: <FaEnvelope />, label: 'Email Campaigns' },
+        { path: '/notifications/reminders', icon: <FaCalendarCheck />, label: 'Automated Reminders' }
+      ]
+    },
+    {
+      id: 'settings',
+      icon: <FaCog />,
+      label: 'Settings',
+      path: '/settings',
+      items: [
+        { path: '/settings/app', icon: <FaWrench />, label: 'App Settings' },
+        { path: '/settings/features', icon: <FaToggleOn />, label: 'Feature Controls' },
+        { path: '/settings/legal', icon: <FaFileAlt />, label: 'Legal Documents' }
+      ]
+    },
+    {
+      id: 'security',
+      icon: <FaLock />,
+      label: 'Security & Compliance',
+      path: '/security',
+      items: [
+        { path: '/security/2fa', icon: <FaLock />, label: 'Two-Factor Auth' },
+        { path: '/security/roles', icon: <FaUserShield />, label: 'Access Control' },
+        { path: '/security/audit', icon: <FaDatabase />, label: 'Audit Logs' },
+        { path: '/security/compliance', icon: <FaShieldAlt />, label: 'GDPR/CCPA Tools' }
+      ]
+    },
+    {
+      id: 'support',
+      icon: <FaHeadset />,
+      label: 'Customer Support',
+      path: '/support',
+      items: [
+        { path: '/support/tickets', icon: <FaTicketAlt />, label: 'Support Tickets' },
+        { path: '/support/chat', icon: <FaComments />, label: 'Live Chat' },
+        { path: '/support/disputes', icon: <FaExclamationTriangle />, label: 'Dispute Resolution' },
+        { path: '/support/assignment', icon: <FaUsers />, label: 'Ticket Assignment' }
+      ]
+    }
   ];
+
+  // Toggle category expansion
+  const toggleCategory = (categoryId) => {
+    if (expandedCategory === categoryId) {
+      setExpandedCategory(null);
+    } else {
+      setExpandedCategory(categoryId);
+    }
+  };
+
+  // Check if a category or any of its items is active
+  const isCategoryActive = (category) => {
+    if (location.pathname === category.path) return true;
+    return category.items.some(item => location.pathname === item.path);
+  };
 
   return (
     <>
@@ -62,60 +237,91 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       )}
       
       {/* Sidebar */}
-      <div className={`fixed top-0 left-0 h-full bg-indigo-900 text-white z-20 transition-all duration-300 ease-in-out shadow-xl overflow-y-auto
-        ${isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'}`}
+      <div 
+        className={`fixed top-0 left-0 h-full bg-indigo-900 text-white z-20 transition-all duration-300 ease-in-out shadow-xl
+          ${isOpen ? 'w-72 translate-x-0' : 'w-72 -translate-x-full lg:translate-x-0'}`}
       >
-        {/* Logo and Title */}
-        <div className="p-4 border-b border-indigo-800 flex items-center gap-3">
-          <div className="bg-white p-2 rounded-full">
-            <img src={logoImage} alt="PawsIQ Logo" className="w-8 h-8 object-contain" />
+        <div className="flex flex-col h-full">
+          {/* Logo and Title */}
+          <div className="p-4 border-b border-indigo-800 flex items-center gap-3">
+            <div className="bg-white p-2 rounded-full">
+              <img src={logoImage} alt="PawsIQ Logo" className="w-8 h-8 object-contain" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold flex items-center">
+                PawsIQ Admin
+              </h1>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold flex items-center">
-              PawsIQ Admin
-            </h1>
-          </div>
-        </div>
-        
-        {/* Navigation Links */}
-        <nav className="mt-4">
-          <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 hover:bg-indigo-800 transition-colors
-                    ${location.pathname === item.path ? 'bg-indigo-700 border-l-4 border-white' : ''}`}
+          
+          {/* Navigation Links - with scrollbar */}
+          <nav className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-900">
+            <ul className="space-y-1 py-2">
+              {menuCategories.map((category) => (
+                <li key={category.id} className="px-2">
+                  {/* Category header */}
+                  <div 
+                    className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
+                      ${isCategoryActive(category) ? 'bg-indigo-700 text-white' : 'text-indigo-100 hover:bg-indigo-800'}`}
+                    onClick={() => toggleCategory(category.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-indigo-300">{category.icon}</span>
+                      <span className="font-medium">{category.label}</span>
+                    </div>
+                    {category.items.length > 0 && (
+                      <span className="text-indigo-300">
+                        {expandedCategory === category.id ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Subcategory items */}
+                  {category.items.length > 0 && expandedCategory === category.id && (
+                    <ul className="mt-1 ml-6 space-y-1 border-l border-indigo-700 pl-2">
+                      {category.items.map((item) => (
+                        <li key={item.path}>
+                          <Link
+                            to={item.path}
+                            className={`flex items-center gap-2 px-3 py-2 text-sm rounded-md
+                              ${location.pathname === item.path 
+                                ? 'bg-indigo-700 text-white' 
+                                : 'text-indigo-200 hover:bg-indigo-800 hover:text-white'}`}
+                          >
+                            <span className="text-indigo-300">{item.icon}</span>
+                            <span>{item.label}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+          
+          {/* User Profile & Logout */}
+          <div className="border-t border-indigo-800 text-indigo-300">
+            <div className="p-4 flex items-center gap-3">
+              <div className="bg-indigo-800 p-2 rounded-full">
+                <FaUser className="text-indigo-300" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-white truncate">
+                  {currentUser?.email || 'Admin User'}
+                </p>
+                <button 
+                  onClick={logout}
+                  className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
                 >
-                  <span className="text-indigo-300">{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        
-        {/* User Profile & Logout */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-indigo-800 text-indigo-300">
-          <div className="p-4 flex items-center gap-3">
-            <div className="bg-indigo-800 p-2 rounded-full">
-              <FaUser className="text-indigo-300" />
+                  <FaSignOutAlt size={14} /> Logout
+                </button>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-white truncate">
-                {/* {currentUser?.email || 'Admin User'} */}
-              </p>
-              <button 
-                onClick={logout}
-                className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
-              >
-                <FaSignOutAlt size={14} /> Logout
-              </button>
+            <div className="px-4 pb-4 text-xs">
+              <p>© 2025 PawsIQ Admin</p>
+              <p className="mt-1">Version 1.0.0</p>
             </div>
-          </div>
-          <div className="px-4 pb-4 text-xs">
-            <p>© 2025 PawsIQ Admin</p>
-            <p className="mt-1">Version 1.0.0</p>
           </div>
         </div>
       </div>

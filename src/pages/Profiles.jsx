@@ -1,107 +1,51 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FaUsers, 
-  FaUserShield, 
-  FaUserCog, 
-  FaDatabase, 
-  FaSearch, 
-  FaFilter, 
-  FaEllipsisH, 
-  FaCheck, 
-  FaBan, 
-  FaTrash, 
-  FaEdit,
-  FaUserPlus,
-  FaDownload,
-  FaSort,
-  FaSortUp,
-  FaSortDown
-} from 'react-icons/fa';
-import DashboardLayout from '../components/layout/DashboardLayout';
+import { FaUsers, FaSearch, FaFilter, FaEllipsisH, FaCheck, FaBan, FaTrash, FaEdit, FaUserPlus, FaDownload, FaArrowLeft } from 'react-icons/fa';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
-const Users = () => {
+const UserProfiles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterRole, setFilterRole] = useState('all');
-  const [sortField, setSortField] = useState('name');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [filterType, setFilterType] = useState('all');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   
-  // Sample data for user statistics
-  const userStats = {
-    totalUsers: 5842,
-    activeUsers: 5650,
-    pendingApproval: 24,
-    suspendedUsers: 8
-  };
-
   // Sample data for users
   const usersData = [
-    { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'Pet Owner', status: 'Active', lastActive: '2 hours ago', registeredDate: '12/05/2023', pets: 2 },
-    { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Pet Owner', status: 'Active', lastActive: '1 day ago', registeredDate: '10/15/2023', pets: 1 },
-    { id: 3, name: 'Michael Brown', email: 'michael.b@example.com', role: 'Service Provider', status: 'Active', lastActive: '3 hours ago', registeredDate: '11/20/2023', pets: 0 },
-    { id: 4, name: 'Emily Davis', email: 'emily.d@example.com', role: 'Pet Owner', status: 'Pending', lastActive: 'Never', registeredDate: '12/01/2023', pets: 0 },
-    { id: 5, name: 'David Wilson', email: 'david.w@example.com', role: 'Service Provider', status: 'Active', lastActive: '5 hours ago', registeredDate: '09/18/2023', pets: 0 },
-    { id: 6, name: 'Jessica Taylor', email: 'jessica.t@example.com', role: 'Admin', status: 'Active', lastActive: '1 hour ago', registeredDate: '08/30/2023', pets: 0 },
-    { id: 7, name: 'Robert Martinez', email: 'robert.m@example.com', role: 'Pet Owner', status: 'Suspended', lastActive: '2 weeks ago', registeredDate: '07/12/2023', pets: 3 },
-    { id: 8, name: 'Lisa Anderson', email: 'lisa.a@example.com', role: 'Moderator', status: 'Active', lastActive: '4 hours ago', registeredDate: '10/05/2023', pets: 0 }
+    { id: 1, name: 'John Smith', email: 'john.smith@example.com', type: 'Pet Owner', role: 'User', status: 'Active', lastActive: '2 hours ago', registeredDate: '12/05/2023', pets: 2, appointments: 5 },
+    { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', type: 'Pet Owner', role: 'User', status: 'Active', lastActive: '1 day ago', registeredDate: '10/15/2023', pets: 1, appointments: 3 },
+    { id: 3, name: 'Michael Brown', email: 'michael.b@example.com', type: 'Service Provider', role: 'Vet', status: 'Active', lastActive: '3 hours ago', registeredDate: '11/20/2023', pets: 0, appointments: 12 },
+    { id: 4, name: 'Emily Davis', email: 'emily.d@example.com', type: 'Pet Owner', role: 'User', status: 'Pending', lastActive: 'Never', registeredDate: '12/01/2023', pets: 0, appointments: 0 },
+    { id: 5, name: 'David Wilson', email: 'david.w@example.com', type: 'Service Provider', role: 'Groomer', status: 'Active', lastActive: '5 hours ago', registeredDate: '09/18/2023', pets: 0, appointments: 8 },
+    { id: 6, name: 'Jessica Taylor', email: 'jessica.t@example.com', type: 'Staff', role: 'Admin', status: 'Active', lastActive: '1 hour ago', registeredDate: '08/30/2023', pets: 0, appointments: 0 },
+    { id: 7, name: 'Robert Martinez', email: 'robert.m@example.com', type: 'Pet Owner', role: 'User', status: 'Suspended', lastActive: '2 weeks ago', registeredDate: '07/12/2023', pets: 3, appointments: 0 },
+    { id: 8, name: 'Lisa Anderson', email: 'lisa.a@example.com', type: 'Staff', role: 'Moderator', status: 'Active', lastActive: '4 hours ago', registeredDate: '10/05/2023', pets: 0, appointments: 0 },
+    { id: 9, name: 'Kevin Thomas', email: 'kevin.t@example.com', type: 'Service Provider', role: 'Pet Sitter', status: 'Active', lastActive: '6 hours ago', registeredDate: '11/10/2023', pets: 0, appointments: 4 },
+    { id: 10, name: 'Amanda White', email: 'amanda.w@example.com', type: 'Pet Owner', role: 'User', status: 'Active', lastActive: '12 hours ago', registeredDate: '10/22/2023', pets: 2, appointments: 2 },
+    { id: 11, name: 'Daniel Lee', email: 'daniel.l@example.com', type: 'Service Provider', role: 'Trainer', status: 'Pending', lastActive: 'Never', registeredDate: '12/02/2023', pets: 0, appointments: 0 },
+    { id: 12, name: 'Jennifer Clark', email: 'jennifer.c@example.com', type: 'Pet Owner', role: 'User', status: 'Active', lastActive: '2 days ago', registeredDate: '09/15/2023', pets: 1, appointments: 1 }
   ];
 
-  // Filter and sort users
-  const filteredAndSortedUsers = usersData
-    .filter(user => {
-      const matchesSearch = 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = filterStatus === 'all' || user.status.toLowerCase() === filterStatus.toLowerCase();
-      const matchesRole = filterRole === 'all' || user.role.toLowerCase() === filterRole.toLowerCase();
-      
-      return matchesSearch && matchesStatus && matchesRole;
-    })
-    .sort((a, b) => {
-      let comparison = 0;
-      
-      if (sortField === 'name') {
-        comparison = a.name.localeCompare(b.name);
-      } else if (sortField === 'email') {
-        comparison = a.email.localeCompare(b.email);
-      } else if (sortField === 'role') {
-        comparison = a.role.localeCompare(b.role);
-      } else if (sortField === 'status') {
-        comparison = a.status.localeCompare(b.status);
-      } else if (sortField === 'registeredDate') {
-        // Simple date comparison for demo purposes
-        comparison = new Date(a.registeredDate) - new Date(b.registeredDate);
-      }
-      
-      return sortDirection === 'asc' ? comparison : -comparison;
-    });
-
-  // Handle sort click
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-
-  // Get sort icon
-  const getSortIcon = (field) => {
-    if (sortField !== field) return <FaSort className="ml-1 text-gray-400" />;
-    return sortDirection === 'asc' ? <FaSortUp className="ml-1 text-indigo-600" /> : <FaSortDown className="ml-1 text-indigo-600" />;
-  };
+  // Filter users based on search term and filters
+  const filteredUsers = usersData.filter(user => {
+    const matchesSearch = 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = filterStatus === 'all' || user.status.toLowerCase() === filterStatus.toLowerCase();
+    const matchesRole = filterRole === 'all' || user.role.toLowerCase() === filterRole.toLowerCase();
+    const matchesType = filterType === 'all' || user.type.toLowerCase() === filterType.toLowerCase();
+    
+    return matchesSearch && matchesStatus && matchesRole && matchesType;
+  });
 
   // Handle select all checkbox
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredAndSortedUsers.map(user => user.id));
+      setSelectedUsers(filteredUsers.map(user => user.id));
     }
     setSelectAll(!selectAll);
   };
@@ -124,133 +68,31 @@ const Users = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="bg-indigo-100 p-2 rounded-lg">
-                <FaUsers className="text-indigo-600 text-2xl" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Link to="/users" className="text-gray-500 hover:text-indigo-600">
+              <FaArrowLeft />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">User Profiles</h1>
+              <p className="text-gray-500">View and manage all user accounts</p>
             </div>
-            <p className="text-gray-500 mt-1">View and manage all user accounts</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            <button 
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+              onClick={() => alert('Add new user functionality would be implemented here')}
+            >
+              <FaUserPlus /> Add New User
+            </button>
             <button 
               className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md flex items-center gap-2 hover:bg-gray-50 transition-colors"
               onClick={() => alert('Export functionality would be implemented here')}
             >
               <FaDownload /> Export
             </button>
-            <button 
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
-              onClick={() => alert('Add new user functionality would be implemented here')}
-            >
-              <FaUserPlus /> Add User
-            </button>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Users</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">{userStats.totalUsers}</p>
-              </div>
-              <div className="bg-indigo-100 p-3 rounded-full">
-                <FaUsers className="text-indigo-600 text-xl" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Active Users</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{userStats.activeUsers}</p>
-              </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <FaCheck className="text-green-600 text-xl" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Pending Approval</p>
-                <p className="text-2xl font-bold text-amber-600 mt-1">{userStats.pendingApproval}</p>
-              </div>
-              <div className="bg-amber-100 p-3 rounded-full">
-                <FaUserCog className="text-amber-600 text-xl" />
-              </div>
-            </div>
-            <button 
-              className="text-xs text-amber-600 mt-2 inline-block hover:underline"
-              onClick={() => setFilterStatus('pending')}
-            >
-              Review pending users →
-            </button>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Suspended Users</p>
-                <p className="text-2xl font-bold text-red-600 mt-1">{userStats.suspendedUsers}</p>
-              </div>
-              <div className="bg-red-100 p-3 rounded-full">
-                <FaBan className="text-red-600 text-xl" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Links */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link 
-              to="/users/profiles" 
-              className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 transition-colors"
-            >
-              <div className="bg-indigo-100 p-3 rounded-full">
-                <FaUsers className="text-indigo-600" />
-              </div>
-              <div>
-                <h3 className="font-medium text-gray-800">User Profiles</h3>
-                <p className="text-sm text-gray-500">View and manage all user accounts</p>
-              </div>
-            </Link>
-            
-            <Link 
-              to="/users/roles" 
-              className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 transition-colors"
-            >
-              <div className="bg-purple-100 p-3 rounded-full">
-                <FaUserShield className="text-purple-600" />
-              </div>
-              <div>
-                <h3 className="font-medium text-gray-800">User Roles</h3>
-                <p className="text-sm text-gray-500">Assign and manage user permissions</p>
-              </div>
-            </Link>
-            
-            <Link 
-              to="/users/activity" 
-              className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 transition-colors"
-            >
-              <div className="bg-blue-100 p-3 rounded-full">
-                <FaDatabase className="text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-medium text-gray-800">Activity Logs</h3>
-                <p className="text-sm text-gray-500">View user activity and audit logs</p>
-              </div>
-            </Link>
           </div>
         </div>
 
@@ -284,12 +126,26 @@ const Users = () => {
               
               <select
                 className="pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+              >
+                <option value="all">All Types</option>
+                <option value="pet owner">Pet Owners</option>
+                <option value="service provider">Service Providers</option>
+                <option value="staff">Staff</option>
+              </select>
+              
+              <select
+                className="pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value)}
               >
                 <option value="all">All Roles</option>
-                <option value="pet owner">Pet Owners</option>
-                <option value="service provider">Service Providers</option>
+                <option value="user">Users</option>
+                <option value="vet">Vets</option>
+                <option value="groomer">Groomers</option>
+                <option value="pet sitter">Pet Sitters</option>
+                <option value="trainer">Trainers</option>
                 <option value="admin">Admins</option>
                 <option value="moderator">Moderators</option>
               </select>
@@ -351,36 +207,19 @@ const Users = () => {
                       />
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort('name')}>
-                    <div className="flex items-center">
-                      User {getSortIcon('name')}
-                    </div>
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort('role')}>
-                    <div className="flex items-center">
-                      Role {getSortIcon('role')}
-                    </div>
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort('status')}>
-                    <div className="flex items-center">
-                      Status {getSortIcon('status')}
-                    </div>
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Active
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort('registeredDate')}>
-                    <div className="flex items-center">
-                      Registered {getSortIcon('registeredDate')}
-                    </div>
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pets</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointments</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredAndSortedUsers.map((user) => (
+                {filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
@@ -401,11 +240,14 @@ const Users = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.type}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         ${user.role === 'Admin' ? 'bg-purple-100 text-purple-800' : 
                           user.role === 'Moderator' ? 'bg-blue-100 text-blue-800' :
-                          user.role === 'Service Provider' ? 'bg-green-100 text-green-800' :
+                          user.role === 'Vet' || user.role === 'Groomer' || user.role === 'Pet Sitter' || user.role === 'Trainer' ? 'bg-green-100 text-green-800' :
                           'bg-gray-100 text-gray-800'}`}>
                         {user.role}
                       </span>
@@ -423,6 +265,12 @@ const Users = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.registeredDate}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.pets}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.appointments}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end items-center space-x-2">
@@ -504,7 +352,7 @@ const Users = () => {
             </table>
           </div>
           
-          {filteredAndSortedUsers.length === 0 && (
+          {filteredUsers.length === 0 && (
             <div className="p-6 text-center">
               <p className="text-gray-500">No users found matching your filters.</p>
             </div>
@@ -512,7 +360,7 @@ const Users = () => {
           
           <div className="p-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Showing <span className="font-medium">{filteredAndSortedUsers.length}</span> of <span className="font-medium">{usersData.length}</span> users
+              Showing <span className="font-medium">{filteredUsers.length}</span> of <span className="font-medium">{usersData.length}</span> users
             </div>
             <div className="flex gap-2">
               <button className="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
@@ -529,4 +377,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UserProfiles;
