@@ -18,7 +18,6 @@ import {
   FaCat,
   FaFeather,
   FaFish,
-  FaRabbit,
   FaUserCircle,
   FaCalendarAlt,
   FaMapMarkerAlt,
@@ -382,7 +381,7 @@ const PetLostReports = () => {
       case 'fish':
         return <FaFish className="text-indigo-500" />;
       case 'rabbit':
-        return <FaRabbit className="text-brown-500" />;
+        return <FaPaw className="text-brown-500" />;
       default:
         return <FaPaw className="text-gray-500" />;
     }

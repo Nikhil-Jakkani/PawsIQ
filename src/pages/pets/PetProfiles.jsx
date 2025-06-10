@@ -19,7 +19,6 @@ import {
   FaFeather,
   FaFish,
   FaHorse,
-  FaRabbit,
   FaUserCircle,
   FaCalendarAlt,
   FaVenus,
@@ -331,7 +330,7 @@ const PetProfiles = () => {
       case 'fish':
         return <FaFish className="text-indigo-500" />;
       case 'rabbit':
-        return <FaRabbit className="text-brown-500" />;
+        return <FaPaw className="text-brown-500" />;
       case 'horse':
         return <FaHorse className="text-brown-700" />;
       default:
