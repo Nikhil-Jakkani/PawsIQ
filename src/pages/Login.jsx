@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPaw, FaLock, FaEnvelope, FaDog, FaCat, FaBone, FaFish, FaFeather } from 'react-icons/fa';
 import { GiDogBowl, GiCat, GiSittingDog } from 'react-icons/gi';
@@ -11,18 +11,23 @@ const Login = () => {
   const { login, error } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
+      // Call the login function
       const success = login(email, password);
+      
       if (success) {
-        navigate('/admin/dashboard');
+        console.log('Login successful, navigating to dashboard');
+        // The navigation will happen automatically through the route protection in App.jsx
+      } else {
+        console.log('Login failed');
+        setIsLoading(false);
       }
     } catch (err) {
       console.error('Login error:', err);
-    } finally {
       setIsLoading(false);
     }
   };

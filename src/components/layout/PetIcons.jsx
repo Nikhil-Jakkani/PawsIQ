@@ -2,7 +2,7 @@ import React from 'react';
 import { FaPaw, FaDog, FaCat, FaFish, FaFeather, FaHorse, FaKiwiBird } from 'react-icons/fa';
 import { GiRabbit, GiHamster, GiTurtle } from 'react-icons/gi';
 
-export const PetIcon = ({ type, size = 'md', className = '' }) => {
+export const PetIcon = ({ type = 'paw', size = 'md', className = '' }) => {
   const sizeClass = {
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
@@ -12,7 +12,7 @@ export const PetIcon = ({ type, size = 'md', className = '' }) => {
   }[size] || 'w-5 h-5';
 
   const getIcon = () => {
-    switch (type.toLowerCase()) {
+    switch (type?.toLowerCase()) {
       case 'dog':
         return <FaDog className={`${sizeClass} ${className}`} />;
       case 'cat':

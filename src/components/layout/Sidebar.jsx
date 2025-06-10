@@ -20,25 +20,24 @@ import {
   FaBone,
   FaFish
 } from 'react-icons/fa';
-import { GiDogBowl, GiCat, GiSittingDog } from 'react-icons/gi';
 import { PetIcon } from './PetIcons';
 
 const Sidebar = () => {
   const { logout, currentUser } = useAuth();
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: <FaHome className="w-5 h-5" />, petIcon: 'paw' },
-    { name: 'Users', path: '/admin/users', icon: <FaUsers className="w-5 h-5" />, petIcon: 'dog' },
-    { name: 'Providers', path: '/admin/providers', icon: <FaHospital className="w-5 h-5" />, petIcon: 'cat' },
-    { name: 'Appointments', path: '/admin/appointments', icon: <FaCalendarAlt className="w-5 h-5" />, petIcon: 'rabbit' },
-    { name: 'Marketplace', path: '/admin/marketplace', icon: <FaShoppingCart className="w-5 h-5" />, petIcon: 'hamster' },
-    { name: 'Transactions', path: '/admin/transactions', icon: <FaCreditCard className="w-5 h-5" />, petIcon: 'turtle' },
-    { name: 'Content', path: '/admin/content', icon: <FaComments className="w-5 h-5" />, petIcon: 'bird' },
-    { name: 'Analytics', path: '/admin/analytics', icon: <FaChartBar className="w-5 h-5" />, petIcon: 'fish' },
-    { name: 'Notifications', path: '/admin/notifications', icon: <FaBell className="w-5 h-5" />, petIcon: 'paw' },
-    { name: 'Settings', path: '/admin/settings', icon: <FaCog className="w-5 h-5" />, petIcon: 'dog' },
-    { name: 'Security', path: '/admin/security', icon: <FaShieldAlt className="w-5 h-5" />, petIcon: 'cat' },
-    { name: 'Support', path: '/admin/support', icon: <FaQuestionCircle className="w-5 h-5" />, petIcon: 'paw' },
+    { name: 'Dashboard', path: '/admin/dashboard', icon: <FaHome />, petIcon: 'paw' },
+    { name: 'Users', path: '/admin/users', icon: <FaUsers />, petIcon: 'dog' },
+    { name: 'Providers', path: '/admin/providers', icon: <FaHospital />, petIcon: 'cat' },
+    { name: 'Appointments', path: '/admin/appointments', icon: <FaCalendarAlt />, petIcon: 'rabbit' },
+    { name: 'Marketplace', path: '/admin/marketplace', icon: <FaShoppingCart />, petIcon: 'hamster' },
+    { name: 'Transactions', path: '/admin/transactions', icon: <FaCreditCard />, petIcon: 'turtle' },
+    { name: 'Content', path: '/admin/content', icon: <FaComments />, petIcon: 'bird' },
+    { name: 'Analytics', path: '/admin/analytics', icon: <FaChartBar />, petIcon: 'fish' },
+    { name: 'Notifications', path: '/admin/notifications', icon: <FaBell />, petIcon: 'paw' },
+    { name: 'Settings', path: '/admin/settings', icon: <FaCog />, petIcon: 'dog' },
+    { name: 'Security', path: '/admin/security', icon: <FaShieldAlt />, petIcon: 'cat' },
+    { name: 'Support', path: '/admin/support', icon: <FaQuestionCircle />, petIcon: 'paw' },
   ];
 
   return (
@@ -71,25 +70,16 @@ const Sidebar = () => {
             <li key={item.path}>
               <NavLink
                 to={item.path}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                    isActive 
-                      ? 'bg-white text-indigo-700 shadow-md font-medium' 
-                      : 'text-white hover:bg-indigo-700/50'
-                  }`
+                className={({ isActive }) => 
+                  isActive 
+                    ? "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-white text-indigo-700 shadow-md font-medium"
+                    : "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-white hover:bg-indigo-700/50"
                 }
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  isActive ? 'bg-indigo-100' : 'bg-indigo-700/50'
-                }`}>
-                  <PetIcon type={item.petIcon} className={isActive ? 'text-indigo-600' : 'text-indigo-300'} />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-700/50">
+                  <PetIcon type={item.petIcon} />
                 </div>
                 <span>{item.name}</span>
-                
-                {/* Cute paw print for active item */}
-                {isActive && (
-                  <FaPaw className="ml-auto text-indigo-400 animate-pulse" />
-                )}
               </NavLink>
             </li>
           ))}
