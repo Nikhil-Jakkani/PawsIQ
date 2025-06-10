@@ -11,13 +11,13 @@ const Login = () => {
   const { login, error } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       // Call the login function
-      const success = login(email, password);
+      const success = await login(email, password); // Await the login function
       
       if (success) {
         console.log('Login successful, navigating to dashboard');
