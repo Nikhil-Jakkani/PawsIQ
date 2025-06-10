@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   FaHome, 
   FaUsers, 
@@ -7,110 +7,119 @@ import {
   FaCalendarAlt, 
   FaShoppingCart, 
   FaCreditCard, 
-  FaComments, 
+  FaCommentAlt, 
   FaChartBar, 
   FaBell, 
   FaCog, 
   FaShieldAlt, 
   FaQuestionCircle,
-  FaSignOutAlt,
   FaPaw,
-  FaDog,
-  FaCat,
-  FaBone,
-  FaFish
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+  FaUser
 } from 'react-icons/fa';
-import { PetIcon } from './PetIcons';
+import { useAuth } from '../../context/AuthContext';
+import logoImage from '../../assets/icons/logo.jpg';
 
-const Sidebar = () => {
-  const { logout, currentUser } = useAuth();
-
-  const navItems = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: <FaHome />, petIcon: 'paw' },
-    { name: 'Users', path: '/admin/users', icon: <FaUsers />, petIcon: 'dog' },
-    { name: 'Providers', path: '/admin/providers', icon: <FaHospital />, petIcon: 'cat' },
-    { name: 'Appointments', path: '/admin/appointments', icon: <FaCalendarAlt />, petIcon: 'rabbit' },
-    { name: 'Marketplace', path: '/admin/marketplace', icon: <FaShoppingCart />, petIcon: 'hamster' },
-    { name: 'Transactions', path: '/admin/transactions', icon: <FaCreditCard />, petIcon: 'turtle' },
-    { name: 'Content', path: '/admin/content', icon: <FaComments />, petIcon: 'bird' },
-    { name: 'Analytics', path: '/admin/analytics', icon: <FaChartBar />, petIcon: 'fish' },
-    { name: 'Notifications', path: '/admin/notifications', icon: <FaBell />, petIcon: 'paw' },
-    { name: 'Settings', path: '/admin/settings', icon: <FaCog />, petIcon: 'dog' },
-    { name: 'Security', path: '/admin/security', icon: <FaShieldAlt />, petIcon: 'cat' },
-    { name: 'Support', path: '/admin/support', icon: <FaQuestionCircle />, petIcon: 'paw' },
+const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const location = useLocation();
+  const { currentUser, logout } = useAuth();
+  
+  const menuItems = [
+    { path: '/dashboard', icon: <FaHome />, label: 'Dashboard' },
+    { path: '/users', icon: <FaUsers />, label: 'Users' },
+    { path: '/providers', icon: <FaHospital />, label: 'Providers' },
+    { path: '/appointments', icon: <FaCalendarAlt />, label: 'Appointments & Bookings' },
+    { path: '/marketplace', icon: <FaShoppingCart />, label: 'Marketplace' },
+    { path: '/transactions', icon: <FaCreditCard />, label: 'Transactions & Payments' },
+    { path: '/content', icon: <FaCommentAlt />, label: 'Content Moderation' },
+    { path: '/analytics', icon: <FaChartBar />, label: 'Analytics' },
+    { path: '/notifications', icon: <FaBell />, label: 'Notifications' },
+    { path: '/settings', icon: <FaCog />, label: 'Settings' },
+    { path: '/security', icon: <FaShieldAlt />, label: 'Security & Logs' },
+    { path: '/support', icon: <FaQuestionCircle />, label: 'Support & Tickets' },
   ];
 
   return (
-    <div className="bg-gradient-to-b from-indigo-900 to-indigo-800 text-white h-screen w-72 fixed left-0 top-0 overflow-y-auto shadow-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-indigo-700">
-        <div className="bg-white p-2 rounded-full">
-          <FaPaw className="text-indigo-600 text-3xl" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold">PawsIQ Admin</h1>
-          <p className="text-xs text-indigo-200">Pet Care Platform</p>
-        </div>
+    <>
+      {/* Mobile sidebar toggle */}
+      <div className="lg:hidden fixed top-4 left-4 z-30">
+        <button 
+          onClick={toggleSidebar}
+          className="p-2 rounded-full bg-indigo-600 text-white shadow-lg"
+        >
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </button>
       </div>
       
-      <div className="p-5 border-b border-indigo-700">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center shadow-md">
-            {currentUser?.name?.charAt(0) || 'A'}
+      {/* Sidebar backdrop for mobile */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`fixed top-0 left-0 h-full bg-indigo-900 text-white z-20 transition-all duration-300 ease-in-out shadow-xl overflow-y-auto
+        ${isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'}`}
+      >
+        {/* Logo and Title */}
+        <div className="p-4 border-b border-indigo-800 flex items-center gap-3">
+          <div className="bg-white p-2 rounded-full">
+            <img src={logoImage} alt="PawsIQ Logo" className="w-8 h-8 object-contain" />
           </div>
           <div>
-            <p className="font-medium">{currentUser?.name || 'Admin User'}</p>
-            <p className="text-xs text-indigo-300">{currentUser?.role || 'admin'}</p>
+            <h1 className="text-xl font-bold flex items-center">
+              PawsIQ Admin
+            </h1>
           </div>
         </div>
-      </div>
-      
-      <nav className="mt-6 px-3">
-        <ul className="space-y-2">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) => 
-                  isActive 
-                    ? "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-white text-indigo-700 shadow-md font-medium"
-                    : "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-white hover:bg-indigo-700/50"
-                }
+        
+        {/* Navigation Links */}
+        <nav className="mt-4">
+          <ul className="space-y-1">
+            {menuItems.map((item) => (
+              <li key={item.path}>
+                <Link
+                  to={item.path}
+                  className={`flex items-center gap-3 px-4 py-3 hover:bg-indigo-800 transition-colors
+                    ${location.pathname === item.path ? 'bg-indigo-700 border-l-4 border-white' : ''}`}
+                >
+                  <span className="text-indigo-300">{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        
+        {/* User Profile & Logout */}
+        <div className="absolute bottom-0 left-0 right-0 border-t border-indigo-800 text-indigo-300">
+          <div className="p-4 flex items-center gap-3">
+            <div className="bg-indigo-800 p-2 rounded-full">
+              <FaUser className="text-indigo-300" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-white truncate">
+                {/* {currentUser?.email || 'Admin User'} */}
+              </p>
+              <button 
+                onClick={logout}
+                className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
               >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-700/50">
-                  <PetIcon type={item.petIcon} />
-                </div>
-                <span>{item.name}</span>
-              </NavLink>
-            </li>
-          ))}
-          <li className="pt-4 mt-4 border-t border-indigo-700/50">
-            <button
-              onClick={logout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-indigo-700/50 transition-colors text-left"
-            >
-              <div className="w-8 h-8 rounded-full bg-indigo-700/50 flex items-center justify-center">
-                <FaSignOutAlt className="text-indigo-300" />
-              </div>
-              <span>Logout</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-      
-      <div className="p-5 mt-auto">
-        <div className="bg-indigo-700/30 p-4 rounded-xl">
-          <div className="flex items-center gap-2 mb-2">
-            <FaDog className="text-yellow-300" />
-            <FaCat className="text-purple-300" />
-            <FaBone className="text-blue-300" />
-            <FaFish className="text-green-300" />
+                <FaSignOutAlt size={14} /> Logout
+              </button>
+            </div>
           </div>
-          <p className="text-xs text-indigo-200">
-            Helping pets and their owners connect with the best care services.
-          </p>
+          <div className="px-4 pb-4 text-xs">
+            <p>© 2025 PawsIQ Admin</p>
+            <p className="mt-1">Version 1.0.0</p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

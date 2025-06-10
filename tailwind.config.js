@@ -77,6 +77,7 @@ export default {
       },
       animation: {
         'bounce-slow': 'bounce 3s infinite',
+        'bounce-subtle': 'float 6s ease-in-out infinite',
         'wiggle': 'wiggle 1s ease-in-out infinite',
         'paw-walk': 'pawWalk 10s linear infinite',
         'float': 'float 3s ease-in-out infinite',

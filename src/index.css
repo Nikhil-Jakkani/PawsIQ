@@ -8,10 +8,31 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    /* --- CRITICAL CHANGES BELOW FOR FULL PAGE BACKGROUND --- */
+    height: 100%; /* Ensure html takes full height */
+    width: 100%;  /* Ensure html takes full width */
+    margin: 0;    /* Remove default margin */
+    padding: 0;   /* Remove default padding */
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply text-gray-900;
+    /* --- CRITICAL CHANGES BELOW FOR FULL PAGE BACKGROUND --- */
+    height: 100%; /* Ensure body takes full height */
+    width: 100%;  /* Ensure body takes full width */
+    margin: 0;    /* Remove default margin */
+    padding: 0;   /* Remove default padding */
+    overflow: hidden; /* Prevent body scrollbars if content is less than viewport */
+    background-color: transparent; /* Ensure body background is transparent */
+  }
+
+  /* If you are using Create React App or a similar setup,
+      the div with id="root" also needs to fill the screen */
+  #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -93,6 +114,22 @@
   
   .animate-paw-walk {
     animation: pawWalk 10s linear infinite;
+  }
+
+  /* NEW: Subtle Bounce for Login Box */
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s infinite; /* Adjust duration as needed */
+  }
+  
+  @keyframes bounce-subtle {
+    0%, 100% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(-5px); /* Moves up subtly */
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
   }
   
   @keyframes wiggle {

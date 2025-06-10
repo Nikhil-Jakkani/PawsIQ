@@ -5,33 +5,35 @@ import StatCard from '../components/dashboard/StatCard';
 import OverviewChart from '../components/dashboard/OverviewChart';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import UpcomingAppointments from '../components/dashboard/UpcomingAppointments';
+import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Dashboard = () => {
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="bg-indigo-100 p-2 rounded-lg">
-              <FaPaw className="text-indigo-600 text-2xl" />
+    <DashboardLayout>
+      <div className="space-y-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="bg-indigo-100 p-2 rounded-lg">
+                <FaPaw className="text-indigo-600 text-2xl" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+            <p className="text-gray-500 mt-1">Welcome to your PawsIQ admin dashboard</p>
           </div>
-          <p className="text-gray-500 mt-1">Welcome to your PawsIQ admin dashboard</p>
+          <div className="flex gap-3">
+            <PetIconButton 
+              type="dog" 
+              variant="secondary" 
+              label="View Reports" 
+            />
+            <PetIconButton 
+              type="cat" 
+              variant="primary" 
+              label="Generate Report" 
+            />
+          </div>
         </div>
-        <div className="flex gap-3">
-          <PetIconButton 
-            type="dog" 
-            variant="secondary" 
-            label="View Reports" 
-          />
-          <PetIconButton 
-            type="cat" 
-            variant="primary" 
-            label="Generate Report" 
-          />
-        </div>
-      </div>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -156,7 +158,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 

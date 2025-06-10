@@ -2,6 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Users from './pages/Users.jsx';
+import Providers from './pages/Providers.jsx';
+import Appointments from './pages/Appointments.jsx';
+import Marketplace from './pages/Marketplace.jsx';
+import Transactions from './pages/Transactions.jsx';
+import ContentModeration from './pages/ContentModeration.jsx';
+import Analytics from './pages/Analytics.jsx';
+import Notifications from './pages/Notifications.jsx';
+import Settings from './pages/Settings.jsx';
+import Security from './pages/Security.jsx';
+import Support from './pages/Support.jsx';
 import { useAuth } from './context/AuthContext';
 import './App.css'; 
 
@@ -32,23 +43,8 @@ function App() {
   const { currentUser, logout } = useAuth();
   
   return (
-    <div className="app-container">
+    <div className="app-container w-full h-full">
       <Router>
-        <nav style={{ padding: '10px', background: '#eee' }}>
-          {!currentUser ? (
-            <Link to="/">Login</Link>
-          ) : (
-            <>
-              <Link to="/dashboard">Dashboard</Link> |{' '}
-              <button 
-                onClick={logout}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-              >
-                Logout
-              </button>
-            </>
-          )}
-        </nav>
         <Routes>
           <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <Login />} />
           <Route path="/signin" element={currentUser ? <Navigate to="/dashboard" /> : <Login />} />
@@ -57,6 +53,94 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/users" 
+            element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers" 
+            element={
+              <ProtectedRoute>
+                <Providers />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/appointments" 
+            element={
+              <ProtectedRoute>
+                <Appointments />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/marketplace" 
+            element={
+              <ProtectedRoute>
+                <Marketplace />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/transactions" 
+            element={
+              <ProtectedRoute>
+                <Transactions />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/content" 
+            element={
+              <ProtectedRoute>
+                <ContentModeration />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/analytics" 
+            element={
+              <ProtectedRoute>
+                <Analytics />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/notifications" 
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/security" 
+            element={
+              <ProtectedRoute>
+                <Security />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/support" 
+            element={
+              <ProtectedRoute>
+                <Support />
               </ProtectedRoute>
             } 
           />
