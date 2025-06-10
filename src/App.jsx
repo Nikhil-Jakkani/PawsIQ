@@ -4,9 +4,14 @@ import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Users from './pages/Users.jsx';
 import UserProfiles from './pages/users/UserProfiles.jsx';
+import UserRoles from './pages/users/UserRoles.jsx';
+import UserActivity from './pages/users/UserActivity.jsx';
 import Providers from './pages/Providers.jsx';
 import ProviderOnboarding from './pages/providers/ProviderOnboarding.jsx';
 import ProviderVerification from './pages/providers/ProviderVerification.jsx';
+import ProviderCommission from './pages/providers/ProviderCommission.jsx';
+import ProviderPerformance from './pages/providers/ProviderPerformance.jsx';
+import ProviderFlags from './pages/providers/ProviderFlags.jsx';
 import Appointments from './pages/Appointments.jsx';
 import Marketplace from './pages/Marketplace.jsx';
 import Transactions from './pages/Transactions.jsx';
@@ -16,6 +21,9 @@ import Notifications from './pages/Notifications.jsx';
 import Settings from './pages/Settings.jsx';
 import Security from './pages/Security.jsx';
 import Support from './pages/Support.jsx';
+import PetProfiles from './pages/pets/PetProfiles.jsx';
+import PetModeration from './pages/pets/PetModeration.jsx';
+import PetLostReports from './pages/pets/PetLostReports.jsx';
 import { useAuth } from './context/AuthContext';
 import './App.css'; 
 
@@ -76,6 +84,22 @@ function App() {
             } 
           />
           <Route 
+            path="/users/roles" 
+            element={
+              <ProtectedRoute>
+                <UserRoles />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/users/activity" 
+            element={
+              <ProtectedRoute>
+                <UserActivity />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/providers" 
             element={
               <ProtectedRoute>
@@ -96,6 +120,62 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProviderVerification />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers/commission" 
+            element={
+              <ProtectedRoute>
+                <ProviderCommission />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers/performance" 
+            element={
+              <ProtectedRoute>
+                <ProviderPerformance />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/providers/flags" 
+            element={
+              <ProtectedRoute>
+                <ProviderFlags />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pets" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pets/profiles" 
+            element={
+              <ProtectedRoute>
+                <PetProfiles />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pets/moderation" 
+            element={
+              <ProtectedRoute>
+                <PetModeration />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pets/lost" 
+            element={
+              <ProtectedRoute>
+                <PetLostReports />
               </ProtectedRoute>
             } 
           />

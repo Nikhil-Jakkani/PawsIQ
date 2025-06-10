@@ -1,29 +1,50 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUserShield, FaPlus, FaEdit, FaTrash, FaArrowLeft, FaCheck, FaTimes } from 'react-icons/fa';
+import { 
+  FaUsers, 
+  FaSearch, 
+  FaFilter, 
+  FaEllipsisH, 
+  FaCheck, 
+  FaBan, 
+  FaTrash, 
+  FaEdit, 
+  FaPlus, 
+  FaDownload, 
+  FaArrowLeft,
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+  FaEye,
+  FaKey,
+  FaUserShield,
+  FaLock,
+  FaUnlock
+} from 'react-icons/fa';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const UserRoles = () => {
-  const [showAddRoleModal, setShowAddRoleModal] = useState(false);
-  const [showEditRoleModal, setShowEditRoleModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
   const [currentRole, setCurrentRole] = useState(null);
-  const [newRoleName, setNewRoleName] = useState('');
-  const [newRoleDescription, setNewRoleDescription] = useState('');
   
   // Sample data for roles
-  const [roles, setRoles] = useState([
-    {
-      id: 1,
-      name: 'Admin',
-      description: 'Full access to all features and settings',
-      userCount: 3,
+  const rolesData = [
+    { 
+      id: 1, 
+      name: 'Administrator', 
+      description: 'Full access to all system features and settings', 
+      usersCount: 5,
       permissions: {
+        dashboard: { view: true, edit: true },
         users: { view: true, create: true, edit: true, delete: true },
         providers: { view: true, create: true, edit: true, delete: true },
         pets: { view: true, create: true, edit: true, delete: true },
         appointments: { view: true, create: true, edit: true, delete: true },
-        marketplace: { view: true, create: true, edit: true, delete: true },
         transactions: { view: true, create: true, edit: true, delete: true },
+        marketplace: { view: true, create: true, edit: true, delete: true },
         content: { view: true, create: true, edit: true, delete: true },
         analytics: { view: true, create: true, edit: true, delete: true },
         notifications: { view: true, create: true, edit: true, delete: true },
@@ -32,168 +53,128 @@ const UserRoles = () => {
         support: { view: true, create: true, edit: true, delete: true }
       }
     },
-    {
-      id: 2,
-      name: 'Moderator',
-      description: 'Can moderate content and manage users',
-      userCount: 5,
+    { 
+      id: 2, 
+      name: 'Moderator', 
+      description: 'Can moderate content and manage users, but cannot change system settings', 
+      usersCount: 8,
       permissions: {
+        dashboard: { view: true, edit: false },
         users: { view: true, create: false, edit: true, delete: false },
         providers: { view: true, create: false, edit: true, delete: false },
         pets: { view: true, create: false, edit: true, delete: false },
         appointments: { view: true, create: true, edit: true, delete: false },
-        marketplace: { view: true, create: false, edit: false, delete: false },
         transactions: { view: true, create: false, edit: false, delete: false },
-        content: { view: true, create: true, edit: true, delete: true },
+        marketplace: { view: true, create: false, edit: true, delete: false },
+        content: { view: true, create: false, edit: true, delete: true },
         analytics: { view: true, create: false, edit: false, delete: false },
+        notifications: { view: true, create: true, edit: true, delete: false },
+        settings: { view: false, create: false, edit: false, delete: false },
+        security: { view: false, create: false, edit: false, delete: false },
+        support: { view: true, create: true, edit: true, delete: false }
+      }
+    },
+    { 
+      id: 3, 
+      name: 'Support Agent', 
+      description: 'Can handle customer support tickets and basic user management', 
+      usersCount: 12,
+      permissions: {
+        dashboard: { view: true, edit: false },
+        users: { view: true, create: false, edit: false, delete: false },
+        providers: { view: true, create: false, edit: false, delete: false },
+        pets: { view: true, create: false, edit: false, delete: false },
+        appointments: { view: true, create: false, edit: false, delete: false },
+        transactions: { view: true, create: false, edit: false, delete: false },
+        marketplace: { view: true, create: false, edit: false, delete: false },
+        content: { view: false, create: false, edit: false, delete: false },
+        analytics: { view: false, create: false, edit: false, delete: false },
         notifications: { view: true, create: true, edit: false, delete: false },
         settings: { view: false, create: false, edit: false, delete: false },
         security: { view: false, create: false, edit: false, delete: false },
         support: { view: true, create: true, edit: true, delete: false }
       }
     },
-    {
-      id: 3,
-      name: 'Support Agent',
-      description: 'Can handle support tickets and basic user management',
-      userCount: 8,
+    { 
+      id: 4, 
+      name: 'Analyst', 
+      description: 'Can view and analyze data but cannot make changes', 
+      usersCount: 7,
       permissions: {
-        users: { view: true, create: false, edit: false, delete: false },
-        providers: { view: true, create: false, edit: false, delete: false },
-        pets: { view: true, create: false, edit: false, delete: false },
-        appointments: { view: true, create: true, edit: true, delete: false },
-        marketplace: { view: true, create: false, edit: false, delete: false },
-        transactions: { view: true, create: false, edit: false, delete: false },
-        content: { view: true, create: false, edit: false, delete: false },
-        analytics: { view: false, create: false, edit: false, delete: false },
-        notifications: { view: true, create: false, edit: false, delete: false },
-        settings: { view: false, create: false, edit: false, delete: false },
-        security: { view: false, create: false, edit: false, delete: false },
-        support: { view: true, create: true, edit: true, delete: false }
-      }
-    },
-    {
-      id: 4,
-      name: 'Analyst',
-      description: 'Can view analytics and reports',
-      userCount: 2,
-      permissions: {
+        dashboard: { view: true, edit: false },
         users: { view: true, create: false, edit: false, delete: false },
         providers: { view: true, create: false, edit: false, delete: false },
         pets: { view: true, create: false, edit: false, delete: false },
         appointments: { view: true, create: false, edit: false, delete: false },
-        marketplace: { view: true, create: false, edit: false, delete: false },
         transactions: { view: true, create: false, edit: false, delete: false },
-        content: { view: false, create: false, edit: false, delete: false },
-        analytics: { view: true, create: true, edit: true, delete: true },
+        marketplace: { view: true, create: false, edit: false, delete: false },
+        content: { view: true, create: false, edit: false, delete: false },
+        analytics: { view: true, create: true, edit: true, delete: false },
         notifications: { view: false, create: false, edit: false, delete: false },
         settings: { view: false, create: false, edit: false, delete: false },
         security: { view: false, create: false, edit: false, delete: false },
         support: { view: false, create: false, edit: false, delete: false }
       }
+    },
+    { 
+      id: 5, 
+      name: 'Provider Manager', 
+      description: 'Manages service providers and their verification process', 
+      usersCount: 4,
+      permissions: {
+        dashboard: { view: true, edit: false },
+        users: { view: false, create: false, edit: false, delete: false },
+        providers: { view: true, create: true, edit: true, delete: false },
+        pets: { view: false, create: false, edit: false, delete: false },
+        appointments: { view: true, create: false, edit: false, delete: false },
+        transactions: { view: true, create: false, edit: false, delete: false },
+        marketplace: { view: false, create: false, edit: false, delete: false },
+        content: { view: false, create: false, edit: false, delete: false },
+        analytics: { view: true, create: false, edit: false, delete: false },
+        notifications: { view: true, create: true, edit: false, delete: false },
+        settings: { view: false, create: false, edit: false, delete: false },
+        security: { view: false, create: false, edit: false, delete: false },
+        support: { view: false, create: false, edit: false, delete: false }
+      }
     }
-  ]);
-
-  // Permission categories
-  const permissionCategories = [
-    { id: 'users', label: 'User Management' },
-    { id: 'providers', label: 'Provider Management' },
-    { id: 'pets', label: 'Pet Profiles' },
-    { id: 'appointments', label: 'Appointments & Bookings' },
-    { id: 'marketplace', label: 'Marketplace' },
-    { id: 'transactions', label: 'Transactions & Payments' },
-    { id: 'content', label: 'Content Moderation' },
-    { id: 'analytics', label: 'Analytics & Reporting' },
-    { id: 'notifications', label: 'Notifications' },
-    { id: 'settings', label: 'Settings' },
-    { id: 'security', label: 'Security & Compliance' },
-    { id: 'support', label: 'Customer Support' }
   ];
 
-  // Permission actions
-  const permissionActions = [
-    { id: 'view', label: 'View' },
-    { id: 'create', label: 'Create' },
-    { id: 'edit', label: 'Edit' },
-    { id: 'delete', label: 'Delete' }
-  ];
+  // Filter roles based on search term
+  const filteredRoles = rolesData.filter(role => 
+    role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    role.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  // Handle opening the edit role modal
-  const handleEditRole = (role) => {
+  // Handle select all checkbox
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedRoles([]);
+    } else {
+      setSelectedRoles(filteredRoles.map(role => role.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Handle individual role selection
+  const handleSelectRole = (roleId) => {
+    if (selectedRoles.includes(roleId)) {
+      setSelectedRoles(selectedRoles.filter(id => id !== roleId));
+    } else {
+      setSelectedRoles([...selectedRoles, roleId]);
+    }
+  };
+
+  // Handle bulk actions
+  const handleBulkAction = (action) => {
+    console.log(`Performing ${action} on roles:`, selectedRoles);
+    // In a real app, you would call an API to perform the action
+    alert(`${action} action would be performed on ${selectedRoles.length} roles`);
+  };
+
+  // Handle view role details
+  const handleViewRole = (role) => {
     setCurrentRole(role);
-    setNewRoleName(role.name);
-    setNewRoleDescription(role.description);
-    setShowEditRoleModal(true);
-  };
-
-  // Handle saving a new role
-  const handleSaveNewRole = () => {
-    // Create default permissions (all false)
-    const defaultPermissions = {};
-    permissionCategories.forEach(category => {
-      defaultPermissions[category.id] = {
-        view: false,
-        create: false,
-        edit: false,
-        delete: false
-      };
-    });
-
-    // Create new role
-    const newRole = {
-      id: roles.length + 1,
-      name: newRoleName,
-      description: newRoleDescription,
-      userCount: 0,
-      permissions: defaultPermissions
-    };
-
-    setRoles([...roles, newRole]);
-    setShowAddRoleModal(false);
-    setNewRoleName('');
-    setNewRoleDescription('');
-  };
-
-  // Handle updating a role
-  const handleUpdateRole = () => {
-    const updatedRoles = roles.map(role => {
-      if (role.id === currentRole.id) {
-        return {
-          ...currentRole,
-          name: newRoleName,
-          description: newRoleDescription
-        };
-      }
-      return role;
-    });
-
-    setRoles(updatedRoles);
-    setShowEditRoleModal(false);
-    setCurrentRole(null);
-    setNewRoleName('');
-    setNewRoleDescription('');
-  };
-
-  // Handle deleting a role
-  const handleDeleteRole = (roleId) => {
-    if (window.confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
-      const updatedRoles = roles.filter(role => role.id !== roleId);
-      setRoles(updatedRoles);
-    }
-  };
-
-  // Handle toggling a permission
-  const handleTogglePermission = (roleId, category, action) => {
-    const updatedRoles = roles.map(role => {
-      if (role.id === roleId) {
-        const updatedPermissions = { ...role.permissions };
-        updatedPermissions[category][action] = !updatedPermissions[category][action];
-        return { ...role, permissions: updatedPermissions };
-      }
-      return role;
-    });
-
-    setRoles(updatedRoles);
+    setShowRoleModal(true);
   };
 
   return (
@@ -206,69 +187,161 @@ const UserRoles = () => {
               <FaArrowLeft />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">User Roles & Permissions</h1>
-              <p className="text-gray-500">Manage roles and assign permissions</p>
+              <h1 className="text-2xl font-bold text-gray-800">User Roles</h1>
+              <p className="text-gray-500">Manage role-based access control</p>
             </div>
           </div>
-          <button 
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
-            onClick={() => setShowAddRoleModal(true)}
-          >
-            <FaPlus /> Add New Role
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button 
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+              onClick={() => alert('Add new role functionality would be implemented here')}
+            >
+              <FaPlus /> Add New Role
+            </button>
+            <button 
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md flex items-center gap-2 hover:bg-gray-50 transition-colors"
+              onClick={() => alert('Export functionality would be implemented here')}
+            >
+              <FaDownload /> Export
+            </button>
+          </div>
         </div>
 
-        {/* Roles List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Available Roles</h2>
-            <p className="text-sm text-gray-500 mt-1">Define roles and their permissions for staff members</p>
+        {/* Search */}
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <div className="relative max-w-md">
+            <input
+              type="text"
+              placeholder="Search roles..."
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
-          
+        </div>
+
+        {/* Bulk Actions */}
+        {selectedRoles.length > 0 && (
+          <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200 flex flex-wrap items-center justify-between gap-4">
+            <div className="text-indigo-700 font-medium">
+              {selectedRoles.length} roles selected
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button 
+                className="px-3 py-1.5 bg-red-600 text-white rounded-md text-sm flex items-center gap-1 hover:bg-red-700 transition-colors"
+                onClick={() => handleBulkAction('Delete')}
+              >
+                <FaTrash size={12} /> Delete
+              </button>
+              <button 
+                className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-sm hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setSelectedRoles([]);
+                  setSelectAll(false);
+                }}
+              >
+                Clear Selection
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Roles Table */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </div>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Users
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Permissions
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {roles.map((role) => (
+                {filteredRoles.map((role) => (
                   <tr key={role.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                          <FaUserShield className="text-indigo-600" />
-                        </div>
-                        <div className="ml-4">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          checked={selectedRoles.includes(role.id)}
+                          onChange={() => handleSelectRole(role.id)}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="ml-2">
                           <div className="text-sm font-medium text-gray-900">{role.name}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-500">{role.description}</div>
+                      <div className="text-sm text-gray-500 max-w-xs truncate">{role.description}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{role.userCount} users</div>
+                      <div className="text-sm text-gray-900">{role.usersCount} users</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex space-x-1">
+                        {Object.entries(role.permissions).some(([_, perms]) => perms.view) && (
+                          <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">View</span>
+                        )}
+                        {Object.entries(role.permissions).some(([_, perms]) => perms.create) && (
+                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Create</span>
+                        )}
+                        {Object.entries(role.permissions).some(([_, perms]) => perms.edit) && (
+                          <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Edit</span>
+                        )}
+                        {Object.entries(role.permissions).some(([_, perms]) => perms.delete) && (
+                          <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Delete</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end items-center space-x-2">
-                        <button 
-                          className="text-indigo-600 hover:text-indigo-900" 
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => handleViewRole(role)}
+                          className="text-indigo-600 hover:text-indigo-900"
+                          title="View Details"
+                        >
+                          <FaEye />
+                        </button>
+                        <button
+                          onClick={() => alert(`Edit role: ${role.name}`)}
+                          className="text-blue-600 hover:text-blue-900"
                           title="Edit Role"
-                          onClick={() => handleEditRole(role)}
                         >
                           <FaEdit />
                         </button>
-                        <button 
-                          className="text-red-600 hover:text-red-900" 
+                        <button
+                          onClick={() => alert(`Delete role: ${role.name}`)}
+                          className="text-red-600 hover:text-red-900"
                           title="Delete Role"
-                          onClick={() => handleDeleteRole(role.id)}
-                          disabled={role.userCount > 0}
-                          className={`${role.userCount > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 hover:text-red-900'}`}
                         >
                           <FaTrash />
                         </button>
@@ -281,172 +354,106 @@ const UserRoles = () => {
           </div>
         </div>
 
-        {/* Permissions Matrix */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Permissions Matrix</h2>
-            <p className="text-sm text-gray-500 mt-1">Configure detailed permissions for each role</p>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permission Category</th>
-                  {roles.map(role => (
-                    <th key={role.id} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {role.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {permissionCategories.map((category) => (
-                  <React.Fragment key={category.id}>
-                    <tr className="bg-gray-50">
-                      <td colSpan={roles.length + 1} className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-                        {category.label}
-                      </td>
-                    </tr>
-                    {permissionActions.map(action => (
-                      <tr key={`${category.id}-${action.id}`} className="hover:bg-gray-50">
-                        <td className="px-6 py-3 text-sm text-gray-500">
-                          {action.label}
-                        </td>
-                        {roles.map(role => (
-                          <td key={`${role.id}-${category.id}-${action.id}`} className="px-6 py-3 text-center">
-                            <button
-                              onClick={() => handleTogglePermission(role.id, category.id, action.id)}
-                              className={`h-6 w-6 rounded-md flex items-center justify-center ${
-                                role.permissions[category.id][action.id] 
-                                  ? 'bg-green-100 text-green-600 hover:bg-green-200' 
-                                  : 'bg-red-100 text-red-600 hover:bg-red-200'
-                              }`}
-                            >
-                              {role.permissions[category.id][action.id] ? <FaCheck size={12} /> : <FaTimes size={12} />}
-                            </button>
-                          </td>
-                        ))}
-                      </tr>
+        {/* Role Details Modal */}
+        {showRoleModal && currentRole && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold text-gray-800">Role Details: {currentRole.name}</h2>
+                  <button 
+                    onClick={() => setShowRoleModal(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Basic Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Role Name</p>
+                      <p className="text-base text-gray-900">{currentRole.name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Users with this role</p>
+                      <p className="text-base text-gray-900">{currentRole.usersCount}</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">Description</p>
+                    <p className="text-base text-gray-900">{currentRole.description}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Permissions</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Object.entries(currentRole.permissions).map(([module, permissions]) => (
+                      <div key={module} className="border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-800 capitalize mb-2">{module}</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">View</span>
+                            {permissions.view ? (
+                              <FaCheck className="text-green-500" />
+                            ) : (
+                              <FaBan className="text-red-500" />
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Create</span>
+                            {permissions.create ? (
+                              <FaCheck className="text-green-500" />
+                            ) : (
+                              <FaBan className="text-red-500" />
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Edit</span>
+                            {permissions.edit ? (
+                              <FaCheck className="text-green-500" />
+                            ) : (
+                              <FaBan className="text-red-500" />
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Delete</span>
+                            {permissions.delete ? (
+                              <FaCheck className="text-green-500" />
+                            ) : (
+                              <FaBan className="text-red-500" />
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     ))}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowRoleModal(false)}
+                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    alert(`Edit role: ${currentRole.name}`);
+                    setShowRoleModal(false);
+                  }}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                >
+                  Edit Role
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
-
-      {/* Add Role Modal */}
-      {showAddRoleModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Role</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="roleName" className="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
-                <input
-                  type="text"
-                  id="roleName"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter role name"
-                  value={newRoleName}
-                  onChange={(e) => setNewRoleName(e.target.value)}
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="roleDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  id="roleDescription"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter role description"
-                  rows="3"
-                  value={newRoleDescription}
-                  onChange={(e) => setNewRoleDescription(e.target.value)}
-                ></textarea>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-                onClick={() => {
-                  setShowAddRoleModal(false);
-                  setNewRoleName('');
-                  setNewRoleDescription('');
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                onClick={handleSaveNewRole}
-                disabled={!newRoleName.trim()}
-              >
-                Create Role
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Role Modal */}
-      {showEditRoleModal && currentRole && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Edit Role</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="editRoleName" className="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
-                <input
-                  type="text"
-                  id="editRoleName"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter role name"
-                  value={newRoleName}
-                  onChange={(e) => setNewRoleName(e.target.value)}
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="editRoleDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  id="editRoleDescription"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter role description"
-                  rows="3"
-                  value={newRoleDescription}
-                  onChange={(e) => setNewRoleDescription(e.target.value)}
-                ></textarea>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-                onClick={() => {
-                  setShowEditRoleModal(false);
-                  setCurrentRole(null);
-                  setNewRoleName('');
-                  setNewRoleDescription('');
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                onClick={handleUpdateRole}
-                disabled={!newRoleName.trim()}
-              >
-                Update Role
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </DashboardLayout>
   );
 };

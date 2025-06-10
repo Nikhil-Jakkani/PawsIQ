@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   FaHome, 
@@ -41,7 +41,9 @@ import {
   FaToggleOn,
   FaFileAlt,
   FaChevronDown,
-  FaChevronRight
+  FaChevronRight,
+  FaAngleLeft,
+  FaAngleRight
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import logoImage from '../../assets/icons/logo.jpg';
@@ -50,6 +52,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
   const { currentUser, logout } = useAuth();
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [minimized, setMinimized] = useState(false);
+  
+  // Load minimized state from localStorage on component mount
+  useEffect(() => {
+    const savedMinimizedState = localStorage.getItem('sidebarMinimized');
+    if (savedMinimizedState !== null) {
+      setMinimized(JSON.parse(savedMinimizedState));
+    }
+  }, []);
+  
+  // Toggle minimized state and save to localStorage
+  const toggleMinimized = () => {
+    const newMinimizedState = !minimized;
+    setMinimized(newMinimizedState);
+    localStorage.setItem('sidebarMinimized', JSON.stringify(newMinimizedState));
+    
+    // Dispatch a custom event to notify other components about the change
+    window.dispatchEvent(new CustomEvent('sidebarMinimizedChange'));
+  };
   
   const menuCategories = [
     {
@@ -239,45 +260,66 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {/* Sidebar */}
       <div 
         className={`fixed top-0 left-0 h-full bg-indigo-900 text-white z-20 transition-all duration-300 ease-in-out shadow-xl
-          ${isOpen ? 'w-72 translate-x-0' : 'w-72 -translate-x-full lg:translate-x-0'}`}
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${minimized ? 'w-20 lg:w-20' : 'w-72'}`}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Title */}
-          <div className="p-4 border-b border-indigo-800 flex items-center gap-3">
+          <div className={`p-4 border-b border-indigo-800 flex items-center ${minimized ? 'justify-center' : 'gap-3'}`}>
             <div className="bg-white p-2 rounded-full">
               <img src={logoImage} alt="PawsIQ Logo" className="w-8 h-8 object-contain" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold flex items-center">
-                PawsIQ Admin
-              </h1>
-            </div>
+            {!minimized && (
+              <div>
+                <h1 className="text-xl font-bold flex items-center">
+                  PawsIQ Admin
+                </h1>
+              </div>
+            )}
           </div>
+          
+          {/* Minimize toggle button */}
+          <button 
+            onClick={toggleMinimized}
+            className="absolute top-4 right-0 transform translate-x-1/2 bg-indigo-600 text-white p-1 rounded-full shadow-lg hover:bg-indigo-700 transition-colors"
+          >
+            {minimized ? <FaAngleRight size={16} /> : <FaAngleLeft size={16} />}
+          </button>
           
           {/* Navigation Links - with scrollbar */}
           <nav className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-900">
             <ul className="space-y-1 py-2">
               {menuCategories.map((category) => (
-                <li key={category.id} className="px-2">
+                <li key={category.id} className={minimized ? "px-1" : "px-2"}>
                   {/* Category header */}
                   <div 
-                    className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
+                    className={`flex items-center ${minimized ? 'justify-center' : 'justify-between'} 
+                      ${minimized ? 'px-2' : 'px-3'} py-2 rounded-md cursor-pointer
                       ${isCategoryActive(category) ? 'bg-indigo-700 text-white' : 'text-indigo-100 hover:bg-indigo-800'}`}
-                    onClick={() => toggleCategory(category.id)}
+                    onClick={() => minimized ? null : toggleCategory(category.id)}
+                    title={minimized ? category.label : ""}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-indigo-300">{category.icon}</span>
-                      <span className="font-medium">{category.label}</span>
-                    </div>
-                    {category.items.length > 0 && (
-                      <span className="text-indigo-300">
-                        {expandedCategory === category.id ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
+                    {minimized ? (
+                      <span className={`text-indigo-300 text-xl ${isCategoryActive(category) ? 'text-white' : ''}`}>
+                        {category.icon}
                       </span>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-3">
+                          <span className="text-indigo-300">{category.icon}</span>
+                          <span className="font-medium">{category.label}</span>
+                        </div>
+                        {category.items.length > 0 && (
+                          <span className="text-indigo-300">
+                            {expandedCategory === category.id ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                   
-                  {/* Subcategory items */}
-                  {category.items.length > 0 && expandedCategory === category.id && (
+                  {/* Subcategory items - only show when not minimized */}
+                  {!minimized && category.items.length > 0 && expandedCategory === category.id && (
                     <ul className="mt-1 ml-6 space-y-1 border-l border-indigo-700 pl-2">
                       {category.items.map((item) => (
                         <li key={item.path}>
@@ -302,26 +344,43 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           
           {/* User Profile & Logout */}
           <div className="border-t border-indigo-800 text-indigo-300">
-            <div className="p-4 flex items-center gap-3">
-              <div className="bg-indigo-800 p-2 rounded-full">
-                <FaUser className="text-indigo-300" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-white truncate">
-                  {currentUser?.email || 'Admin User'}
-                </p>
+            {minimized ? (
+              <div className="p-4 flex flex-col items-center justify-center">
+                <div className="bg-indigo-800 p-2 rounded-full mb-2">
+                  <FaUser className="text-indigo-300" />
+                </div>
                 <button 
                   onClick={logout}
-                  className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
+                  className="text-xs text-indigo-300 hover:text-white transition-colors mt-2"
+                  title="Logout"
                 >
-                  <FaSignOutAlt size={14} /> Logout
+                  <FaSignOutAlt size={16} />
                 </button>
               </div>
-            </div>
-            <div className="px-4 pb-4 text-xs">
-              <p>© 2025 PawsIQ Admin</p>
-              <p className="mt-1">Version 1.0.0</p>
-            </div>
+            ) : (
+              <div className="p-4 flex items-center gap-3">
+                <div className="bg-indigo-800 p-2 rounded-full">
+                  <FaUser className="text-indigo-300" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white truncate">
+                    {currentUser?.email || 'Admin User'}
+                  </p>
+                  <button 
+                    onClick={logout}
+                    className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
+                  >
+                    <FaSignOutAlt size={14} /> Logout
+                  </button>
+                </div>
+              </div>
+            )}
+            {!minimized && (
+              <div className="px-4 pb-4 text-xs">
+                <p>© 2025 PawsIQ Admin</p>
+                <p className="mt-1">Version 1.0.0</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
