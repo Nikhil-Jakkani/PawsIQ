@@ -139,13 +139,73 @@ const Users = () => {
           <div className="flex gap-3">
             <button 
               className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md flex items-center gap-2 hover:bg-gray-50 transition-colors"
-              onClick={() => alert('Export functionality would be implemented here')}
+              onClick={() => {
+                // Create a CSV string from the filtered users
+                const headers = ['ID', 'Name', 'Email', 'Role', 'Status', 'Last Active', 'Registered Date', 'Pets'];
+                const csvRows = [headers];
+                
+                filteredAndSortedUsers.forEach(user => {
+                  csvRows.push([
+                    user.id,
+                    user.name,
+                    user.email,
+                    user.role,
+                    user.status,
+                    user.lastActive,
+                    user.registeredDate,
+                    user.pets
+                  ]);
+                });
+                
+                const csvString = csvRows.map(row => row.join(',')).join('\n');
+                
+                // Create a Blob and download link
+                const blob = new Blob([csvString], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `users-report-${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
             >
               <FaDownload /> Export
             </button>
             <button 
               className="px-4 py-2 bg-indigo-600 text-white rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
-              onClick={() => alert('Add new user functionality would be implemented here')}
+              onClick={() => {
+                // Show a modal or form to add a new user
+                const name = prompt("Enter user name:");
+                if (!name) return;
+                
+                const email = prompt("Enter user email:");
+                if (!email) return;
+                
+                const role = prompt("Enter user role (Pet Owner, Service Provider, Admin, Moderator):", "Pet Owner");
+                if (!role) return;
+                
+                // In a real app, this would send data to an API
+                console.log("Adding new user:", { name, email, role });
+                alert(`User ${name} added successfully!`);
+                
+                // Simulate adding the user to the list
+                // In a real app, this would be handled by state management after API response
+                const newUser = {
+                  id: usersData.length + 1,
+                  name,
+                  email,
+                  role,
+                  status: 'Pending',
+                  lastActive: 'Never',
+                  registeredDate: new Date().toLocaleDateString(),
+                  pets: 0
+                };
+                
+                // This is just for demonstration - in a real app you would update state properly
+                console.log("New user object:", newUser);
+              }}
             >
               <FaUserPlus /> Add User
             </button>

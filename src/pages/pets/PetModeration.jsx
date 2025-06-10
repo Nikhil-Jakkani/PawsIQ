@@ -317,6 +317,27 @@ const PetModeration = () => {
   const handleStatusChange = (contentId, newStatus) => {
     // In a real app, you would call an API to update the content status
     console.log(`Changing content ${contentId} status to ${newStatus}`);
+    
+    // Update the status in our local state (simulating API update)
+    const updatedContentData = contentData.map(content => {
+      if (content.id === contentId) {
+        const now = new Date();
+        const formattedDate = now.toISOString().split('T')[0];
+        return {
+          ...content,
+          status: newStatus,
+          notes: newStatus === 'approved' 
+            ? `Approved on ${formattedDate}` 
+            : newStatus === 'rejected' 
+              ? `Rejected on ${formattedDate}` 
+              : content.notes
+        };
+      }
+      return content;
+    });
+    
+    // In a real app, we would update the state with the response from the API
+    // For now, we'll just show an alert
     alert(`Content status changed to ${newStatus}`);
   };
 
@@ -337,7 +358,21 @@ const PetModeration = () => {
           <div className="flex flex-wrap gap-3">
             <button 
               className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md flex items-center gap-2 hover:bg-gray-50 transition-colors"
-              onClick={() => alert('Export functionality would be implemented here')}
+              onClick={() => {
+                // In a real app, this would generate and download a CSV/PDF report
+                const reportData = filteredAndSortedContent.map(item => ({
+                  id: item.id,
+                  petName: item.petName,
+                  petSpecies: item.petSpecies,
+                  ownerName: item.ownerName,
+                  contentType: item.contentType,
+                  dateSubmitted: item.dateSubmitted,
+                  status: item.status,
+                  flags: item.flags
+                }));
+                console.log('Exporting report data:', reportData);
+                alert('Report exported successfully! In a production environment, this would download a CSV or PDF file.');
+              }}
             >
               <FaDownload /> Export Report
             </button>
@@ -681,13 +716,45 @@ const PetModeration = () => {
                       {currentContent.notes ? (
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <p className="text-sm text-gray-700">{currentContent.notes}</p>
+                          <button 
+                            onClick={() => {
+                              const newNotes = prompt('Edit moderation notes:', currentContent.notes);
+                              if (newNotes !== null) {
+                                // In a real app, this would update the notes via API
+                                currentContent.notes = newNotes;
+                                alert('Notes updated successfully');
+                              }
+                            }}
+                            className="mt-2 text-xs text-indigo-600 hover:text-indigo-800"
+                          >
+                            Edit Notes
+                          </button>
                         </div>
                       ) : (
-                        <textarea
-                          rows="4"
-                          placeholder="Add moderation notes here..."
-                          className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        ></textarea>
+                        <div>
+                          <textarea
+                            rows="4"
+                            placeholder="Add moderation notes here..."
+                            id="moderationNotes"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          ></textarea>
+                          <button
+                            onClick={() => {
+                              const notesElement = document.getElementById('moderationNotes');
+                              const notes = notesElement.value.trim();
+                              if (notes) {
+                                // In a real app, this would update the notes via API
+                                currentContent.notes = notes;
+                                alert('Notes saved successfully');
+                              } else {
+                                alert('Please enter notes before saving');
+                              }
+                            }}
+                            className="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700"
+                          >
+                            Save Notes
+                          </button>
+                        </div>
                       )}
                     </div>
                     
@@ -716,7 +783,14 @@ const PetModeration = () => {
                           </button>
                           <button
                             className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors flex items-center gap-2"
-                            onClick={() => alert('This would send a warning to the user')}
+                            onClick={() => {
+                              // In a real app, this would send a warning notification to the user
+                              const warningMessage = prompt('Enter warning message for the user:', 'Your content may violate our community guidelines. Please review our terms of service.');
+                              if (warningMessage) {
+                                console.log(`Sending warning to ${currentContent.ownerName} (${currentContent.ownerEmail}): ${warningMessage}`);
+                                alert(`Warning sent to ${currentContent.ownerName}`);
+                              }
+                            }}
                           >
                             <FaExclamationTriangle /> Warn User
                           </button>

@@ -423,7 +423,41 @@ const PetProfiles = () => {
           <div className="flex flex-wrap gap-3">
             <button 
               className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md flex items-center gap-2 hover:bg-gray-50 transition-colors"
-              onClick={() => alert('Export functionality would be implemented here')}
+              onClick={() => {
+                // Create a CSV string from the filtered pets
+                const headers = ['ID', 'Name', 'Species', 'Breed', 'Age', 'Gender', 'Owner Name', 'Owner Email', 'Status', 'Microchipped', 'Neutered', 'Vaccinated'];
+                const csvRows = [headers];
+                
+                filteredAndSortedPets.forEach(pet => {
+                  csvRows.push([
+                    pet.id,
+                    pet.name,
+                    pet.species,
+                    pet.breed,
+                    pet.age,
+                    pet.gender,
+                    pet.ownerName,
+                    pet.ownerEmail,
+                    pet.status,
+                    pet.microchipped ? 'Yes' : 'No',
+                    pet.neutered ? 'Yes' : 'No',
+                    pet.vaccinated ? 'Yes' : 'No'
+                  ]);
+                });
+                
+                const csvString = csvRows.map(row => row.join(',')).join('\n');
+                
+                // Create a Blob and download link
+                const blob = new Blob([csvString], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `pet-profiles-${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
             >
               <FaDownload /> Export Profiles
             </button>
@@ -726,7 +760,34 @@ const PetProfiles = () => {
                   Close
                 </button>
                 <button
-                  onClick={() => alert(`Edit functionality for ${currentPet.name} would be implemented here`)}
+                  onClick={() => {
+                    // In a real app, this would open a form with the pet's current data
+                    // For this demo, we'll use simple prompts to simulate editing
+                    
+                    const newName = prompt("Edit pet name:", currentPet.name);
+                    if (!newName) return;
+                    
+                    const newAge = prompt("Edit pet age:", currentPet.age);
+                    if (!newAge) return;
+                    
+                    const newWeight = prompt("Edit pet weight:", currentPet.weight);
+                    if (!newWeight) return;
+                    
+                    // Update the pet data (in a real app, this would be an API call)
+                    const updatedPet = {
+                      ...currentPet,
+                      name: newName,
+                      age: parseInt(newAge),
+                      weight: newWeight,
+                      lastUpdated: new Date().toISOString().split('T')[0]
+                    };
+                    
+                    console.log("Updated pet data:", updatedPet);
+                    alert(`${newName}'s profile has been updated successfully!`);
+                    
+                    // Close the modal
+                    setShowPetModal(false);
+                  }}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
                 >
                   <FaEdit /> Edit Profile

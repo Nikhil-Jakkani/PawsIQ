@@ -127,7 +127,15 @@ const Login = () => {
                 <label htmlFor="remember-me" className="ml-2 text-sm text-gray-700">Remember me</label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert('Password reset functionality would be implemented here');
+                  }}
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Forgot password?
+                </button>
               </div>
             </div>
 
@@ -151,8 +159,13 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center text-gray-500 text-sm">
-            Don’t have an account?{' '}
-            <a href="/signup" className="text-indigo-600 hover:text-indigo-500 font-medium">Sign up</a>
+            Don't have an account?{' '}
+            <button 
+              onClick={() => alert('Sign up functionality would be implemented here')}
+              className="text-indigo-600 hover:text-indigo-500 font-medium border-none bg-transparent p-0"
+            >
+              Sign up
+            </button>
           </div>
         </div>
       </div>

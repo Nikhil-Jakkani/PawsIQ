@@ -350,7 +350,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   <FaUser className="text-indigo-300" />
                 </div>
                 <button 
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    window.location.href = '/';
+                  }}
                   className="text-xs text-indigo-300 hover:text-white transition-colors mt-2"
                   title="Logout"
                 >
@@ -367,7 +370,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     {currentUser?.email || 'Admin User'}
                   </p>
                   <button 
-                    onClick={logout}
+                    onClick={() => {
+                      logout();
+                      window.location.href = '/';
+                    }}
                     className="text-xs text-indigo-300 hover:text-white transition-colors flex items-center gap-1 mt-1"
                   >
                     <FaSignOutAlt size={14} /> Logout

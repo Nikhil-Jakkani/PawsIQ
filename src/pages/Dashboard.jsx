@@ -26,11 +26,55 @@ const Dashboard = () => {
               type="dog" 
               variant="secondary" 
               label="View Reports" 
+              onClick={() => {
+                // Navigate to analytics page
+                window.location.href = '/analytics';
+              }}
             />
             <PetIconButton 
               type="cat" 
               variant="primary" 
               label="Generate Report" 
+              onClick={() => {
+                // Create a simple dashboard report
+                const reportDate = new Date().toLocaleDateString();
+                const reportData = {
+                  date: reportDate,
+                  petOwners: 2543,
+                  appointments: 1235,
+                  products: 854,
+                  revenue: 35210,
+                  activeServices: {
+                    veterinary: 438,
+                    grooming: 327,
+                    petSitting: 215,
+                    training: 189
+                  }
+                };
+                
+                // Convert to CSV
+                const csvContent = `PawsIQ Dashboard Report,${reportDate}\n\n` +
+                  `Pet Owners,${reportData.petOwners}\n` +
+                  `Appointments,${reportData.appointments}\n` +
+                  `Products,${reportData.products}\n` +
+                  `Revenue,$${reportData.revenue}\n\n` +
+                  `Active Services\n` +
+                  `Veterinary,${reportData.activeServices.veterinary}\n` +
+                  `Grooming,${reportData.activeServices.grooming}\n` +
+                  `Pet Sitting,${reportData.activeServices.petSitting}\n` +
+                  `Training,${reportData.activeServices.training}\n`;
+                
+                // Create and download the file
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `pawsiq-dashboard-report-${reportDate.replace(/\//g, '-')}.csv`);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
             />
           </div>
         </div>
