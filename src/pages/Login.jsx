@@ -179,25 +179,6 @@ const Login = () => {
                 </span>
               </div>
             </div>
-            
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                  <FaDog />
-                  <p className="font-semibold">Admin</p>
-                </div>
-                <p className="text-gray-600">admin@pawsiq.com</p>
-                <p className="text-gray-600">admin123</p>
-              </div>
-              <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                  <FaCat />
-                  <p className="font-semibold">User</p>
-                </div>
-                <p className="text-gray-600">user@pawsiq.com</p>
-                <p className="text-gray-600">user123</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
