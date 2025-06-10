@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPaw, FaLock, FaEnvelope, FaDog, FaCat, FaBone, FaFish, FaFeather } from 'react-icons/fa';
-import { GiDogBowl, GiCat, GiSittingDog } from 'react-icons/gi';
+import { FaLock, FaEnvelope, FaDog, FaCat } from 'react-icons/fa'; // Keeping some relevant icons
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -16,8 +15,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Call the login function
-      const success = await login(email, password); // Await the login function
+      const success = await login(email, password);
       
       if (success) {
         console.log('Login successful, navigating to dashboard');
@@ -34,59 +32,36 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Decorative pet icons */}
-      <div className="absolute top-10 left-10 text-indigo-300 opacity-20 animate-bounce-slow">
-        <FaDog className="w-16 h-16" />
-      </div>
-      <div className="absolute top-20 right-20 text-purple-300 opacity-20 animate-pulse">
-        <FaCat className="w-12 h-12" />
-      </div>
-      <div className="absolute bottom-10 left-20 text-blue-300 opacity-20 animate-pulse">
-        <FaFish className="w-14 h-14" />
-      </div>
-      <div className="absolute bottom-20 right-10 text-pink-300 opacity-20 animate-bounce-slow">
-        <FaBone className="w-10 h-10" />
-      </div>
       
-      {/* Paw print trail */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <FaPaw className="absolute top-[10%] left-[15%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[15%] left-[18%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[20%] left-[21%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[25%] left-[24%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[30%] left-[27%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[35%] left-[30%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[40%] left-[33%] text-white opacity-5 w-8 h-8 transform rotate-12" />
+      {/* Main Login Box Container */}
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 sm:p-12 relative z-10 transform transition-all duration-300 hover:scale-[1.01]">
         
-        <FaPaw className="absolute top-[60%] right-[15%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-        <FaPaw className="absolute top-[65%] right-[18%] text-white opacity-5 w-8 h-8 transform -rotate-45" />
-        <FaPaw className="absolute top-[70%] right-[21%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-        <FaPaw className="absolute top-[75%] right-[24%] text-white opacity-5 w-8 h-8 transform -rotate-45" />
-        <FaPaw className="absolute top-[80%] right-[27%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-      </div>
-      
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden relative z-10">
-        <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 py-6 px-8 relative">
+        {/* Header with Logo and Title */}
+        <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 py-8 rounded-t-2xl -mx-8 -mt-8 px-8 sm:-mx-12 sm:-mt-12 sm:px-12 relative flex flex-col items-center justify-center">
           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full opacity-20 transform translate-x-10 -translate-y-10"></div>
-          <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-full shadow-lg">
-              <FaPaw className="text-indigo-600 text-4xl" />
-            </div>
+          
+          <div className="bg-white p-4 rounded-full shadow-lg mb-4">
+            {/* Using the uploaded image as the icon */}
+            <img 
+              src="/PawsIQ_logo.jpg" // Assuming the image is in the public folder
+              alt="PawsIQ Logo" 
+              className="w-20 h-20 object-contain" 
+            />
           </div>
-          <h2 className="mt-4 text-center text-2xl font-bold text-white">
+          
+          <h2 className="text-center text-3xl font-extrabold text-white">
             PawsIQ Admin
           </h2>
-          <p className="text-center text-indigo-200 text-sm mt-1">Pet Care Platform</p>
+          <p className="text-center text-indigo-200 text-sm mt-2">Your Pet Care Platform</p>
           
-          <div className="flex justify-center mt-2 gap-3">
-            <FaDog className="text-indigo-300" />
-            <FaCat className="text-indigo-300" />
-            <FaFish className="text-indigo-300" />
-            <FaFeather className="text-indigo-300" />
+          <div className="flex justify-center mt-4 gap-4">
+            <FaDog className="text-indigo-300 text-xl" />
+            <FaCat className="text-indigo-300 text-xl" />
           </div>
         </div>
         
-        <div className="p-8">
+        {/* Login Form Section */}
+        <div className="p-8"> {/* Adjusted padding for consistency */}
           <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
             Welcome Back!
           </h2>
@@ -121,12 +96,9 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
                   placeholder="admin@pawsiq.com"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <FaDog className="text-indigo-200" />
-                </div>
               </div>
             </div>
 
@@ -147,12 +119,9 @@ const Login = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
                   placeholder="••••••••"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <FaCat className="text-indigo-200" />
-                </div>
               </div>
             </div>
 
@@ -182,12 +151,23 @@ const Login = () => {
                 disabled={isLoading}
                 className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-200"
               >
-                <FaPaw className={`${isLoading ? 'animate-spin' : 'animate-pulse'}`} />
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {/* Simplified loading icon to just the text */}
+                {isLoading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Signing in...
+                  </span>
+                ) : (
+                  'Sign in'
+                )}
               </button>
             </div>
           </form>
           
+          {/* Demo Credentials Section */}
           <div className="mt-8">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -200,7 +180,7 @@ const Login = () => {
               </div>
             </div>
             
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
                 <div className="flex items-center gap-2 mb-2 text-indigo-700">
                   <FaDog />
