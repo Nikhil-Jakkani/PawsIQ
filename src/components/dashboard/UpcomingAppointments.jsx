@@ -49,7 +49,13 @@ const UpcomingAppointments = () => {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-gray-800">Upcoming Appointments</h3>
-        <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center">
+        <button 
+          className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center"
+          onClick={() => {
+            // Navigate to the calendar page
+            window.location.href = '/calendar';
+          }}
+        >
           <FaCalendarAlt className="mr-1" /> View Calendar
         </button>
       </div>
@@ -121,7 +127,13 @@ const UpcomingAppointments = () => {
       </div>
       
       <div className="mt-4 text-center">
-        <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+        <button 
+          className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+          onClick={() => {
+            // Navigate to the appointments page
+            window.location.href = '/appointments';
+          }}
+        >
           View All Appointments
         </button>
       </div>
