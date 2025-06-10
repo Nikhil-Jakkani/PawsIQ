@@ -1,6 +1,6 @@
 import React from 'react';
-import { FaPaw, FaDog, FaCat, FaFish, FaFeather, FaHorse, FaKiwiBird } from 'react-icons/fa';
-import { GiRabbit, GiHamster, GiTurtle } from 'react-icons/gi';
+import { FaPaw, FaDog, FaCat, FaFish, FaFeather, FaHorse, FaKiwiBird, FaMouse } from 'react-icons/fa';
+import { GiRabbit, GiTurtle } from 'react-icons/gi';
 
 export const PetIcon = ({ type = 'paw', size = 'md', className = '' }) => {
   const sizeClass = {
@@ -24,7 +24,7 @@ export const PetIcon = ({ type = 'paw', size = 'md', className = '' }) => {
       case 'rabbit':
         return <GiRabbit className={`${sizeClass} ${className}`} />;
       case 'hamster':
-        return <GiHamster className={`${sizeClass} ${className}`} />;
+        return <FaMouse className={`${sizeClass} ${className}`} />;
       case 'turtle':
         return <GiTurtle className={`${sizeClass} ${className}`} />;
       case 'horse':
