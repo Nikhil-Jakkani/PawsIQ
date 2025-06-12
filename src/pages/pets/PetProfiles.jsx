@@ -31,9 +31,33 @@ import {
   FaSyringe,
   FaClipboardCheck,
   FaExclamationTriangle,
-  FaCamera
+  FaCamera,
+  FaRobot,
+  FaSpinner
 } from 'react-icons/fa';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+
+// Add CSS for the pulse animation
+const pulseKeyframes = `
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+`;
+
+// Add the keyframes to the document
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.innerHTML = pulseKeyframes;
+  document.head.appendChild(style);
+}
 
 const PetProfiles = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +67,9 @@ const PetProfiles = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [showPetModal, setShowPetModal] = useState(false);
   const [currentPet, setCurrentPet] = useState(null);
+  const [aiRecommendation, setAiRecommendation] = useState('');
+  const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(false);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   
   // Sample data for pet profiles
   const petsData = [
@@ -349,6 +376,60 @@ const PetProfiles = () => {
         return <FaNeuter className="text-gray-500" />;
     }
   };
+  
+  // Generate AI health recommendations
+  const generateAiRecommendation = async (pet) => {
+    setIsLoadingRecommendation(true);
+    setShowRecommendation(true);
+    
+    try {
+      // API key for Gemini Flash 1.5
+      const apiKey = 'AIzaSyB7bGypVW2cDNx7ajFnmoOFAmiOlZ0f-7Q';
+      const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      
+      // Construct the prompt based on pet details
+      const prompt = `Generate a concise health recommendation for a ${pet.age}-year-old ${pet.gender.toLowerCase()} ${pet.species.toLowerCase()} of breed ${pet.breed}. 
+      Include species-specific and breed-specific health considerations, age-appropriate care tips, and gender-specific health advice.
+      Format the response in 3-5 bullet points focusing on preventive care, nutrition, exercise, and common health issues for this specific type of ${pet.species.toLowerCase()}.
+      Current medical conditions: ${pet.medicalConditions.join(', ')}
+      Current medications: ${pet.medications.join(', ')}
+      Dietary restrictions: ${pet.dietaryRestrictions.join(', ')}`;
+      
+      // Make API request to Gemini
+      const response = await fetch(`${apiUrl}?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: "gemini-1.5-flash",
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ]
+        })
+      });
+      
+      const data = await response.json();
+      
+      // Extract the recommendation text from the response
+      if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        setAiRecommendation(data.candidates[0].content.parts[0].text);
+      } else {
+        setAiRecommendation("Sorry, we couldn't generate a recommendation at this time. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error generating AI recommendation:", error);
+      setAiRecommendation("An error occurred while generating recommendations. Please try again later.");
+    } finally {
+      setIsLoadingRecommendation(false);
+    }
+  };
 
   // Filter and sort pets
   const filteredAndSortedPets = petsData
@@ -404,6 +485,10 @@ const PetProfiles = () => {
   const handleViewPet = (pet) => {
     setCurrentPet(pet);
     setShowPetModal(true);
+    // Reset AI recommendation when opening a new pet profile
+    setAiRecommendation('');
+    setShowRecommendation(false);
+    setIsLoadingRecommendation(false);
   };
 
   return (
@@ -576,6 +661,29 @@ const PetProfiles = () => {
                 </div>
               </div>
               <div className="p-6">
+                {showRecommendation && (
+                  <div className={`mb-6 p-4 rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 ${isLoadingRecommendation ? 'animate-pulse' : ''}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <FaRobot className="text-purple-600" />
+                      <h3 className="text-lg font-medium text-purple-800">AI Health Recommendations</h3>
+                    </div>
+                    {isLoadingRecommendation ? (
+                      <div className="flex items-center justify-center py-6">
+                        <FaSpinner className="animate-spin text-purple-600 text-2xl" />
+                        <span className="ml-3 text-purple-800">Generating personalized health recommendations...</span>
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm max-w-none text-gray-700">
+                        <div dangerouslySetInnerHTML={{ __html: aiRecommendation.replace(/\n/g, '<br />') }} />
+                      </div>
+                    )}
+                    <div className="mt-3 text-xs text-gray-500 flex items-center gap-1">
+                      <FaRobot className="text-purple-400" size={12} />
+                      <span>Powered by Gemini 1.5 Flash</span>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Pet Image */}
                   <div className="md:w-1/3">
@@ -752,46 +860,73 @@ const PetProfiles = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+              <div className="p-6 border-t border-gray-200 flex justify-between">
                 <button
-                  onClick={() => setShowPetModal(false)}
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => {
-                    // In a real app, this would open a form with the pet's current data
-                    // For this demo, we'll use simple prompts to simulate editing
-                    
-                    const newName = prompt("Edit pet name:", currentPet.name);
-                    if (!newName) return;
-                    
-                    const newAge = prompt("Edit pet age:", currentPet.age);
-                    if (!newAge) return;
-                    
-                    const newWeight = prompt("Edit pet weight:", currentPet.weight);
-                    if (!newWeight) return;
-                    
-                    // Update the pet data (in a real app, this would be an API call)
-                    const updatedPet = {
-                      ...currentPet,
-                      name: newName,
-                      age: parseInt(newAge),
-                      weight: newWeight,
-                      lastUpdated: new Date().toISOString().split('T')[0]
-                    };
-                    
-                    console.log("Updated pet data:", updatedPet);
-                    alert(`${newName}'s profile has been updated successfully!`);
-                    
-                    // Close the modal
-                    setShowPetModal(false);
+                  onClick={() => generateAiRecommendation(currentPet)}
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:from-purple-700 hover:to-indigo-700 transition-colors flex items-center gap-2 relative group"
+                  style={{
+                    animation: isLoadingRecommendation ? 'none' : 'pulse 2s infinite'
                   }}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
                 >
-                  <FaEdit /> Edit Profile
+                  {isLoadingRecommendation ? (
+                    <>
+                      <FaSpinner className="animate-spin" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <FaRobot /> AI Health Suggestions
+                      <span className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200 animate-pulse"></span>
+                    </>
+                  )}
                 </button>
+                
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowPetModal(false);
+                      setShowRecommendation(false);
+                      setAiRecommendation('');
+                    }}
+                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => {
+                      // In a real app, this would open a form with the pet's current data
+                      // For this demo, we'll use simple prompts to simulate editing
+                      
+                      const newName = prompt("Edit pet name:", currentPet.name);
+                      if (!newName) return;
+                      
+                      const newAge = prompt("Edit pet age:", currentPet.age);
+                      if (!newAge) return;
+                      
+                      const newWeight = prompt("Edit pet weight:", currentPet.weight);
+                      if (!newWeight) return;
+                      
+                      // Update the pet data (in a real app, this would be an API call)
+                      const updatedPet = {
+                        ...currentPet,
+                        name: newName,
+                        age: parseInt(newAge),
+                        weight: newWeight,
+                        lastUpdated: new Date().toISOString().split('T')[0]
+                      };
+                      
+                      console.log("Updated pet data:", updatedPet);
+                      alert(`${newName}'s profile has been updated successfully!`);
+                      
+                      // Close the modal and reset AI recommendation state
+                      setShowPetModal(false);
+                      setShowRecommendation(false);
+                      setAiRecommendation('');
+                    }}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                  >
+                    <FaEdit /> Edit Profile
+                  </button>
+                </div>
               </div>
             </div>
           </div>
