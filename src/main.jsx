@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext'
 
-// Create a simple error boundary to catch any rendering errors
+// Simple error boundary
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -52,12 +52,69 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Remove StrictMode temporarily as it can cause double-rendering and make debugging harder
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <ErrorBoundary>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </ErrorBoundary>
-);
+// Function to hide loading screen
+const hideLoadingScreen = () => {
+  const loadingElement = document.getElementById('loading');
+  if (loadingElement) {
+    // Add fade-out effect
+    loadingElement.style.opacity = '0';
+    loadingElement.style.transition = 'opacity 0.3s ease-out';
+    
+    // Remove element after transition
+    setTimeout(() => {
+      loadingElement.style.display = 'none';
+    }, 300);
+  }
+};
+
+// Direct rendering
+try {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) {
+    throw new Error('Root element not found');
+  }
+  
+  // Create root and render app
+  const root = ReactDOM.createRoot(rootElement);
+  
+  // Use a callback to hide loading screen after render
+  const renderApp = () => {
+    root.render(
+      <ErrorBoundary>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ErrorBoundary>
+    );
+    
+    // Hide loading screen after React has started rendering
+    // Use a slightly longer timeout to ensure components have mounted
+    setTimeout(hideLoadingScreen, 800);
+  };
+  
+  // Start rendering
+  renderApp();
+  
+} catch (error) {
+  console.error("Error rendering app:", error);
+  
+  // Hide loading screen
+  hideLoadingScreen();
+  
+  // Show error message
+  const rootElement = document.getElementById('root');
+  if (rootElement) {
+    rootElement.innerHTML = `
+      <div style="padding: 20px; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
+        <h2>Failed to load application</h2>
+        <p>Error: ${error.message}</p>
+        <button 
+          onclick="window.location.reload()" 
+          style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;"
+        >
+          Refresh Page
+        </button>
+      </div>
+    `;
+  }
+}

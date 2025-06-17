@@ -43,7 +43,8 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaAngleLeft,
-  FaAngleRight
+  FaAngleRight,
+  FaBook
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import logoImage from '../../assets/icons/logo.jpg';
@@ -121,9 +122,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       label: 'Booking Management',
       path: '/appointments',
       items: [
-        { path: '/appointments/all', icon: <FaCalendarCheck />, label: 'All Bookings' },
-        { path: '/appointments/manage', icon: <FaEdit />, label: 'Manage Bookings' },
-        { path: '/appointments/issues', icon: <FaExclamationTriangle />, label: 'Disputes & No-shows' },
+        { path: '/appointments/overview', icon: <FaCalendarCheck />, label: 'Booking Overview' },
+        { path: '/appointments/scheduler', icon: <FaCalendarAlt />, label: 'Appointment Scheduler' },
+        { path: '/appointments', icon: <FaEdit />, label: 'All Bookings' },
+        { path: '/appointments/disputes', icon: <FaExclamationTriangle />, label: 'Disputes & No-shows' },
         { path: '/appointments/pricing', icon: <FaTag />, label: 'Pricing & Discounts' }
       ]
     },
@@ -135,6 +137,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       items: [
         { path: '/transactions/payments', icon: <FaMoneyBillWave />, label: 'Manage Payments' },
         { path: '/transactions/reports', icon: <FaFileInvoiceDollar />, label: 'Financial Reports' },
+        { path: '/transactions', icon: <FaCreditCard />, label: 'All Transactions' },
         { path: '/transactions/pricing', icon: <FaTag />, label: 'Subscription Pricing' },
         { path: '/transactions/refunds', icon: <FaMoneyBillWave />, label: 'Refunds & Credits' },
         { path: '/transactions/balances', icon: <FaCreditCard />, label: 'Outstanding Balances' }
@@ -147,23 +150,24 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       path: '/marketplace',
       items: [
         { path: '/marketplace/products', icon: <FaBoxOpen />, label: 'Products & Services' },
+        { path: '/marketplace/sellers', icon: <FaUsers />, label: 'Seller Management' },
+        { path: '/marketplace', icon: <FaShoppingCart />, label: 'All Marketplace' },
         { path: '/marketplace/inventory', icon: <FaBoxOpen />, label: 'Inventory Management' },
-        { path: '/marketplace/promotions', icon: <FaTag />, label: 'Promotions & Discounts' },
-        { path: '/marketplace/sellers', icon: <FaUsers />, label: 'Seller Accounts' }
+        { path: '/marketplace/promotions', icon: <FaTag />, label: 'Promotions & Discounts' }
       ]
     },
-    {
-      id: 'content',
-      icon: <FaCommentAlt />,
-      label: 'Content Moderation',
-      path: '/content',
-      items: [
-        { path: '/content/approval', icon: <FaClipboardCheck />, label: 'Content Approval' },
-        { path: '/content/social', icon: <FaComments />, label: 'Social Features' },
-        { path: '/content/lost-found', icon: <FaExclamationTriangle />, label: 'Lost & Found' },
-        { path: '/content/filters', icon: <FaShieldAlt />, label: 'Content Filters' }
-      ]
-    },
+    // {
+    //   id: 'content',
+    //   icon: <FaCommentAlt />,
+    //   label: 'Content Moderation',
+    //   path: '/content',
+    //   items: [
+    //     { path: '/content/approval', icon: <FaClipboardCheck />, label: 'Content Approval' },
+    //     { path: '/content/social', icon: <FaComments />, label: 'Social Features' },
+    //     { path: '/content/lost-found', icon: <FaExclamationTriangle />, label: 'Lost & Found' },
+    //     { path: '/content/filters', icon: <FaShieldAlt />, label: 'Content Filters' }
+    //   ]
+    // },
     {
       id: 'analytics',
       icon: <FaChartBar />,
@@ -196,18 +200,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         { path: '/settings/legal', icon: <FaFileAlt />, label: 'Legal Documents' }
       ]
     },
-    {
-      id: 'security',
-      icon: <FaLock />,
-      label: 'Security & Compliance',
-      path: '/security',
-      items: [
-        { path: '/security/2fa', icon: <FaLock />, label: 'Two-Factor Auth' },
-        { path: '/security/roles', icon: <FaUserShield />, label: 'Access Control' },
-        { path: '/security/audit', icon: <FaDatabase />, label: 'Audit Logs' },
-        { path: '/security/compliance', icon: <FaShieldAlt />, label: 'GDPR/CCPA Tools' }
-      ]
-    },
+    // {
+    //   id: 'security',
+    //   icon: <FaLock />,
+    //   label: 'Security & Compliance',
+    //   path: '/security',
+    //   items: [
+    //     { path: '/security/2fa', icon: <FaLock />, label: 'Two-Factor Auth' },
+    //     { path: '/security/roles', icon: <FaUserShield />, label: 'Access Control' },
+    //     { path: '/security/audit', icon: <FaDatabase />, label: 'Audit Logs' },
+    //     { path: '/security/compliance', icon: <FaShieldAlt />, label: 'GDPR/CCPA Tools' }
+    //   ]
+    // },
     {
       id: 'support',
       icon: <FaHeadset />,
@@ -216,6 +220,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       items: [
         { path: '/support/tickets', icon: <FaTicketAlt />, label: 'Support Tickets' },
         { path: '/support/chat', icon: <FaComments />, label: 'Live Chat' },
+        { path: '/support/knowledge', icon: <FaBook />, label: 'Knowledge Base' },
         { path: '/support/disputes', icon: <FaExclamationTriangle />, label: 'Dispute Resolution' },
         { path: '/support/assignment', icon: <FaUsers />, label: 'Ticket Assignment' }
       ]

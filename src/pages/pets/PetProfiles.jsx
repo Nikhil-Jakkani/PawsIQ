@@ -390,7 +390,14 @@ const PetProfiles = () => {
       // Construct the prompt based on pet details
       const prompt = `Generate a concise health recommendation for a ${pet.age}-year-old ${pet.gender.toLowerCase()} ${pet.species.toLowerCase()} of breed ${pet.breed}. 
       Include species-specific and breed-specific health considerations, age-appropriate care tips, and gender-specific health advice.
-      Format the response in 3-5 bullet points focusing on preventive care, nutrition, exercise, and common health issues for this specific type of ${pet.species.toLowerCase()}.
+      Format the response in a structured way with exactly these 4 categories:
+      1. Preventive Care
+      2. Nutrition
+      3. Exercise
+      4. Health Monitoring
+      
+      For each category, provide a single clear recommendation.
+      
       Current medical conditions: ${pet.medicalConditions.join(', ')}
       Current medications: ${pet.medications.join(', ')}
       Dietary restrictions: ${pet.dietaryRestrictions.join(', ')}`;
@@ -419,13 +426,33 @@ const PetProfiles = () => {
       
       // Extract the recommendation text from the response
       if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-        setAiRecommendation(data.candidates[0].content.parts[0].text);
+        // Process the response to ensure it's in the correct format
+        const rawText = data.candidates[0].content.parts[0].text;
+        
+        // Parse the text to extract the categories and recommendations
+        const categories = ['Preventive Care', 'Nutrition', 'Exercise', 'Health Monitoring'];
+        let formattedRecommendations = [];
+        
+        // Simple parsing to extract recommendations for each category
+        categories.forEach(category => {
+          const regex = new RegExp(`${category}[:\\s]+(.*?)(?=\\n\\d+\\.|$)`, 's');
+          const match = rawText.match(regex);
+          const recommendation = match ? match[1].trim() : 'No specific recommendation available';
+          formattedRecommendations.push({ category, recommendation });
+        });
+        
+        // Store the structured data
+        setAiRecommendation(JSON.stringify(formattedRecommendations));
       } else {
-        setAiRecommendation("Sorry, we couldn't generate a recommendation at this time. Please try again later.");
+        setAiRecommendation(JSON.stringify([
+          { category: 'Error', recommendation: "Sorry, we couldn't generate recommendations at this time. Please try again later." }
+        ]));
       }
     } catch (error) {
       console.error("Error generating AI recommendation:", error);
-      setAiRecommendation("An error occurred while generating recommendations. Please try again later.");
+      setAiRecommendation(JSON.stringify([
+        { category: 'Error', recommendation: "An error occurred while generating recommendations. Please try again later." }
+      ]));
     } finally {
       setIsLoadingRecommendation(false);
     }
@@ -673,8 +700,23 @@ const PetProfiles = () => {
                         <span className="ml-3 text-purple-800">Generating personalized health recommendations...</span>
                       </div>
                     ) : (
-                      <div className="prose prose-sm max-w-none text-gray-700">
-                        <div dangerouslySetInnerHTML={{ __html: aiRecommendation.replace(/\n/g, '<br />') }} />
+                      <div className="max-w-none">
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr>
+                              <th className="bg-purple-100 text-purple-800 text-left py-2 px-3 font-semibold border border-purple-200 rounded-tl-lg">Category</th>
+                              <th className="bg-purple-100 text-purple-800 text-left py-2 px-3 font-semibold border border-purple-200 rounded-tr-lg">Recommendation</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {aiRecommendation && JSON.parse(aiRecommendation).map((item, index) => (
+                              <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-purple-50"}>
+                                <td className="py-2 px-3 border border-purple-200 font-medium text-purple-700">{item.category}</td>
+                                <td className="py-2 px-3 border border-purple-200 text-gray-700">{item.recommendation}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     )}
                     <div className="mt-3 text-xs text-gray-500 flex items-center gap-1">

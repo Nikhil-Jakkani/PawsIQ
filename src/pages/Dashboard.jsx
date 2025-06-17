@@ -1,13 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaUsers, FaCalendarCheck, FaShoppingCart, FaDollarSign, FaPaw, FaDog, FaCat, FaBone } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../components/layout/PetIcons';
 import StatCard from '../components/dashboard/StatCard';
 import OverviewChart from '../components/dashboard/OverviewChart';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import UpcomingAppointments from '../components/dashboard/UpcomingAppointments';
+import CalendarView from '../components/dashboard/CalendarView';
 import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -28,7 +32,7 @@ const Dashboard = () => {
               label="View Reports" 
               onClick={() => {
                 // Navigate to analytics page
-                window.location.href = '/analytics';
+                navigate('/analytics');
               }}
             />
             <PetIconButton 
@@ -167,9 +171,14 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Upcoming Appointments */}
-      <div>
-        <UpcomingAppointments />
+      {/* Calendar and Upcoming Appointments */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div>
+          <CalendarView />
+        </div>
+        <div>
+          <UpcomingAppointments />
+        </div>
       </div>
       
       {/* Pet Care Tips */}

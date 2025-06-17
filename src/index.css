@@ -7,27 +7,21 @@
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
-    /* --- CRITICAL CHANGES BELOW FOR FULL PAGE BACKGROUND --- */
-    height: 100%; /* Ensure html takes full height */
-    width: 100%;  /* Ensure html takes full width */
-    margin: 0;    /* Remove default margin */
-    padding: 0;   /* Remove default padding */
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
   
   body {
     @apply text-gray-900;
-    /* --- CRITICAL CHANGES BELOW FOR FULL PAGE BACKGROUND --- */
-    height: 100%; /* Ensure body takes full height */
-    width: 100%;  /* Ensure body takes full width */
-    margin: 0;    /* Remove default margin */
-    padding: 0;   /* Remove default padding */
-    overflow: hidden; /* Prevent body scrollbars if content is less than viewport */
-    background-color: transparent; /* Ensure body background is transparent */
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
   }
 
-  /* If you are using Create React App or a similar setup,
-      the div with id="root" also needs to fill the screen */
   #root {
     height: 100%;
     width: 100%;
@@ -42,7 +36,7 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow;
+    @apply px-4 py-2 rounded-xl font-medium shadow-sm hover:shadow;
   }
   
   .btn-primary {
@@ -54,7 +48,7 @@
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md transition-shadow;
+    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md;
   }
   
   .input {
@@ -75,14 +69,7 @@
   }
   
   .paw-card {
-    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md transition-all duration-200 relative overflow-hidden;
-  }
-  
-  .paw-card::after {
-    @apply absolute bottom-0 right-0 text-indigo-50 opacity-10;
-    content: '🐾';
-    font-size: 5rem;
-    transform: rotate(-15deg) translate(20%, 20%);
+    @apply bg-white rounded-xl shadow-sm p-6 border border-indigo-50 hover:shadow-md relative overflow-hidden;
   }
   
   .paw-input {
@@ -90,7 +77,7 @@
   }
   
   .paw-button {
-    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow;
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm hover:shadow;
   }
   
   .paw-button-primary {
@@ -103,45 +90,6 @@
 }
 
 @layer utilities {
-  /* Custom animations */
-  .animate-bounce-slow {
-    animation: bounce 3s infinite;
-  }
-  
-  .animate-wiggle {
-    animation: wiggle 1s ease-in-out infinite;
-  }
-  
-  .animate-paw-walk {
-    animation: pawWalk 10s linear infinite;
-  }
-
-  /* NEW: Subtle Bounce for Login Box */
-  .animate-bounce-subtle {
-    animation: bounce-subtle 2s infinite; /* Adjust duration as needed */
-  }
-  
-  @keyframes bounce-subtle {
-    0%, 100% {
-      transform: translateY(0);
-      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    }
-    50% {
-      transform: translateY(-5px); /* Moves up subtly */
-      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
-  }
-  
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(-3deg); }
-    50% { transform: rotate(3deg); }
-  }
-  
-  @keyframes pawWalk {
-    0% { transform: translateX(-100%) rotate(0deg); }
-    100% { transform: translateX(100vw) rotate(0deg); }
-  }
-  
   /* Custom scrollbar */
   .scrollbar-pet::-webkit-scrollbar {
     width: 8px;

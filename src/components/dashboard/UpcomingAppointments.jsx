@@ -1,5 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaDog, FaCat, FaCalendarAlt } from 'react-icons/fa';
+
+// Get current and upcoming dates
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const dayAfter = new Date(today);
+dayAfter.setDate(dayAfter.getDate() + 2);
 
 const appointments = [
   {
@@ -8,7 +16,7 @@ const appointments = [
     petType: 'dog',
     ownerName: 'John Smith',
     service: 'Grooming',
-    date: '2023-06-10',
+    date: today.toLocaleDateString(),
     time: '10:00 AM',
     status: 'confirmed',
   },
@@ -18,7 +26,7 @@ const appointments = [
     petType: 'cat',
     ownerName: 'Sarah Johnson',
     service: 'Vaccination',
-    date: '2023-06-10',
+    date: today.toLocaleDateString(),
     time: '11:30 AM',
     status: 'confirmed',
   },
@@ -28,7 +36,7 @@ const appointments = [
     petType: 'dog',
     ownerName: 'Michael Brown',
     service: 'Check-up',
-    date: '2023-06-10',
+    date: tomorrow.toLocaleDateString(),
     time: '2:00 PM',
     status: 'pending',
   },
@@ -38,13 +46,19 @@ const appointments = [
     petType: 'cat',
     ownerName: 'Emily Wilson',
     service: 'Dental Cleaning',
-    date: '2023-06-11',
+    date: dayAfter.toLocaleDateString(),
     time: '9:15 AM',
     status: 'confirmed',
   },
 ];
 
 const UpcomingAppointments = () => {
+  const navigate = useNavigate();
+
+  const handleAppointmentClick = (appointment) => {
+    alert(`Appointment Details:\n\nPet: ${appointment.petName} (${appointment.petType})\nOwner: ${appointment.ownerName}\nService: ${appointment.service}\nDate: ${appointment.date}\nTime: ${appointment.time}\nStatus: ${appointment.status}`);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
@@ -52,8 +66,8 @@ const UpcomingAppointments = () => {
         <button 
           className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center"
           onClick={() => {
-            // Navigate to the calendar page
-            window.location.href = '/calendar';
+            // Navigate to the appointments overview page
+            navigate('/appointments/overview');
           }}
         >
           <FaCalendarAlt className="mr-1" /> View Calendar
@@ -83,7 +97,11 @@ const UpcomingAppointments = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {appointments.map((appointment) => (
-              <tr key={appointment.id} className="hover:bg-gray-50">
+              <tr 
+                key={appointment.id} 
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => handleAppointmentClick(appointment)}
+              >
                 <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
@@ -131,7 +149,7 @@ const UpcomingAppointments = () => {
           className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
           onClick={() => {
             // Navigate to the appointments page
-            window.location.href = '/appointments';
+            navigate('/appointments');
           }}
         >
           View All Appointments

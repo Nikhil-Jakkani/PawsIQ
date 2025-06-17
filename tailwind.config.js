@@ -76,31 +76,19 @@ export default {
         '3xl': '1.5rem',
       },
       animation: {
-        'bounce-slow': 'bounce 3s infinite',
-        'bounce-subtle': 'float 6s ease-in-out infinite',
-        'wiggle': 'wiggle 1s ease-in-out infinite',
-        'paw-walk': 'pawWalk 10s linear infinite',
-        'float': 'float 3s ease-in-out infinite',
+        'spin': 'spin 1s linear infinite',
       },
       keyframes: {
-        wiggle: {
-          '0%, 100%': { transform: 'rotate(-3deg)' },
-          '50%': { transform: 'rotate(3deg)' },
-        },
-        pawWalk: {
-          '0%': { transform: 'translateX(-100%) rotate(0deg)' },
-          '100%': { transform: 'translateX(100vw) rotate(0deg)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
         },
       },
       boxShadow: {
         'pet': '0 4px 14px 0 rgba(99, 102, 241, 0.1)',
       },
       backgroundImage: {
-        'paw-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm-16-8c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2zm32 0c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2zm-16-16c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2zm0 32c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2z' fill='%23a5b4fc' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+        'paw-pattern': "none",
       },
     },
   },
