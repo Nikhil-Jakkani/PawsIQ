@@ -54,11 +54,13 @@ const VeterinarianDetails = () => {
   // Form state
   const [formData, setFormData] = useState({
     // Veterinary Qualifications
-    licenseNumber: '',
-    licenseState: '',
-    veterinarySchool: '',
+    vciRegistrationNumber: '',
+    stateVeterinaryCouncilNumber: '',
+    stateCouncilName: '',
+    veterinaryCollege: '',
+    universityName: '',
     graduationYear: '',
-    boardCertifications: [],
+    additionalQualifications: [],
     professionalMemberships: [],
     otherMemberships: '',
     
@@ -68,9 +70,11 @@ const VeterinarianDetails = () => {
       dogs: true,
       cats: true,
       birds: false,
-      smallMammals: false,
-      reptiles: false,
-      farmAnimals: false,
+      cattle: false,
+      buffalo: false,
+      sheep: false,
+      goats: false,
+      poultry: false,
       exoticPets: false,
       other: false
     },
@@ -81,7 +85,8 @@ const VeterinarianDetails = () => {
       surgery: false,
       dentalCare: false,
       emergencyServices: false,
-      specializedTreatments: false,
+      livestockTreatment: false,
+      ayurvedicTreatments: false,
       telemedicine: false,
       houseCalls: false,
       other: false
@@ -96,10 +101,16 @@ const VeterinarianDetails = () => {
       ultrasound: false,
       laboratory: false,
       surgerySuite: false,
-      boarding: false,
+      inPatientWards: false,
+      livestockFacilities: false,
       other: false
     },
-    otherEquipment: ''
+    otherEquipment: '',
+    
+    // Regulatory Compliance
+    drugLicenseNumber: '',
+    shopEstablishmentNumber: '',
+    biomedicalWasteRegistration: false
   });
   
   // Validation state
@@ -173,16 +184,26 @@ const VeterinarianDetails = () => {
     const newErrors = {};
     
     // Veterinary Qualifications validation
-    if (!formData.licenseNumber) {
-      newErrors.licenseNumber = 'License number is required';
+    if (!formData.vciRegistrationNumber) {
+      newErrors.vciRegistrationNumber = 'VCI registration number is required';
+    } else if (!/^\d{1,6}\/\d{2,4}$/.test(formData.vciRegistrationNumber)) {
+      newErrors.vciRegistrationNumber = 'Please enter a valid VCI registration number (format: XXXXXX/YYYY)';
     }
     
-    if (!formData.licenseState) {
-      newErrors.licenseState = 'State of licensure is required';
+    if (!formData.stateVeterinaryCouncilNumber) {
+      newErrors.stateVeterinaryCouncilNumber = 'State Veterinary Council registration number is required';
     }
     
-    if (!formData.veterinarySchool) {
-      newErrors.veterinarySchool = 'Veterinary school is required';
+    if (!formData.stateCouncilName) {
+      newErrors.stateCouncilName = 'State Veterinary Council name is required';
+    }
+    
+    if (!formData.veterinaryCollege) {
+      newErrors.veterinaryCollege = 'Veterinary college name is required';
+    }
+    
+    if (!formData.universityName) {
+      newErrors.universityName = 'University name is required';
     }
     
     if (!formData.graduationYear) {
@@ -213,9 +234,9 @@ const VeterinarianDetails = () => {
       newErrors.servicesOffered = 'At least one service must be selected';
     }
     
-    // Check if "specialized treatments" is selected but no details provided
-    if (formData.servicesOffered.specializedTreatments && !formData.specializedTreatmentsDetails) {
-      newErrors.specializedTreatmentsDetails = 'Please specify specialized treatments';
+    // Check if "ayurvedic treatments" is selected but no details provided
+    if (formData.servicesOffered.ayurvedicTreatments && !formData.specializedTreatmentsDetails) {
+      newErrors.specializedTreatmentsDetails = 'Please specify ayurvedic treatments offered';
     }
     
     // Check if "other services" is selected but no details provided
@@ -231,6 +252,11 @@ const VeterinarianDetails = () => {
     // Check if "other equipment" is selected but no details provided
     if (formData.equipment.other && !formData.otherEquipment) {
       newErrors.otherEquipment = 'Please specify other equipment';
+    }
+    
+    // Regulatory Compliance validation
+    if (formData.facilityType !== 'Mobile' && formData.facilityType !== 'Home visits only' && !formData.shopEstablishmentNumber) {
+      newErrors.shopEstablishmentNumber = 'Shop & Establishment registration number is required for clinic/hospital facilities';
     }
     
     setErrors(newErrors);
@@ -313,51 +339,95 @@ const VeterinarianDetails = () => {
     }
   };
   
-  // Board certification options
+  // Additional qualifications options
   const boardCertificationOptions = [
-    'American Board of Veterinary Practitioners (ABVP)',
-    'American College of Veterinary Internal Medicine (ACVIM)',
-    'American College of Veterinary Surgeons (ACVS)',
-    'American College of Veterinary Dermatology (ACVD)',
-    'American College of Veterinary Ophthalmology (ACVO)',
-    'American College of Veterinary Radiology (ACVR)',
-    'American College of Veterinary Anesthesia and Analgesia (ACVAA)',
-    'American College of Veterinary Behaviorists (ACVB)',
-    'American College of Veterinary Emergency and Critical Care (ACVECC)'
+    'MVSc (Master of Veterinary Science)',
+    'PhD in Veterinary Science',
+    'Diploma in Animal Husbandry',
+    'PG Diploma in Wildlife Health Management',
+    'Certificate in Veterinary Acupuncture',
+    'Certificate in Veterinary Ayurveda',
+    'Specialization in Veterinary Surgery',
+    'Specialization in Veterinary Medicine',
+    'Specialization in Animal Reproduction',
+    'Specialization in Veterinary Pathology',
+    'Specialization in Veterinary Public Health'
   ];
   
   // Professional membership options
   const professionalMembershipOptions = [
-    'American Veterinary Medical Association (AVMA)',
-    'American Animal Hospital Association (AAHA)',
-    'American Association of Feline Practitioners (AAFP)',
-    'American Association of Equine Practitioners (AAEP)',
-    'American Association of Small Ruminant Practitioners (AASRP)',
-    'American Association of Zoo Veterinarians (AAZV)',
-    'American Holistic Veterinary Medical Association (AHVMA)'
+    'Indian Veterinary Association (IVA)',
+    'Veterinary Council of India (VCI)',
+    'Indian Society for Veterinary Surgery (ISVS)',
+    'Indian Association for the Advancement of Veterinary Research (IAAVR)',
+    'Indian Society of Veterinary Medicine (ISVM)',
+    'Pet Practitioners Association of India (PPAI)',
+    'Indian Association of Veterinary Pathologists (IAVP)',
+    'Indian Society for Study of Animal Reproduction (ISSAR)',
+    'Indian Society of Veterinary Pharmacology and Toxicology (ISVPT)',
+    'Association of Indian Zoo and Wildlife Veterinarians (AIZWV)'
   ];
   
   // Practice type options
   const practiceTypeOptions = [
-    'Small Animal',
-    'Large Animal',
-    'Exotic',
-    'Mixed',
-    'Emergency',
-    'Specialty',
-    'Mobile',
-    'Holistic/Integrative'
+    'Small Animal Practice',
+    'Large Animal Practice',
+    'Mixed Practice',
+    'Poultry Practice',
+    'Dairy Practice',
+    'Exotic Pet Practice',
+    'Emergency Care',
+    'Mobile Veterinary Unit',
+    'Government Veterinary Hospital',
+    'Ayurvedic Veterinary Practice',
+    'Veterinary Polyclinic'
   ];
   
   // Facility type options
   const facilityTypeOptions = [
-    'Clinic',
-    'Hospital',
-    'Mobile',
+    'Private Clinic',
+    'Veterinary Hospital',
+    'Mobile Practice',
     'Home visits only',
-    'Emergency center',
-    'Specialty center',
-    'Teaching hospital'
+    'Government Veterinary Hospital',
+    'Veterinary Polyclinic',
+    'Teaching Veterinary Hospital',
+    'Animal Birth Control Center',
+    'Gau Shala Veterinary Unit'
+  ];
+  
+  // State Veterinary Council options
+  const stateCouncilOptions = [
+    'Andhra Pradesh Veterinary Council',
+    'Arunachal Pradesh Veterinary Council',
+    'Assam Veterinary Council',
+    'Bihar Veterinary Council',
+    'Chhattisgarh Veterinary Council',
+    'Delhi Veterinary Council',
+    'Goa Veterinary Council',
+    'Gujarat Veterinary Council',
+    'Haryana Veterinary Council',
+    'Himachal Pradesh Veterinary Council',
+    'Jammu & Kashmir Veterinary Council',
+    'Jharkhand Veterinary Council',
+    'Karnataka Veterinary Council',
+    'Kerala Veterinary Council',
+    'Madhya Pradesh Veterinary Council',
+    'Maharashtra Veterinary Council',
+    'Manipur Veterinary Council',
+    'Meghalaya Veterinary Council',
+    'Mizoram Veterinary Council',
+    'Nagaland Veterinary Council',
+    'Odisha Veterinary Council',
+    'Punjab Veterinary Council',
+    'Rajasthan Veterinary Council',
+    'Sikkim Veterinary Council',
+    'Tamil Nadu Veterinary Council',
+    'Telangana Veterinary Council',
+    'Tripura Veterinary Council',
+    'Uttar Pradesh Veterinary Council',
+    'Uttarakhand Veterinary Council',
+    'West Bengal Veterinary Council'
   ];
   
   return (
@@ -418,68 +488,116 @@ const VeterinarianDetails = () => {
               
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="licenseNumber" className="block text-sm font-medium text-gray-700">
-                    Veterinary License Number <span className="text-red-500">*</span>
+                  <label htmlFor="vciRegistrationNumber" className="block text-sm font-medium text-gray-700">
+                    VCI Registration Number <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1">
                     <input
                       type="text"
-                      id="licenseNumber"
-                      name="licenseNumber"
-                      value={formData.licenseNumber}
+                      id="vciRegistrationNumber"
+                      name="vciRegistrationNumber"
+                      value={formData.vciRegistrationNumber}
                       onChange={handleChange}
                       className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.licenseNumber ? 'border-red-300' : ''
+                        errors.vciRegistrationNumber ? 'border-red-300' : ''
                       }`}
-                      placeholder="e.g., VET12345"
+                      placeholder="e.g., 123456/2020"
                     />
                   </div>
-                  {errors.licenseNumber && (
-                    <p className="mt-1 text-sm text-red-600">{errors.licenseNumber}</p>
+                  {errors.vciRegistrationNumber && (
+                    <p className="mt-1 text-sm text-red-600">{errors.vciRegistrationNumber}</p>
+                  )}
+                  <p className="mt-1 text-xs text-gray-500">Format: XXXXXX/YYYY</p>
+                </div>
+                
+                <div>
+                  <label htmlFor="stateVeterinaryCouncilNumber" className="block text-sm font-medium text-gray-700">
+                    State Veterinary Council Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="stateVeterinaryCouncilNumber"
+                      name="stateVeterinaryCouncilNumber"
+                      value={formData.stateVeterinaryCouncilNumber}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.stateVeterinaryCouncilNumber ? 'border-red-300' : ''
+                      }`}
+                      placeholder="e.g., SVC/KA/12345/2020"
+                    />
+                  </div>
+                  {errors.stateVeterinaryCouncilNumber && (
+                    <p className="mt-1 text-sm text-red-600">{errors.stateVeterinaryCouncilNumber}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="licenseState" className="block text-sm font-medium text-gray-700">
-                    State/Region of Licensure <span className="text-red-500">*</span>
+                  <label htmlFor="stateCouncilName" className="block text-sm font-medium text-gray-700">
+                    State Veterinary Council <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1">
-                    <input
-                      type="text"
-                      id="licenseState"
-                      name="licenseState"
-                      value={formData.licenseState}
+                    <select
+                      id="stateCouncilName"
+                      name="stateCouncilName"
+                      value={formData.stateCouncilName}
                       onChange={handleChange}
                       className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.licenseState ? 'border-red-300' : ''
+                        errors.stateCouncilName ? 'border-red-300' : ''
                       }`}
-                      placeholder="e.g., California"
-                    />
+                    >
+                      <option value="">Select State Council</option>
+                      {stateCouncilOptions.map(council => (
+                        <option key={council} value={council}>{council}</option>
+                      ))}
+                    </select>
                   </div>
-                  {errors.licenseState && (
-                    <p className="mt-1 text-sm text-red-600">{errors.licenseState}</p>
+                  {errors.stateCouncilName && (
+                    <p className="mt-1 text-sm text-red-600">{errors.stateCouncilName}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="veterinarySchool" className="block text-sm font-medium text-gray-700">
-                    Veterinary School <span className="text-red-500">*</span>
+                  <label htmlFor="veterinaryCollege" className="block text-sm font-medium text-gray-700">
+                    Veterinary College <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1">
                     <input
                       type="text"
-                      id="veterinarySchool"
-                      name="veterinarySchool"
-                      value={formData.veterinarySchool}
+                      id="veterinaryCollege"
+                      name="veterinaryCollege"
+                      value={formData.veterinaryCollege}
                       onChange={handleChange}
                       className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.veterinarySchool ? 'border-red-300' : ''
+                        errors.veterinaryCollege ? 'border-red-300' : ''
                       }`}
-                      placeholder="e.g., UC Davis School of Veterinary Medicine"
+                      placeholder="e.g., Bombay Veterinary College"
                     />
                   </div>
-                  {errors.veterinarySchool && (
-                    <p className="mt-1 text-sm text-red-600">{errors.veterinarySchool}</p>
+                  {errors.veterinaryCollege && (
+                    <p className="mt-1 text-sm text-red-600">{errors.veterinaryCollege}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="universityName" className="block text-sm font-medium text-gray-700">
+                    University Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="universityName"
+                      name="universityName"
+                      value={formData.universityName}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.universityName ? 'border-red-300' : ''
+                      }`}
+                      placeholder="e.g., Maharashtra Animal & Fishery Sciences University"
+                    />
+                  </div>
+                  {errors.universityName && (
+                    <p className="mt-1 text-sm text-red-600">{errors.universityName}</p>
                   )}
                 </div>
                 
@@ -510,7 +628,7 @@ const VeterinarianDetails = () => {
               
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Board Certifications (if applicable)
+                  Additional Qualifications (if applicable)
                 </label>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {boardCertificationOptions.map((certification) => (
@@ -519,8 +637,8 @@ const VeterinarianDetails = () => {
                         id={`cert-${certification}`}
                         name={`cert-${certification}`}
                         type="checkbox"
-                        checked={formData.boardCertifications.includes(certification)}
-                        onChange={() => handleMultiSelectChange('boardCertifications', certification)}
+                        checked={formData.additionalQualifications.includes(certification)}
+                        onChange={() => handleMultiSelectChange('additionalQualifications', certification)}
                         className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       />
                       <label htmlFor={`cert-${certification}`} className="ml-2 text-sm text-gray-700">
@@ -659,43 +777,71 @@ const VeterinarianDetails = () => {
                   
                   <div className="flex items-center">
                     <input
-                      id="species-small-mammals"
-                      name="speciesTreated.smallMammals"
+                      id="species-cattle"
+                      name="speciesTreated.cattle"
                       type="checkbox"
-                      checked={formData.speciesTreated.smallMammals}
+                      checked={formData.speciesTreated.cattle}
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="species-small-mammals" className="ml-2 text-sm text-gray-700">
-                      Small Mammals
+                    <label htmlFor="species-cattle" className="ml-2 flex items-center text-sm text-gray-700">
+                      <FaHorse className="mr-1 text-gray-500" /> Cattle
                     </label>
                   </div>
                   
                   <div className="flex items-center">
                     <input
-                      id="species-reptiles"
-                      name="speciesTreated.reptiles"
+                      id="species-buffalo"
+                      name="speciesTreated.buffalo"
                       type="checkbox"
-                      checked={formData.speciesTreated.reptiles}
+                      checked={formData.speciesTreated.buffalo}
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="species-reptiles" className="ml-2 flex items-center text-sm text-gray-700">
-                      <FaDragon className="mr-1 text-gray-500" /> Reptiles
+                    <label htmlFor="species-buffalo" className="ml-2 text-sm text-gray-700">
+                      Buffalo
                     </label>
                   </div>
                   
                   <div className="flex items-center">
                     <input
-                      id="species-farm-animals"
-                      name="speciesTreated.farmAnimals"
+                      id="species-sheep"
+                      name="speciesTreated.sheep"
                       type="checkbox"
-                      checked={formData.speciesTreated.farmAnimals}
+                      checked={formData.speciesTreated.sheep}
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="species-farm-animals" className="ml-2 flex items-center text-sm text-gray-700">
-                      <FaHorse className="mr-1 text-gray-500" /> Farm Animals
+                    <label htmlFor="species-sheep" className="ml-2 text-sm text-gray-700">
+                      Sheep
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <input
+                      id="species-goats"
+                      name="speciesTreated.goats"
+                      type="checkbox"
+                      checked={formData.speciesTreated.goats}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="species-goats" className="ml-2 text-sm text-gray-700">
+                      Goats
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <input
+                      id="species-poultry"
+                      name="speciesTreated.poultry"
+                      type="checkbox"
+                      checked={formData.speciesTreated.poultry}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="species-poultry" className="ml-2 text-sm text-gray-700">
+                      Poultry
                     </label>
                   </div>
                   
@@ -833,15 +979,29 @@ const VeterinarianDetails = () => {
                   
                   <div className="flex items-center">
                     <input
-                      id="service-specialized"
-                      name="servicesOffered.specializedTreatments"
+                      id="service-livestock"
+                      name="servicesOffered.livestockTreatment"
                       type="checkbox"
-                      checked={formData.servicesOffered.specializedTreatments}
+                      checked={formData.servicesOffered.livestockTreatment}
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="service-specialized" className="ml-2 text-sm text-gray-700">
-                      Specialized Treatments
+                    <label htmlFor="service-livestock" className="ml-2 text-sm text-gray-700">
+                      Livestock Treatment
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <input
+                      id="service-ayurvedic"
+                      name="servicesOffered.ayurvedicTreatments"
+                      type="checkbox"
+                      checked={formData.servicesOffered.ayurvedicTreatments}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="service-ayurvedic" className="ml-2 text-sm text-gray-700">
+                      Ayurvedic Treatments
                     </label>
                   </div>
                   
@@ -888,10 +1048,10 @@ const VeterinarianDetails = () => {
                   </div>
                 </div>
                 
-                {formData.servicesOffered.specializedTreatments && (
+                {formData.servicesOffered.ayurvedicTreatments && (
                   <div className="mt-2">
                     <label htmlFor="specializedTreatmentsDetails" className="block text-sm font-medium text-gray-700">
-                      Specialized Treatments Details
+                      Ayurvedic Treatments Details
                     </label>
                     <input
                       type="text"
@@ -902,7 +1062,7 @@ const VeterinarianDetails = () => {
                       className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
                         errors.specializedTreatmentsDetails ? 'border-red-300' : ''
                       }`}
-                      placeholder="Please specify specialized treatments"
+                      placeholder="e.g., Panchagavya therapy, herbal treatments, etc."
                     />
                     {errors.specializedTreatmentsDetails && (
                       <p className="mt-1 text-sm text-red-600">{errors.specializedTreatmentsDetails}</p>
@@ -1030,15 +1190,29 @@ const VeterinarianDetails = () => {
                   
                   <div className="flex items-center">
                     <input
-                      id="equipment-boarding"
-                      name="equipment.boarding"
+                      id="equipment-inpatient"
+                      name="equipment.inPatientWards"
                       type="checkbox"
-                      checked={formData.equipment.boarding}
+                      checked={formData.equipment.inPatientWards}
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="equipment-boarding" className="ml-2 text-sm text-gray-700">
-                      Boarding
+                    <label htmlFor="equipment-inpatient" className="ml-2 text-sm text-gray-700">
+                      In-Patient Wards
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <input
+                      id="equipment-livestock"
+                      name="equipment.livestockFacilities"
+                      type="checkbox"
+                      checked={formData.equipment.livestockFacilities}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="equipment-livestock" className="ml-2 text-sm text-gray-700">
+                      Livestock Facilities
                     </label>
                   </div>
                   
@@ -1078,6 +1252,71 @@ const VeterinarianDetails = () => {
                     )}
                   </div>
                 )}
+              </div>
+            </section>
+            
+            {/* Regulatory Compliance Section */}
+            <section>
+              <h3 className="text-md font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                Regulatory Compliance
+              </h3>
+              
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="drugLicenseNumber" className="block text-sm font-medium text-gray-700">
+                    Drug License Number (if applicable)
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="drugLicenseNumber"
+                      name="drugLicenseNumber"
+                      value={formData.drugLicenseNumber}
+                      onChange={handleChange}
+                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      placeholder="e.g., DL-XX-XX-XXXXX"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">Required if you dispense medications</p>
+                </div>
+                
+                <div>
+                  <label htmlFor="shopEstablishmentNumber" className="block text-sm font-medium text-gray-700">
+                    Shop & Establishment Registration Number {formData.facilityType !== 'Mobile' && formData.facilityType !== 'Home visits only' && <span className="text-red-500">*</span>}
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="shopEstablishmentNumber"
+                      name="shopEstablishmentNumber"
+                      value={formData.shopEstablishmentNumber}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.shopEstablishmentNumber ? 'border-red-300' : ''
+                      }`}
+                      placeholder="e.g., SE-XXXX-XX-XXXXX"
+                    />
+                  </div>
+                  {errors.shopEstablishmentNumber && (
+                    <p className="mt-1 text-sm text-red-600">{errors.shopEstablishmentNumber}</p>
+                  )}
+                </div>
+                
+                <div className="sm:col-span-2">
+                  <div className="flex items-center">
+                    <input
+                      id="biomedicalWasteRegistration"
+                      name="biomedicalWasteRegistration"
+                      type="checkbox"
+                      checked={formData.biomedicalWasteRegistration}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="biomedicalWasteRegistration" className="ml-2 text-sm text-gray-700">
+                      I confirm that my facility has proper biomedical waste management as per Biomedical Waste Management Rules
+                    </label>
+                  </div>
+                </div>
               </div>
             </section>
             

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Home from './pages/Home.jsx';
 import UserLogin from './pages/user/UserLogin.jsx';
 import UserDashboard from './pages/user/UserDashboard.jsx';
 import UserPets from './pages/user/UserPets.jsx';
@@ -37,6 +37,11 @@ import TermsAgreement from './pages/provider/TermsAgreement.jsx';
 import PaymentInfo from './pages/provider/PaymentInfo.jsx';
 import ReviewSubmission from './pages/provider/ReviewSubmission.jsx';
 import ApplicationStatus from './pages/provider/ApplicationStatus.jsx';
+import ProviderLogin from './pages/provider/ProviderLogin.jsx';
+import ProviderDashboard from './pages/provider/ProviderDashboard.jsx';
+
+// Auth pages
+import Login from './pages/auth/Login.jsx';
 import Appointments from './pages/Appointments.jsx';
 import Marketplace from './pages/Marketplace.jsx';
 import Transactions from './pages/Transactions.jsx';
@@ -102,16 +107,12 @@ function App() {
     <div className="app-container w-full h-full">
       <Router>
         <Routes>
+          {/* Main Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<Login />} />
+          
           {/* Admin Routes */}
-          <Route path="/" element={currentUser ? 
-            (currentUser.role === 'admin' ? <Navigate to="/dashboard" /> : <Navigate to="/user/dashboard" />) 
-            : <Login />} />
-          <Route path="/login" element={currentUser ? 
-            (currentUser.role === 'admin' ? <Navigate to="/dashboard" /> : <Navigate to="/user/dashboard" />) 
-            : <Login />} />
-          <Route path="/signin" element={currentUser ? 
-            (currentUser.role === 'admin' ? <Navigate to="/dashboard" /> : <Navigate to="/user/dashboard" />) 
-            : <Login />} />
           <Route 
             path="/dashboard" 
             element={
@@ -533,6 +534,10 @@ function App() {
               </AdminProtectedRoute>
             } 
           />
+          
+          {/* Provider Routes */}
+          <Route path="/provider/login" element={<ProviderLogin />} />
+          <Route path="/provider/dashboard" element={<ProviderDashboard />} />
           
           {/* Provider Onboarding Flow */}
           <Route path="/provider/signup" element={<ProviderSignUp />} />

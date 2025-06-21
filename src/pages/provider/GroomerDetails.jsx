@@ -4,7 +4,6 @@ import {
   FaCut, 
   FaDog, 
   FaCat, 
-  FaScissors, 
   FaShower, 
   FaSprayCan, 
   FaClipboardCheck, 
@@ -641,7 +640,7 @@ const GroomerDetails = () => {
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
                     <label htmlFor="service-haircut" className="ml-2 flex items-center text-sm text-gray-700">
-                      <FaScissors className="mr-1 text-gray-500" /> Haircut
+                      <FaCut className="mr-1 text-gray-500" /> Haircut
                     </label>
                   </div>
                   
