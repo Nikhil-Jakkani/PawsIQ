@@ -25,6 +25,18 @@ import ProviderVerification from './pages/providers/ProviderVerification.jsx';
 import ProviderCommission from './pages/providers/ProviderCommission.jsx';
 import ProviderPerformance from './pages/providers/ProviderPerformance.jsx';
 import ProviderFlags from './pages/providers/ProviderFlags.jsx';
+// Provider onboarding flow
+import ProviderSignUp from './pages/provider/ProviderSignUp.jsx';
+import ProfessionalInfo from './pages/provider/ProfessionalInfo.jsx';
+import VeterinarianDetails from './pages/provider/VeterinarianDetails.jsx';
+import TrainerDetails from './pages/provider/TrainerDetails.jsx';
+import GroomerDetails from './pages/provider/GroomerDetails.jsx';
+import PetSitterDetails from './pages/provider/PetSitterDetails.jsx';
+import DocumentUpload from './pages/provider/DocumentUpload.jsx';
+import TermsAgreement from './pages/provider/TermsAgreement.jsx';
+import PaymentInfo from './pages/provider/PaymentInfo.jsx';
+import ReviewSubmission from './pages/provider/ReviewSubmission.jsx';
+import ApplicationStatus from './pages/provider/ApplicationStatus.jsx';
 import Appointments from './pages/Appointments.jsx';
 import Marketplace from './pages/Marketplace.jsx';
 import Transactions from './pages/Transactions.jsx';
@@ -521,6 +533,20 @@ function App() {
               </AdminProtectedRoute>
             } 
           />
+          
+          {/* Provider Onboarding Flow */}
+          <Route path="/provider/signup" element={<ProviderSignUp />} />
+          <Route path="/provider/onboarding/professional-info" element={<ProfessionalInfo />} />
+          <Route path="/provider/onboarding/veterinarian-details" element={<VeterinarianDetails />} />
+          <Route path="/provider/onboarding/trainer-details" element={<TrainerDetails />} />
+          <Route path="/provider/onboarding/groomer-details" element={<GroomerDetails />} />
+          <Route path="/provider/onboarding/pet-sitter-details" element={<PetSitterDetails />} />
+          <Route path="/provider/onboarding/document-upload" element={<DocumentUpload />} />
+          <Route path="/provider/onboarding/terms" element={<TermsAgreement />} />
+          <Route path="/provider/onboarding/payment-info" element={<PaymentInfo />} />
+          <Route path="/provider/onboarding/review" element={<ReviewSubmission />} />
+          <Route path="/provider/application-status" element={<ApplicationStatus />} />
+          
           <Route
             path="*"
             element={

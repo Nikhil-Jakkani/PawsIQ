@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaLock, FaEnvelope, FaPaw, FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaLock, FaEnvelope, FaPaw, FaGoogle, FaFacebook, FaApple, FaStethoscope } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 // Cute pet-themed logo
@@ -181,13 +181,23 @@ const UserLogin = () => {
           <p className="text-sm text-gray-600">
             Don't have an account?
           </p>
-          <a 
-            href="#" 
-            className="text-sm font-medium text-pink-600 hover:text-pink-700 flex items-center gap-1"
-          >
-            <FaPaw size={12} />
-            Create a Pet Owner Account
-          </a>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <a 
+              href="#" 
+              className="text-sm font-medium text-pink-600 hover:text-pink-700 flex items-center gap-1"
+            >
+              <FaPaw size={12} />
+              Create a Pet Owner Account
+            </a>
+            <span className="hidden sm:inline text-gray-400">|</span>
+            <Link 
+              to="/provider/signup" 
+              className="text-sm font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+            >
+              <FaStethoscope size={12} />
+              Join as a Provider
+            </Link>
+          </div>
         </div>
       </div>
       
