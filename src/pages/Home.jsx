@@ -39,10 +39,8 @@ import {
 const logoImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234f46e5'/%3E%3Cpath d='M35 40Q40 20 50 40Q60 20 65 40Q80 40 65 60Q70 80 50 70Q30 80 35 60Q20 40 35 40Z' fill='white'/%3E%3C/svg%3E";
 
 const Home = () => {
-  // State for cursor follower
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // State for UI interactions
   const [isHovering, setIsHovering] = useState(false);
-  const [animationFrame, setAnimationFrame] = useState(0);
   
   // State for pet selector
   const [selectedPet, setSelectedPet] = useState('dog');
@@ -69,6 +67,111 @@ const Home = () => {
   
   // State for FAQ
   const [openFaq, setOpenFaq] = useState(null);
+  
+  // State for active section (for scroll highlighting)
+  const [activeSection, setActiveSection] = useState('hero');
+  
+  // State for back to top button visibility
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  
+  // State for scroll progress
+  const [scrollProgress, setScrollProgress] = useState(0);
+  
+  // State for scroll-triggered animations
+  const [animatedSections, setAnimatedSections] = useState({
+    features: false,
+    testimonials: false,
+    stats: false,
+    app: false,
+    faq: false,
+    contact: false,
+    newsletter: false
+  });
+  
+  // Refs for scroll sections
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const statsRef = useRef(null);
+  const appRef = useRef(null);
+  const faqRef = useRef(null);
+  const contactRef = useRef(null);
+  const newsletterRef = useRef(null);
+  
+  // Handle scroll to section
+  const scrollToSection = (sectionRef) => {
+    sectionRef.current.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+  
+  // Check if element is in viewport
+  const isInViewport = (element, offset = 100) => {
+    if (!element) return false;
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top <= window.innerHeight - offset &&
+      rect.bottom >= offset
+    );
+  };
+  
+  // Update active section based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY ; // Offset for better UX
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Calculate scroll progress percentage
+      const scrollPercentage = (scrollPosition / (documentHeight - windowHeight)) * 100;
+      setScrollProgress(Math.min(scrollPercentage, 100));
+      
+      // Show/hide back to top button
+      if (scrollPosition > 350) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+      
+      // Check each section's position and update active section
+      if (heroRef.current && scrollPosition < heroRef.current.offsetTop + heroRef.current.offsetHeight) {
+        setActiveSection('hero');
+      } else if (featuresRef.current && scrollPosition < featuresRef.current.offsetTop + featuresRef.current.offsetHeight) {
+        setActiveSection('features');
+      } else if (testimonialsRef.current && scrollPosition < testimonialsRef.current.offsetTop + testimonialsRef.current.offsetHeight) {
+        setActiveSection('testimonials');
+      } else if (statsRef.current && scrollPosition < statsRef.current.offsetTop + statsRef.current.offsetHeight) {
+        setActiveSection('stats');
+      } else if (appRef.current && scrollPosition < appRef.current.offsetTop + appRef.current.offsetHeight) {
+        setActiveSection('app');
+      } else if (faqRef.current && scrollPosition < faqRef.current.offsetTop + faqRef.current.offsetHeight) {
+        setActiveSection('faq');
+      } else if (contactRef.current && scrollPosition < contactRef.current.offsetTop + contactRef.current.offsetHeight) {
+        setActiveSection('contact');
+      } else if (newsletterRef.current) {
+        setActiveSection('newsletter');
+      }
+      
+      // Check if sections are in viewport to trigger animations
+      setAnimatedSections(prev => ({
+        ...prev,
+        features: prev.features || isInViewport(featuresRef.current),
+        testimonials: prev.testimonials || isInViewport(testimonialsRef.current),
+        stats: prev.stats || isInViewport(statsRef.current),
+        app: prev.app || isInViewport(appRef.current),
+        faq: prev.faq || isInViewport(faqRef.current),
+        contact: prev.contact || isInViewport(contactRef.current),
+        newsletter: prev.newsletter || isInViewport(newsletterRef.current)
+      }));
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    // Trigger initial check
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
   const testimonials = [
     {
       name: "Priya Sharma",
@@ -93,41 +196,8 @@ const Home = () => {
     }
   ];
   
-  // Ref for animation
-  const requestRef = useRef();
+  // Ref for logo animation
   const logoRef = useRef();
-  
-  // Handle mouse movement for pet follower
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-  
-  // Animation frame update for paw cursor
-  useEffect(() => {
-    let frameCount = 0;
-    
-    const animate = () => {
-      frameCount++;
-      if (frameCount % 15 === 0) { // Change animation every 15 frames for a slower effect
-        setAnimationFrame(prevFrame => prevFrame + 1);
-      }
-      requestRef.current = requestAnimationFrame(animate);
-    };
-    
-    requestRef.current = requestAnimationFrame(animate);
-    
-    return () => {
-      cancelAnimationFrame(requestRef.current);
-    };
-  }, []);
   
   // Form submission handlers
   const handleNewsletterSubmit = (e) => {
@@ -191,19 +261,57 @@ const Home = () => {
   };
   
   return (
-    <div className="bg-white relative overflow-hidden">
-      {/* Cursor follower */}
-      <div 
-        className="fixed w-8 h-8 pointer-events-none z-50 transition-all duration-100 ease-out flex items-center justify-center text-indigo-600"
-        style={{ 
-          left: `${mousePosition.x - 16}px`, 
-          top: `${mousePosition.y - 16}px`,
-          opacity: isHovering ? 1 : 0.5,
-          transform: `scale(${isHovering ? 1.2 : 1})`,
-        }}
-      >
-        <FaPaw className={`animate-pulse ${animationFrame % 2 === 0 ? 'rotate-12' : '-rotate-12'}`} />
+    <div className="bg-white relative overflow-y-auto scrollbar-pet h-full w-full">
+      
+      {/* Scroll progress indicator */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div 
+          className="h-full bg-indigo-600 transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        ></div>
       </div>
+      
+      {/* Section indicator */}
+      <div className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-40 bg-indigo-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-500 ${
+        activeSection !== 'hero' ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'
+      }`}>
+        <span className="text-sm font-medium capitalize">
+          {activeSection === 'features' && 'Key Features'}
+          {activeSection === 'testimonials' && 'What Our Users Say'}
+          {activeSection === 'stats' && 'Our Impact'}
+          {activeSection === 'app' && 'Mobile App'}
+          {activeSection === 'faq' && 'Frequently Asked Questions'}
+          {activeSection === 'contact' && 'Get In Touch'}
+          {activeSection === 'newsletter' && 'Stay Updated'}
+        </span>
+      </div>
+      
+      {/* Scroll indicator - only visible at the top */}
+      {activeSection === 'hero' && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-30 animate-fadeInUp animation-delay-1200">
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-indigo-600 font-medium mb-1">Scroll to explore</span>
+            <div className="w-6 h-10 border-2 border-indigo-600 rounded-full flex justify-center">
+              <div className="w-1 h-2 bg-indigo-600 rounded-full mt-1 animate-scrollDown"></div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Back to top button */}
+      <button
+        onClick={() => scrollToSection(heroRef)}
+        className={`fixed bottom-6 right-6 z-40 p-3 rounded-full bg-indigo-600 text-white shadow-lg transform transition-all duration-300 hover:bg-indigo-700 hover:scale-110 ${
+          showBackToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        aria-label="Back to top"
+      >
+        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+        </svg>
+      </button>
+      
+      {/* Header */}
       
       {/* Header */}
       <header className="relative">
@@ -279,7 +387,7 @@ const Home = () => {
 
       {/* Hero section */}
       <main>
-        <div className="relative">
+        <div ref={heroRef} className="relative">
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100"></div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
@@ -506,13 +614,39 @@ const Home = () => {
                 <div className="mt-4 text-center text-indigo-200 text-sm animate-fadeInUp animation-delay-1100">
                   <p>Customer Support: <a href="tel:+18005551234" className="font-medium hover:text-white transition-colors duration-300">1-800-555-1234</a> • <a href="mailto:support@pawsiq.com" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.com</a></p>
                 </div>
+                
+                {/* Scroll down button */}
+                <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 animate-bounce animation-delay-1500">
+                  <button
+                    onClick={() => scrollToSection(featuresRef)}
+                    className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-3 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 group"
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                    aria-label="Scroll to features"
+                  >
+                    <svg className="h-6 w-6 group-hover:translate-y-1 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Section divider with scroll indicator */}
+        <div className="relative h-24 bg-gradient-to-b from-gray-100 to-gray-200">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-indigo-600 animate-bounce">
+              <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        
         {/* Features section */}
-        <div className="bg-gray-100 relative overflow-hidden">
+        <div ref={featuresRef} className="bg-gray-100 relative overflow-hidden">
           {/* Decorative paw prints */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
             <div className="absolute -top-10 left-10 text-indigo-200 opacity-10 text-9xl transform rotate-12">
@@ -527,15 +661,15 @@ const Home = () => {
           </div>
           
           <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8 relative">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-extrabold text-gray-900 animate-fadeInUp">All-in-one pet care platform</h2>
-              <p className="mt-4 text-lg text-gray-500 animate-fadeInUp animation-delay-300">
+            <div className={`max-w-3xl mx-auto text-center transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+              <h2 className="text-3xl font-extrabold text-gray-900">All-in-one pet care platform</h2>
+              <p className="mt-4 text-lg text-gray-500">
                 Everything you need to ensure your pet's health and happiness in one place.
               </p>
             </div>
             <div className="mt-12">
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="pt-6 animate-fadeInUp animation-delay-300">
+                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '200ms' }}>
                   <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
                     <div className="-mt-6">
                       <div>
@@ -567,7 +701,7 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="pt-6 animate-fadeInUp animation-delay-500">
+                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '400ms' }}>
                   <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
                     <div className="-mt-6">
                       <div>
@@ -583,7 +717,7 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="pt-6 animate-fadeInUp animation-delay-600">
+                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '600ms' }}>
                   <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
                     <div className="-mt-6">
                       <div>
@@ -638,7 +772,7 @@ const Home = () => {
         </div>
         
         {/* Testimonials section */}
-        <div className="bg-white py-16 sm:py-24">
+        <div ref={testimonialsRef} className="bg-white py-16 sm:py-24">
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -714,7 +848,7 @@ const Home = () => {
         </div>
 
         {/* Stats section */}
-        <div className="bg-indigo-50 py-16 sm:py-24">
+        <div ref={statsRef} className="bg-indigo-50 py-16 sm:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl animate-fadeInUp">
@@ -1038,7 +1172,7 @@ const Home = () => {
         </div>
 
         {/* App features section */}
-        <div className="bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-24 lg:py-32 overflow-hidden">
+        <div ref={appRef} className="bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-24 lg:py-32 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="lg:text-center">
               <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase animate-fadeInUp">Features</h2>
@@ -1326,7 +1460,7 @@ const Home = () => {
         </div>
         
         {/* FAQ Section */}
-        <div className="bg-indigo-50 py-16">
+        <div ref={faqRef} className="bg-indigo-50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto divide-y-2 divide-gray-200">
               <h2 className="text-center text-3xl font-extrabold text-gray-900 sm:text-4xl animate-fadeInUp">
@@ -1422,7 +1556,7 @@ const Home = () => {
         </div>
         
         {/* Contact section */}
-        <div className="bg-white py-16 sm:py-24">
+        <div ref={contactRef} className="bg-white py-16 sm:py-24">
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative lg:grid lg:grid-cols-2 lg:gap-8">
               <div className="lg:col-span-1 animate-fadeInRight">
@@ -1700,7 +1834,7 @@ const Home = () => {
       </main>
 
       {/* Newsletter section */}
-      <div className="bg-white">
+      <div ref={newsletterRef} className="bg-white">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8">
           <div className="relative bg-indigo-50 rounded-3xl shadow-xl overflow-hidden animate-gradientFlow">
             <div className="absolute inset-0">

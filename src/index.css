@@ -11,15 +11,18 @@
     width: 100%;
     margin: 0;
     padding: 0;
+    @apply scrollbar-pet;
   }
   
   body {
-    @apply text-gray-900;
+    @apply text-gray-900 scrollbar-pet;
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
     background-color: transparent;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Enables smooth scrolling on iOS devices */
   }
 
   #root {
@@ -27,6 +30,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
+    @apply scrollbar-pet;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -156,6 +160,10 @@
   .animate-gradientFlow {
     background-size: 200% 200%;
     animation: gradientFlow 3s ease infinite;
+  }
+  
+  .animate-scrollDown {
+    animation: scrollDown 1.5s ease-in-out infinite;
   }
   
   /* Animation delays */
@@ -339,5 +347,20 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.8;
   }
 }
