@@ -1,37 +1,87 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaUsers, FaCalendarCheck, FaShoppingCart, FaDollarSign, FaPaw, FaDog, FaCat, FaBone } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../components/layout/PetIcons';
 import StatCard from '../components/dashboard/StatCard';
 import OverviewChart from '../components/dashboard/OverviewChart';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import UpcomingAppointments from '../components/dashboard/UpcomingAppointments';
+import CalendarView from '../components/dashboard/CalendarView';
+import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="bg-indigo-100 p-2 rounded-lg">
-              <FaPaw className="text-indigo-600 text-2xl" />
+    <DashboardLayout>
+      <div className="space-y-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="bg-indigo-100 p-2 rounded-lg">
+                <FaPaw className="text-indigo-600 text-2xl" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+            <p className="text-gray-500 mt-1">Welcome to your PawsIQ admin dashboard</p>
           </div>
-          <p className="text-gray-500 mt-1">Welcome to your PawsIQ admin dashboard</p>
+          <div className="flex gap-3">
+            <PetIconButton 
+              type="dog" 
+              variant="secondary" 
+              label="View Reports" 
+              onClick={() => {
+                // Navigate to analytics page
+                navigate('/analytics');
+              }}
+            />
+            <PetIconButton 
+              type="cat" 
+              variant="primary" 
+              label="Generate Report" 
+              onClick={() => {
+                // Create a simple dashboard report
+                const reportDate = new Date().toLocaleDateString();
+                const reportData = {
+                  date: reportDate,
+                  petOwners: 2543,
+                  appointments: 1235,
+                  products: 854,
+                  revenue: 35210,
+                  activeServices: {
+                    veterinary: 438,
+                    grooming: 327,
+                    petSitting: 215,
+                    training: 189
+                  }
+                };
+                
+                // Convert to CSV
+                const csvContent = `PawsIQ Dashboard Report,${reportDate}\n\n` +
+                  `Pet Owners,${reportData.petOwners}\n` +
+                  `Appointments,${reportData.appointments}\n` +
+                  `Products,${reportData.products}\n` +
+                  `Revenue,$${reportData.revenue}\n\n` +
+                  `Active Services\n` +
+                  `Veterinary,${reportData.activeServices.veterinary}\n` +
+                  `Grooming,${reportData.activeServices.grooming}\n` +
+                  `Pet Sitting,${reportData.activeServices.petSitting}\n` +
+                  `Training,${reportData.activeServices.training}\n`;
+                
+                // Create and download the file
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `pawsiq-dashboard-report-${reportDate.replace(/\//g, '-')}.csv`);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
+            />
+          </div>
         </div>
-        <div className="flex gap-3">
-          <PetIconButton 
-            type="dog" 
-            variant="secondary" 
-            label="View Reports" 
-          />
-          <PetIconButton 
-            type="cat" 
-            variant="primary" 
-            label="Generate Report" 
-          />
-        </div>
-      </div>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -121,9 +171,14 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Upcoming Appointments */}
-      <div>
-        <UpcomingAppointments />
+      {/* Calendar and Upcoming Appointments */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div>
+          <CalendarView />
+        </div>
+        <div>
+          <UpcomingAppointments />
+        </div>
       </div>
       
       {/* Pet Care Tips */}
@@ -156,7 +211,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 

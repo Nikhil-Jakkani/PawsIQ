@@ -1,108 +1,93 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPaw, FaLock, FaEnvelope, FaDog, FaCat, FaBone, FaFish, FaFeather } from 'react-icons/fa';
-import { GiDogBowl, GiCat, GiSittingDog } from 'react-icons/gi';
+import { FaLock, FaEnvelope } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+// Simplified logo SVG for better performance
+const logoImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234338ca'/%3E%3Cpath d='M35 40Q40 20 50 40Q60 20 65 40Q80 40 65 60Q70 80 50 70Q30 80 35 60Q20 40 35 40Z' fill='white'/%3E%3C/svg%3E";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@pawsiq.com');
+  const [password, setPassword] = useState('admin123');
   const [isLoading, setIsLoading] = useState(false);
-  const { login, error } = useAuth();
+  const [localError, setLocalError] = useState('');
+  const { login, error: authError, currentUser } = useAuth();
   const navigate = useNavigate();
+  
+  // Hide loading screen when Login component mounts
+  useEffect(() => {
+    const loadingElement = document.getElementById('loading');
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
+  }, []);
+  
+  // Check if already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/dashboard');
+    }
+  }, [currentUser, navigate]);
+  
+  // Handle auth errors
+  useEffect(() => {
+    if (authError) {
+      setLocalError(authError);
+    }
+  }, [authError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setLocalError('');
     
     try {
-      const success = login(email, password);
+      const success = await login(email, password);
       if (success) {
-        navigate('/admin/dashboard');
+        navigate('/dashboard');
+      } else {
+        setLocalError('Invalid email or password. Please try again.');
+        setIsLoading(false);
       }
     } catch (err) {
-      console.error('Login error:', err);
-    } finally {
+      setLocalError('An error occurred during login. Please try again.');
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Decorative pet icons */}
-      <div className="absolute top-10 left-10 text-indigo-300 opacity-20 animate-bounce-slow">
-        <FaDog className="w-16 h-16" />
-      </div>
-      <div className="absolute top-20 right-20 text-purple-300 opacity-20 animate-pulse">
-        <FaCat className="w-12 h-12" />
-      </div>
-      <div className="absolute bottom-10 left-20 text-blue-300 opacity-20 animate-pulse">
-        <FaFish className="w-14 h-14" />
-      </div>
-      <div className="absolute bottom-20 right-10 text-pink-300 opacity-20 animate-bounce-slow">
-        <FaBone className="w-10 h-10" />
-      </div>
-      
-      {/* Paw print trail */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <FaPaw className="absolute top-[10%] left-[15%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[15%] left-[18%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[20%] left-[21%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[25%] left-[24%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[30%] left-[27%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        <FaPaw className="absolute top-[35%] left-[30%] text-white opacity-5 w-8 h-8 transform rotate-45" />
-        <FaPaw className="absolute top-[40%] left-[33%] text-white opacity-5 w-8 h-8 transform rotate-12" />
-        
-        <FaPaw className="absolute top-[60%] right-[15%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-        <FaPaw className="absolute top-[65%] right-[18%] text-white opacity-5 w-8 h-8 transform -rotate-45" />
-        <FaPaw className="absolute top-[70%] right-[21%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-        <FaPaw className="absolute top-[75%] right-[24%] text-white opacity-5 w-8 h-8 transform -rotate-45" />
-        <FaPaw className="absolute top-[80%] right-[27%] text-white opacity-5 w-8 h-8 transform -rotate-12" />
-      </div>
-      
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden relative z-10">
-        <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 py-6 px-8 relative">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full opacity-20 transform translate-x-10 -translate-y-10"></div>
-          <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-full shadow-lg">
-              <FaPaw className="text-indigo-600 text-4xl" />
-            </div>
+    <div className="min-h-screen w-full bg-indigo-900 flex items-center justify-center">
+      {/* Login Box */}
+      <div className="bg-white rounded-3xl shadow-lg w-full max-w-lg p-8 sm:p-12">
+        {/* Header with Logo */}
+        <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 py-6 rounded-t-3xl -mx-8 -mt-8 px-8 sm:-mx-12 sm:-mt-12 sm:px-12 flex flex-col items-center justify-center text-white">
+          <div className="bg-white p-4 rounded-full shadow-lg mb-4">
+            <img src={logoImage} alt="PawsIQ Logo" className="w-20 h-20 object-contain" />
           </div>
-          <h2 className="mt-4 text-center text-2xl font-bold text-white">
-            PawsIQ Admin
-          </h2>
-          <p className="text-center text-indigo-200 text-sm mt-1">Pet Care Platform</p>
-          
-          <div className="flex justify-center mt-2 gap-3">
-            <FaDog className="text-indigo-300" />
-            <FaCat className="text-indigo-300" />
-            <FaFish className="text-indigo-300" />
-            <FaFeather className="text-indigo-300" />
-          </div>
+
+          <h2 className="text-3xl font-extrabold">PawsIQ Admin</h2>
+          <p className="text-indigo-200 text-sm mt-2">Your Pet Care Platform</p>
         </div>
-        
-        <div className="p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-            Welcome Back!
-          </h2>
+
+        {/* Login Form */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">Welcome Back!</h2>
           <p className="text-center text-gray-500 mb-6">Sign in to manage your pet care platform</p>
-          
-          {error && (
+
+          {localError && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 flex items-start">
               <div className="mr-2 mt-0.5">
                 <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
-              <div>{error}</div>
+              <div>{localError}</div>
             </div>
           )}
-          
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                <FaEnvelope className="mr-2 text-indigo-500" />
-                Email address
+                <FaEnvelope className="mr-2 text-indigo-500" /> Email address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -116,19 +101,15 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
                   placeholder="admin@pawsiq.com"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <FaDog className="text-indigo-200" />
-                </div>
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                <FaLock className="mr-2 text-indigo-500" />
-                Password
+                <FaLock className="mr-2 text-indigo-500" /> Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -142,12 +123,9 @@ const Login = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 border border-indigo-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
                   placeholder="••••••••"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <FaCat className="text-indigo-200" />
-                </div>
               </div>
             </div>
 
@@ -159,60 +137,47 @@ const Login = () => {
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
+                <label htmlFor="remember-me" className="ml-2 text-sm text-gray-700">Remember me</label>
               </div>
-
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <button 
+                  type="button"
+                  onClick={() => alert('Password reset functionality would be implemented here')}
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-200"
-              >
-                <FaPaw className={`${isLoading ? 'animate-spin' : 'animate-pulse'}`} />
-                {isLoading ? 'Signing in...' : 'Sign in'}
-              </button>
-            </div>
-          </form>
-          
-          <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-indigo-500 font-medium">
-                  Demo Credentials
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
                 </span>
-              </div>
-            </div>
-            
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                  <FaDog />
-                  <p className="font-semibold">Admin</p>
-                </div>
-                <p className="text-gray-600">admin@pawsiq.com</p>
-                <p className="text-gray-600">admin123</p>
-              </div>
-              <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                  <FaCat />
-                  <p className="font-semibold">User</p>
-                </div>
-                <p className="text-gray-600">user@pawsiq.com</p>
-                <p className="text-gray-600">user123</p>
-              </div>
-            </div>
+              ) : (
+                'Sign in'
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-gray-500 text-sm">
+            Don't have an account?{' '}
+            <button 
+              type="button"
+              onClick={() => alert('Sign up functionality would be implemented here')}
+              className="text-indigo-600 hover:text-indigo-500 font-medium border-none bg-transparent p-0"
+            >
+              Sign up
+            </button>
           </div>
         </div>
       </div>

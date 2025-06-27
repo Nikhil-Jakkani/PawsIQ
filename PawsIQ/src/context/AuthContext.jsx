@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 // Mock user data for demonstration
 const USERS = [
@@ -15,42 +15,119 @@ const USERS = [
     email: 'user@pawsiq.com',
     password: 'user123',
     role: 'user',
-    name: 'Regular User',
-    avatar: '/avatar-user.png'
+    name: 'Sarah Johnson',
+    avatar: '/avatar-user.png',
+    pets: [
+      {
+        id: 1,
+        name: 'Max',
+        type: 'dog',
+        breed: 'Golden Retriever'
+      },
+      {
+        id: 2,
+        name: 'Luna',
+        type: 'cat',
+        breed: 'Siamese'
+      }
+    ]
+  }
+];
+
+// Mock provider data for demonstration
+const PROVIDERS = [
+  {
+    email: 'vet@pawsiq.com',
+    password: 'provider123',
+    role: 'provider',
+    providerType: 'Veterinarian',
+    name: 'Dr. James Wilson',
+    avatar: '/avatar-vet.png',
+    verified: true,
+    applicationStatus: 'approved'
+  },
+  {
+    email: 'trainer@pawsiq.com',
+    password: 'provider123',
+    role: 'provider',
+    providerType: 'Trainer',
+    name: 'Emma Roberts',
+    avatar: '/avatar-trainer.png',
+    verified: true,
+    applicationStatus: 'approved'
+  },
+  {
+    email: 'groomer@pawsiq.com',
+    password: 'provider123',
+    role: 'provider',
+    providerType: 'Groomer',
+    name: 'Michael Chen',
+    avatar: '/avatar-groomer.png',
+    verified: true,
+    applicationStatus: 'approved'
   }
 ];
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Set to false initially
   const [error, setError] = useState('');
 
+  // Initialize auth state
   useEffect(() => {
     // Check if user is already logged in (from localStorage)
-    const storedUser = localStorage.getItem('pawsiq_user');
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('pawsiq_user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setCurrentUser(parsedUser);
+      }
+    } catch (err) {
+      localStorage.removeItem('pawsiq_user');
+    } finally {
+      // Hide loading screen after auth check is complete
+      const loadingElement = document.getElementById('loading');
+      if (loadingElement) {
+        loadingElement.style.display = 'none';
+      }
     }
-    setLoading(false);
   }, []);
 
-  const login = (email, password) => {
+  const login = (email, password, isProvider = false) => {
     setError('');
+    setLoading(true);
     
-    // Find user with matching credentials
-    const user = USERS.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-    );
+    try {
+      let user;
+      
+      if (isProvider) {
+        // Find provider with matching credentials
+        user = PROVIDERS.find(
+          (p) => p.email.toLowerCase() === email.toLowerCase() && p.password === password
+        );
+      } else {
+        // Find user with matching credentials
+        user = USERS.find(
+          (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+        );
+      }
 
-    if (user) {
-      // Remove password before storing
-      const { password: _unused, ...userWithoutPassword } = user;
-      setCurrentUser(userWithoutPassword);
-      localStorage.setItem('pawsiq_user', JSON.stringify(userWithoutPassword));
-      return true;
-    } else {
-      setError('Invalid email or password');
-      return false;
+      if (user) {
+        // Remove password before storing
+        const { password: _unused, ...userWithoutPassword } = user;
+        setCurrentUser(userWithoutPassword);
+        localStorage.setItem('pawsiq_user', JSON.stringify(userWithoutPassword));
+        setLoading(false);
+        return { success: true, userType: user.role };
+      } else {
+        setError('Invalid email or password');
+        setLoading(false);
+        return { success: false };
+      }
+    } catch (error) {
+      setError('An error occurred during login');
+      setLoading(false);
+      return { success: false };
     }
   };
 
@@ -59,10 +136,28 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('pawsiq_user');
   };
 
+  // Check if user is a provider
+  const isProvider = () => {
+    return currentUser && currentUser.role === 'provider';
+  };
+
+  // Check if user is a regular user
+  const isUser = () => {
+    return currentUser && currentUser.role === 'user';
+  };
+
+  // Check if user is an admin
+  const isAdmin = () => {
+    return currentUser && currentUser.role === 'admin';
+  };
+
   const value = {
     currentUser,
     login,
     logout,
+    isProvider,
+    isUser,
+    isAdmin,
     error,
     loading
   };
