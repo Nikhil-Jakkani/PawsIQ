@@ -287,17 +287,7 @@ const Home = () => {
       </div>
       
       {/* Scroll indicator - only visible at the top */}
-      {activeSection === 'hero' && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-30 animate-fadeInUp animation-delay-1200">
-          <div className="flex flex-col items-center">
-            <span className="text-xs text-indigo-600 font-medium mb-1">Scroll to explore</span>
-            <div className="w-6 h-10 border-2 border-indigo-600 rounded-full flex justify-center">
-              <div className="w-1 h-2 bg-indigo-600 rounded-full mt-1 animate-scrollDown"></div>
-            </div>
-          </div>
-        </div>
-      )}
-      
+            
       {/* Back to top button */}
       <button
         onClick={() => scrollToSection(heroRef)}
@@ -406,28 +396,7 @@ const Home = () => {
                     alt="Cat with owner"
                   />
                 )}
-                {selectedPet === 'bird' && (
-                  <img
-                    className="h-full w-full object-cover animate-fadeIn"
-                    src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?ixlib=rb-1.2.1&auto=format&fit=crop&w=2069&q=80"
-                    alt="Bird with owner"
-                  />
-                )}
-                {selectedPet === 'fish' && (
-                  <img
-                    className="h-full w-full object-cover animate-fadeIn"
-                    src="https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-1.2.1&auto=format&fit=crop&w=2069&q=80"
-                    alt="Aquarium with fish"
-                  />
-                )}
-                {selectedPet === 'horse' && (
-                  <img
-                    className="h-full w-full object-cover animate-fadeIn"
-                    src="https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2069&q=80"
-                    alt="Horse with owner"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-800 to-purple-900 mix-blend-multiply"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-800 to-purple-900 mix-blend-multiply"></div>
               </div>
               <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
                 <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
@@ -441,61 +410,24 @@ const Home = () => {
                 {/* Interactive pet selector */}
                 <div className="mt-8 flex justify-center space-x-4 animate-fadeInUp animation-delay-700">
                   <button 
-                    onClick={() => setSelectedPet('dog')}
-                    className={`p-3 rounded-full transition-all duration-300 ${selectedPet === 'dog' 
-                      ? 'bg-white text-indigo-600 shadow-lg transform scale-110' 
-                      : 'bg-indigo-700 text-white hover:bg-indigo-600'}`}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Select dog"
-                  >
-                    <FaDog className="h-6 w-6" />
-                  </button>
-                  <button 
-                    onClick={() => setSelectedPet('cat')}
-                    className={`p-3 rounded-full transition-all duration-300 ${selectedPet === 'cat' 
-                      ? 'bg-white text-indigo-600 shadow-lg transform scale-110' 
-                      : 'bg-indigo-700 text-white hover:bg-indigo-600'}`}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Select cat"
-                  >
-                    <FaCat className="h-6 w-6" />
-                  </button>
-                  <button 
-                    onClick={() => setSelectedPet('bird')}
-                    className={`p-3 rounded-full transition-all duration-300 ${selectedPet === 'bird' 
-                      ? 'bg-white text-indigo-600 shadow-lg transform scale-110' 
-                      : 'bg-indigo-700 text-white hover:bg-indigo-600'}`}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Select bird"
-                  >
-                    <FaKiwiBird className="h-6 w-6" />
-                  </button>
-                  <button 
-                    onClick={() => setSelectedPet('fish')}
-                    className={`p-3 rounded-full transition-all duration-300 ${selectedPet === 'fish' 
-                      ? 'bg-white text-indigo-600 shadow-lg transform scale-110' 
-                      : 'bg-indigo-700 text-white hover:bg-indigo-600'}`}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Select fish"
-                  >
-                    <FaFish className="h-6 w-6" />
-                  </button>
-                  <button 
-                    onClick={() => setSelectedPet('horse')}
-                    className={`p-3 rounded-full transition-all duration-300 ${selectedPet === 'horse' 
-                      ? 'bg-white text-indigo-600 shadow-lg transform scale-110' 
-                      : 'bg-indigo-700 text-white hover:bg-indigo-600'}`}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Select horse"
-                  >
-                    <FaHorse className="h-6 w-6" />
-                  </button>
-                </div>
+                      onClick={() => setSelectedPet('dog')}
+                      className={`p-3 rounded-full transition-all duration-300 `}
+                      onMouseEnter={() => setIsHovering(true)}
+                      onMouseLeave={() => setIsHovering(false)}
+                      aria-label="Select dog"
+                    >
+                      <FaDog className="h-6 w-6" />
+                    </button>
+                    <button 
+                      onClick={() => setSelectedPet('cat')}
+                      className={`p-3 rounded-full transition-all duration-300 `}
+                      onMouseEnter={() => setIsHovering(true)}
+                      onMouseLeave={() => setIsHovering(false)}
+                      aria-label="Select cat"
+                    >
+                      <FaCat className="h-6 w-6" />
+                    </button>
+                  </div>
                 
                 {/* Search bar */}
                 <div className="mt-10 max-w-xl mx-auto animate-fadeInUp animation-delay-900">
@@ -669,104 +601,104 @@ const Home = () => {
             </div>
             <div className="mt-12">
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '200ms' }}>
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <FaUserMd className="h-6 w-6 text-white" />
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Verified Professionals</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        All our providers undergo thorough background checks and credential verification to ensure the highest quality of care.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+  {/* Feature 1 */}
+  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '200ms' }}>
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaUserMd className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Verified Professionals</h3>
+        <p className="mt-5 text-base text-gray-500">
+          All our providers undergo thorough background checks and credential verification to ensure the highest quality of care.
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* Feature 2 */}
+  <div className="pt-6 animate-fadeInUp animation-delay-400">
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaSearch className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Easy Booking</h3>
+        <p className="mt-5 text-base text-gray-500">
+          Find and book the perfect pet care service in minutes with our intuitive search and booking system.
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* Feature 3 */}
+  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '400ms' }}>
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaCalendarAlt className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Seamless Scheduling</h3>
+        <p className="mt-5 text-base text-gray-500">
+          Manage all your pet care appointments in one place with automatic reminders and easy rescheduling.
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* Feature 4 */}
+  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '600ms' }}>
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaPaw className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Comprehensive Services</h3>
+        <p className="mt-5 text-base text-gray-500">
+          From veterinary care to grooming, training, and pet sitting - all your pet care needs in one platform.
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* Feature 5 */}
+  <div className="pt-6 animate-fadeInUp animation-delay-700">
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaShieldAlt className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Secure Payments</h3>
+        <p className="mt-5 text-base text-gray-500">
+          Pay securely through our platform with protection for both pet owners and service providers.
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* Feature 6 */}
+  <div className="pt-6 animate-fadeInUp animation-delay-800">
+    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="-mt-6">
+        <div>
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+            <FaHeadset className="h-6 w-6 text-white" />
+          </span>
+        </div>
+        <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">24/7 Support</h3>
+        <p className="mt-5 text-base text-gray-500">
+          Our friendly support team is available around the clock to help with any questions or issues.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
-                <div className="pt-6 animate-fadeInUp animation-delay-400">
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <FaSearch className="h-6 w-6 text-white" />
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Easy Booking</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Find and book the perfect pet care service in minutes with our intuitive search and booking system.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '400ms' }}>
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <FaCalendarAlt className="h-6 w-6 text-white" />
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Seamless Scheduling</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Manage all your pet care appointments in one place with automatic reminders and easy rescheduling.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`pt-6 transition-all duration-1000 transform ${animatedSections.features ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`} style={{ transitionDelay: '600ms' }}>
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <FaPaw className="h-6 w-6 text-white" />
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Comprehensive Services</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        From veterinary care to grooming, training, and pet sitting - all your pet care needs in one platform.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6 animate-fadeInUp animation-delay-700">
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <FaShieldAlt className="h-6 w-6 text-white" />
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Secure Payments</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Pay securely through our platform with protection for both pet owners and service providers.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6 animate-fadeInUp animation-delay-800">
-                  <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
-                          <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                          </svg>
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">Community & Support</h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Join our pet-loving community and get 24/7 support for all your pet care questions and concerns.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaStethoscope, FaCut, FaGraduationCap, FaDog, FaShieldAlt, FaPercentage, FaStar, FaExclamationTriangle } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   FaHome, 
@@ -11,7 +12,6 @@ import {
   FaChartBar, 
   FaBell, 
   FaCog, 
-  FaShieldAlt, 
   FaQuestionCircle,
   FaPaw,
   FaBars,
@@ -26,9 +26,6 @@ import {
   FaLock,
   FaHeadset,
   FaDatabase,
-  FaPercentage,
-  FaStar,
-  FaExclamationTriangle,
   FaEdit,
   FaCalendarCheck,
   FaFileInvoiceDollar,
@@ -98,11 +95,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       label: 'Provider Management',
       path: '/providers',
       items: [
-        { path: '/providers/onboarding', icon: <FaClipboardCheck />, label: 'Onboarding' },
+        { path: '/providers/onboarding/veterinarian', icon: <FaStethoscope />, label: 'Vet Onboarding' },
+        { path: '/providers/onboarding/groomer', icon: <FaCut />, label: 'Groomer Onboarding' },
+        { path: '/providers/onboarding/trainer', icon: <FaGraduationCap />, label: 'Trainer Onboarding' },
+        { path: '/providers/onboarding/pet-sitter', icon: <FaDog />, label: 'Pet Sitter Onboarding' },
         { path: '/providers/verification', icon: <FaShieldAlt />, label: 'Verification' },
-        { path: '/providers/commission', icon: <FaPercentage />, label: 'Commission Rates' },
-        { path: '/providers/performance', icon: <FaStar />, label: 'Ratings & Reviews' },
-        { path: '/providers/flags', icon: <FaExclamationTriangle />, label: 'Flag Providers' }
+        { path: '/providers/commission', icon: <FaPercentage />, label: 'Commission' },
+        { path: '/providers/performance', icon: <FaStar />, label: 'Performance' },
+        { path: '/providers/flags', icon: <FaExclamationTriangle />, label: 'Flags' },
       ]
     },
     {

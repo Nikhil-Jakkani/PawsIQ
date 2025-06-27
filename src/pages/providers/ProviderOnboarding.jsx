@@ -23,9 +23,9 @@ import {
 } from 'react-icons/fa';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 
-const ProviderOnboarding = () => {
+const ProviderOnboarding = ({ filterType }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const [filterTypeState, setFilterTypeState] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [sortField, setSortField] = useState('date');
   const [sortDirection, setSortDirection] = useState('desc');
@@ -50,10 +50,9 @@ const ProviderOnboarding = () => {
         app.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
         app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesType = filterType === 'all' || app.type.toLowerCase() === filterType.toLowerCase();
+      const effectiveFilterType = filterType !== 'all' ? filterType : filterTypeState;
+      const matchesType = (effectiveFilterType && effectiveFilterType !== 'all') ? app.type === effectiveFilterType : (effectiveFilterType === 'all' || !effectiveFilterType);
       const matchesStatus = filterStatus === 'all' || app.status.toLowerCase().includes(filterStatus.toLowerCase());
-      
       return matchesSearch && matchesType && matchesStatus;
     })
     .sort((a, b) => {
@@ -227,8 +226,8 @@ const ProviderOnboarding = () => {
                 <div className="flex flex-wrap gap-3">
                   <select
                     className="pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
+                    value={filterTypeState}
+                    onChange={(e) => setFilterTypeState(e.target.value)}
                   >
                     <option value="all">All Types</option>
                     <option value="veterinarian">Veterinarians</option>
@@ -508,6 +507,11 @@ const ProviderOnboarding = () => {
       </div>
     </DashboardLayout>
   );
+};
+
+// Default prop for backward compatibility
+ProviderOnboarding.defaultProps = {
+  filterType: 'all',
 };
 
 export default ProviderOnboarding;
