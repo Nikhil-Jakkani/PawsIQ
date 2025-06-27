@@ -13,7 +13,7 @@ const Login = () => {
   // Form state
   const [formData, setFormData] = useState({
     email: 'user@pawsiq.com', // Pre-filled for demo
-    password: 'user123', // Pre-filled for demo
+    password: 'user', // Pre-filled for demo
     rememberMe: false
   });
   
