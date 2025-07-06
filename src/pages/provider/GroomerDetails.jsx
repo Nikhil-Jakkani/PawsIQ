@@ -179,69 +179,32 @@ const GroomerDetails = () => {
     });
   };
   
-  // Validate form
+  
   const validateForm = () => {
     const newErrors = {};
     
-    // Grooming Qualifications validation
-    if (!formData.yearsGroomingExperience) {
-      newErrors.yearsGroomingExperience = 'Years of grooming experience is required';
-    } else if (formData.yearsGroomingExperience < 0) {
+    if (formData.yearsGroomingExperience && formData.yearsGroomingExperience < 0) {
       newErrors.yearsGroomingExperience = 'Years of experience cannot be negative';
     }
     
-    // Check if at least one specialization is selected
-    const hasSpecializations = Object.values(formData.specializations).some(value => value === true);
-    if (!hasSpecializations) {
-      newErrors.specializations = 'At least one specialization must be selected';
-    }
-    
-    // Check if "other" specialization is selected but no details provided
     if (formData.specializations.other && !formData.otherSpecializations) {
       newErrors.otherSpecializations = 'Please specify other specializations';
     }
     
-    // Check if at least one service is selected
-    const hasServices = Object.values(formData.servicesOffered).some(value => value === true);
-    if (!hasServices) {
-      newErrors.servicesOffered = 'At least one service must be selected';
-    }
-    
-    // Check if "other" service is selected but no details provided
+
     if (formData.servicesOffered.other && !formData.otherServices) {
       newErrors.otherServices = 'Please specify other services';
     }
     
-    // Check if at least one pet type is selected
-    const hasPets = Object.values(formData.petsServiced).some(value => value === true);
-    if (!hasPets) {
-      newErrors.petsServiced = 'At least one pet type must be selected';
-    }
-    
-    // Check if "other" pet type is selected but no details provided
     if (formData.petsServiced.other && !formData.otherPets) {
       newErrors.otherPets = 'Please specify other pet types';
     }
     
-    // Check if at least one service location is selected
-    const hasLocation = Object.values(formData.serviceLocation).some(value => value === true);
-    if (!hasLocation) {
-      newErrors.serviceLocation = 'At least one service location must be selected';
-    }
-    
-    // Salon details validation (if salon is selected)
+
     if (formData.serviceLocation.salon && !formData.salonDetails.maxPetsPerDay) {
       newErrors['salonDetails.maxPetsPerDay'] = 'Maximum pets per day is required for salon services';
     }
     
-    // Equipment & Products validation
-    if (!formData.equipmentUsed) {
-      newErrors.equipmentUsed = 'Equipment information is required';
-    }
-    
-    if (!formData.productsUsed) {
-      newErrors.productsUsed = 'Product information is required';
-    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -323,15 +286,17 @@ const GroomerDetails = () => {
     }
   };
   
-  // Certification options
+  // Certification options - Updated for Indian market
   const certificationOptions = [
-    'National Dog Groomers Association of America (NDGAA)',
-    'International Professional Groomers (IPG)',
-    'International Society of Canine Cosmetologists (ISCC)',
-    'National Cat Groomers Institute (NCGI)',
-    'International Certified Master Groomer (ICMG)',
-    'Certified Feline Master Groomer (CFMG)',
-    'American Kennel Club S.A.F.E. Grooming Program'
+    'Pet Grooming Certification from Indian Institutes',
+    'Professional Pet Grooming Course - India',
+    'Animal Welfare Board of India (AWBI) Training',
+    'Pet Care and Grooming Certification',
+    'International Pet Grooming Certification',
+    'Dog Grooming Workshop Certificate',
+    'Cat Grooming Specialist Certificate',
+    'Basic Pet Handling and Grooming Course',
+    'Advanced Pet Styling and Grooming'
   ];
   
   return (
@@ -432,7 +397,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label htmlFor="yearsGroomingExperience" className="block text-sm font-medium text-gray-700">
-                  Years of Grooming Experience <span className="text-red-500">*</span>
+                  Years of Grooming Experience
                 </label>
                 <div className="mt-1">
                   <input
@@ -455,7 +420,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grooming Specializations <span className="text-red-500">*</span>
+                  Grooming Specializations
                 </label>
                 
                 {errors.specializations && (
@@ -608,7 +573,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grooming Services <span className="text-red-500">*</span>
+                  Grooming Services
                 </label>
                 
                 {errors.servicesOffered && (
@@ -789,7 +754,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pet Types <span className="text-red-500">*</span>
+                  Pet Types
                 </label>
                 
                 {errors.petsServiced && (
@@ -971,7 +936,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Location <span className="text-red-500">*</span>
+                  Service Location
                 </label>
                 
                 {errors.serviceLocation && (
@@ -1102,7 +1067,7 @@ const GroomerDetails = () => {
                     
                     <div className="sm:col-span-2">
                       <label htmlFor="maxPetsPerDay" className="block text-sm font-medium text-gray-700">
-                        Maximum Pets Per Day <span className="text-red-500">*</span>
+                        Maximum Pets Per Day
                       </label>
                       <div className="mt-1">
                         <input
@@ -1135,7 +1100,7 @@ const GroomerDetails = () => {
               
               <div>
                 <label htmlFor="equipmentUsed" className="block text-sm font-medium text-gray-700">
-                  Equipment Used <span className="text-red-500">*</span>
+                  Equipment Used
                 </label>
                 <div className="mt-1">
                   <textarea
@@ -1157,7 +1122,7 @@ const GroomerDetails = () => {
               
               <div className="mt-6">
                 <label htmlFor="productsUsed" className="block text-sm font-medium text-gray-700">
-                  Products Used <span className="text-red-500">*</span>
+                  Products Used
                 </label>
                 <div className="mt-1">
                   <textarea

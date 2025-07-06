@@ -442,7 +442,7 @@ const Home = () => {
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
                           className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          placeholder="Enter your location"
+                          placeholder="Enter your city (e.g., Mumbai, Delhi)"
                           onFocus={() => setIsHovering(true)}
                           onBlur={() => setIsHovering(false)}
                         />
@@ -880,20 +880,20 @@ const Home = () => {
                 {/* Popular locations */}
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-sm">
                   <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">New York</span>
-                    <div className="text-xs text-gray-500">500+ providers</div>
+                    <span className="font-medium text-indigo-800">Mumbai</span>
+                    <div className="text-xs text-gray-500">200+ providers</div>
                   </div>
                   <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Los Angeles</span>
-                    <div className="text-xs text-gray-500">450+ providers</div>
+                    <span className="font-medium text-indigo-800">Delhi</span>
+                    <div className="text-xs text-gray-500">180+ providers</div>
                   </div>
                   <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Chicago</span>
-                    <div className="text-xs text-gray-500">350+ providers</div>
+                    <span className="font-medium text-indigo-800">Bangalore</span>
+                    <div className="text-xs text-gray-500">150+ providers</div>
                   </div>
                   <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Houston</span>
-                    <div className="text-xs text-gray-500">300+ providers</div>
+                    <span className="font-medium text-indigo-800">Pune</span>
+                    <div className="text-xs text-gray-500">120+ providers</div>
                   </div>
                 </div>
                 
@@ -2071,7 +2071,7 @@ const Home = () => {
           <div className="mt-12 border-t border-gray-700 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-base text-gray-400">
-                &copy; 2023 PawsIQ, Inc. All rights reserved.
+                &copy; 2025 PawsIQ, Inc. All rights reserved.
               </p>
               <div className="mt-4 md:mt-0 flex items-center space-x-4">
                 <a href="#" className="text-gray-400 hover:text-indigo-300 transition-colors duration-300 text-sm" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>

@@ -194,45 +194,29 @@ const PetSitterDetails = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    // Pet Sitting Qualifications validation
-    if (!formData.yearsPetSittingExperience) {
-      newErrors.yearsPetSittingExperience = 'Years of pet sitting experience is required';
-    } else if (formData.yearsPetSittingExperience < 0) {
+    // Pet Sitting Qualifications validation - Made optional for Indian market
+    if (formData.yearsPetSittingExperience && formData.yearsPetSittingExperience < 0) {
       newErrors.yearsPetSittingExperience = 'Years of experience cannot be negative';
     }
     
-    // Check if at least one service is selected
-    const hasServices = Object.values(formData.servicesOffered).some(value => value === true);
-    if (!hasServices) {
-      newErrors.servicesOffered = 'At least one service must be selected';
-    }
+    // Services are now optional - removed mandatory validation
     
     // Check if "other" service is selected but no details provided
     if (formData.servicesOffered.other && !formData.otherServices) {
       newErrors.otherServices = 'Please specify other services';
     }
     
-    // Check if at least one pet type is selected
-    const hasPets = Object.values(formData.petsServiced).some(value => value === true);
-    if (!hasPets) {
-      newErrors.petsServiced = 'At least one pet type must be selected';
-    }
+    // Pet types are now optional - removed mandatory validation
     
     // Check if "other" pet type is selected but no details provided
     if (formData.petsServiced.other && !formData.otherPets) {
       newErrors.otherPets = 'Please specify other pet types';
     }
     
-    // Check if at least one day is available
-    const hasAvailability = Object.values(formData.availability).some(day => day.available === true);
-    if (!hasAvailability) {
-      newErrors.availability = 'You must be available on at least one day';
-    }
+    // Availability is now optional - removed mandatory validation
     
-    // Validate max pets per day
-    if (!formData.maxPetsPerDay) {
-      newErrors.maxPetsPerDay = 'Maximum pets per day is required';
-    } else if (formData.maxPetsPerDay < 1) {
+    // Max pets per day is now optional - removed mandatory validation
+    if (formData.maxPetsPerDay && formData.maxPetsPerDay < 1) {
       newErrors.maxPetsPerDay = 'Maximum pets per day must be at least 1';
     }
     
@@ -330,15 +314,17 @@ const PetSitterDetails = () => {
     }
   };
   
-  // Certification options
+  // Certification options - Updated for Indian market
   const certificationOptions = [
-    'Pet Sitters International (PSI)',
-    'National Association of Professional Pet Sitters (NAPPS)',
-    'Professional Pet Sitters Certification',
-    'Pet First Aid & CPR Certification',
-    'Fear Free Certification',
-    'Dog Behavior Certification',
-    'Cat Behavior Certification'
+    'Pet Care and Handling Certification - India',
+    'Animal Welfare Board of India (AWBI) Training',
+    'Pet First Aid Certification',
+    'Basic Pet Care Course',
+    'Dog Behavior and Training Certificate',
+    'Cat Care Specialist Certificate',
+    'Pet Sitting and Daycare Training',
+    'Animal Handling and Safety Course',
+    'Pet Emergency Response Training'
   ];
   
   // Days of the week for availability
