@@ -154,11 +154,11 @@ const ProviderSignUp = () => {
       newErrors.lastName = 'Last name is required';
     }
     
-    // Phone validation
+    // Phone validation - Updated for Indian mobile numbers
     if (!formData.phoneNumber) {
       newErrors.phoneNumber = 'Phone number is required';
-    } else if (!/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = 'Phone number is invalid';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phoneNumber.replace(/\s+/g, ''))) {
+      newErrors.phoneNumber = 'Please enter a valid 10-digit Indian mobile number';
     }
     
     // Provider type validation
@@ -425,12 +425,15 @@ const ProviderSignUp = () => {
                   className={`pl-10 block w-full pr-3 py-2 border ${
                     errors.phoneNumber ? 'border-red-300' : 'border-gray-300'
                   } rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                  placeholder="(555) 123-4567"
+                  placeholder="9876543210"
                 />
               </div>
               {errors.phoneNumber && (
                 <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Enter your 10-digit Indian mobile number (starting with 6, 7, 8, or 9)
+              </p>
             </div>
 
             {/* Provider Type */}

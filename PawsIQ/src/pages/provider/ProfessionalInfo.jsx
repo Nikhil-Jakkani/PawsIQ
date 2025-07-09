@@ -49,14 +49,17 @@ const ProfessionalInfo = () => {
     profilePhoto: null,
     profilePhotoPreview: null,
     
+    // Provider Type (Business or Freelancer)
+    providerCategory: 'freelancer', // 'business' or 'freelancer'
+    
     // Business Information
     businessName: '',
     businessAddress: {
       street: '',
       city: '',
       state: '',
-      zipCode: '',
-      country: 'United States'
+      pinCode: '',
+      country: 'India'
     },
     businessPhone: '',
     businessWebsite: '',
@@ -201,6 +204,10 @@ const ProfessionalInfo = () => {
   const validateForm = () => {
     const newErrors = {};
     
+    // Get provider type from registration data
+    const registrationData = JSON.parse(localStorage.getItem('provider_registration') || '{}');
+    const isVeterinarian = registrationData.providerType === 'Veterinarian';
+    
     // Professional Information validation
     if (!formData.displayName) {
       newErrors.displayName = 'Professional name is required';
@@ -222,30 +229,32 @@ const ProfessionalInfo = () => {
       newErrors.bio = 'Bio must be at least 50 characters';
     }
     
-    // Business Information validation
-    if (!formData.businessName) {
-      newErrors.businessName = 'Business name is required';
-    }
-    
-    if (!formData.businessAddress.street) {
-      newErrors['businessAddress.street'] = 'Street address is required';
-    }
-    
-    if (!formData.businessAddress.city) {
-      newErrors['businessAddress.city'] = 'City is required';
-    }
-    
-    if (!formData.businessAddress.state) {
-      newErrors['businessAddress.state'] = 'State is required';
-    }
-    
-    if (!formData.businessAddress.zipCode) {
-      newErrors['businessAddress.zipCode'] = 'ZIP code is required';
-    }
-    
-    if (!formData.businessPhone && !formData.businessWebsite) {
-      newErrors.businessPhone = 'At least one contact method is required';
-      newErrors.businessWebsite = 'At least one contact method is required';
+    // Business Information validation - Only required for veterinarians or if provider category is 'business'
+    if (isVeterinarian || formData.providerCategory === 'business') {
+      if (!formData.businessName) {
+        newErrors.businessName = 'Business name is required';
+      }
+      
+      if (!formData.businessAddress.street) {
+        newErrors['businessAddress.street'] = 'Street address is required';
+      }
+      
+      if (!formData.businessAddress.city) {
+        newErrors['businessAddress.city'] = 'City is required';
+      }
+      
+      if (!formData.businessAddress.state) {
+        newErrors['businessAddress.state'] = 'State is required';
+      }
+      
+      if (!formData.businessAddress.pinCode) {
+        newErrors['businessAddress.pinCode'] = 'PIN code is required';
+      }
+      
+      if (!formData.businessPhone && !formData.businessWebsite) {
+        newErrors.businessPhone = 'At least one contact method is required';
+        newErrors.businessWebsite = 'At least one contact method is required';
+      }
     }
     
     // Check if at least one day has business hours
@@ -569,7 +578,87 @@ const ProfessionalInfo = () => {
               </div>
             </section>
             
+            {/* Provider Category Selection */}
+            <section>
+              <h3 className="text-md font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                Provider Category
+              </h3>
+              
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  How would you like to operate?
+                </label>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div 
+                    className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                      formData.providerCategory === 'freelancer' 
+                        ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500' 
+                        : 'border-gray-300 hover:border-indigo-300'
+                    }`}
+                    onClick={() => setFormData(prev => ({ ...prev, providerCategory: 'freelancer' }))}
+                  >
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="freelancer"
+                          name="providerCategory"
+                          type="radio"
+                          value="freelancer"
+                          checked={formData.providerCategory === 'freelancer'}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor="freelancer" className="font-medium text-gray-700">
+                          Individual/Freelancer
+                        </label>
+                        <p className="text-gray-500">
+                          Work independently without a business setup
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                      formData.providerCategory === 'business' 
+                        ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500' 
+                        : 'border-gray-300 hover:border-indigo-300'
+                    }`}
+                    onClick={() => setFormData(prev => ({ ...prev, providerCategory: 'business' }))}
+                  >
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="business"
+                          name="providerCategory"
+                          type="radio"
+                          value="business"
+                          checked={formData.providerCategory === 'business'}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor="business" className="font-medium text-gray-700">
+                          Business/Clinic
+                        </label>
+                        <p className="text-gray-500">
+                          Operate as a registered business entity
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             {/* Business Information Section */}
+            {(formData.providerCategory === 'business' || (() => {
+              const registrationData = JSON.parse(localStorage.getItem('provider_registration') || '{}');
+              return registrationData.providerType === 'Veterinarian';
+            })()) && (
             <section>
               <h3 className="text-md font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
                 Business Information
@@ -658,20 +747,20 @@ const ProfessionalInfo = () => {
                     </div>
                     
                     <div className="sm:col-span-1">
-                      <label htmlFor="zipCode" className="sr-only">ZIP Code</label>
+                      <label htmlFor="pinCode" className="sr-only">PIN Code</label>
                       <input
                         type="text"
-                        id="zipCode"
-                        name="zipCode"
-                        value={formData.businessAddress.zipCode}
-                        onChange={(e) => handleAddressChange('zipCode', e.target.value)}
+                        id="pinCode"
+                        name="pinCode"
+                        value={formData.businessAddress.pinCode}
+                        onChange={(e) => handleAddressChange('pinCode', e.target.value)}
                         className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                          errors['businessAddress.zipCode'] ? 'border-red-300' : ''
+                          errors['businessAddress.pinCode'] ? 'border-red-300' : ''
                         }`}
-                        placeholder="ZIP"
+                        placeholder="PIN Code"
                       />
-                      {errors['businessAddress.zipCode'] && (
-                        <p className="mt-1 text-sm text-red-600">{errors['businessAddress.zipCode']}</p>
+                      {errors['businessAddress.pinCode'] && (
+                        <p className="mt-1 text-sm text-red-600">{errors['businessAddress.pinCode']}</p>
                       )}
                     </div>
                   </div>
@@ -813,7 +902,7 @@ const ProfessionalInfo = () => {
                 </div>
               </div>
             </section>
-            
+            )}
             {/* Social Media Section */}
             <section>
               <h3 className="text-md font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">

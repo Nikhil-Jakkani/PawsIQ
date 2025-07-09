@@ -75,6 +75,9 @@ import KnowledgeBase from './pages/support/KnowledgeBase.jsx';
 import SupportDisputeResolution from './pages/support/DisputeResolution.jsx';
 import TicketAssignment from './pages/support/TicketAssignment.jsx';
 import { useAuth } from './context/AuthContext';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import PWAUpdateNotification from './components/PWAUpdateNotification';
+import OfflineStatus from './components/OfflineStatus';
 import './App.css'; 
 
 // Protected route component for admin
@@ -102,6 +105,9 @@ function App() {
   const { currentUser } = useAuth();
   return (
     <div className="app-container w-full h-full">
+      <PWAInstallPrompt />
+      <PWAUpdateNotification />
+      <OfflineStatus />
       <Router>
         <Routes>
           {/* Main Routes */}

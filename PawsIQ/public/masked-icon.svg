@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simple monochrome version for Safari pinned tab -->
+  <g fill="black">
+    <!-- Main pad -->
+    <ellipse cx="256" cy="320" rx="45" ry="55" />
+    
+    <!-- Toe pads -->
+    <ellipse cx="200" cy="250" rx="25" ry="35" transform="rotate(-20 200 250)" />
+    <ellipse cx="230" cy="210" rx="25" ry="35" transform="rotate(-5 230 210)" />
+    <ellipse cx="282" cy="210" rx="25" ry="35" transform="rotate(5 282 210)" />
+    <ellipse cx="312" cy="250" rx="25" ry="35" transform="rotate(20 312 250)" />
+  </g>
+</svg>

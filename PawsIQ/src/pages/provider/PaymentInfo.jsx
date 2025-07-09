@@ -43,8 +43,8 @@ const PaymentInfo = () => {
     // Bank Account Information
     bankAccount: {
       accountHolderName: '',
-      accountType: 'checking', // 'checking' or 'savings'
-      routingNumber: '',
+      accountType: 'savings', // 'current' or 'savings'
+      ifscCode: '',
       accountNumber: '',
       confirmAccountNumber: ''
     },
@@ -60,15 +60,15 @@ const PaymentInfo = () => {
     
     // Tax Information
     taxInformation: {
-      taxIdType: 'ssn', // 'ssn' or 'ein'
+      taxIdType: 'pan', // 'pan' or 'gst'
       taxId: '',
-      businessType: 'individual', // 'individual', 'soleProprietor', 'llc', 'corporation'
+      businessType: 'individual', // 'individual', 'soleProprietor', 'partnership', 'privateLimited'
       legalBusinessName: '',
       businessAddress: {
         street: '',
         city: '',
         state: '',
-        zipCode: ''
+        pinCode: ''
       }
     },
     
@@ -304,8 +304,8 @@ const PaymentInfo = () => {
         newErrors.taxInformation_businessAddress_state = 'State is required';
       }
       
-      if (!formData.taxInformation.businessAddress.zipCode) {
-        newErrors.taxInformation_businessAddress_zipCode = 'ZIP code is required';
+      if (!formData.taxInformation.businessAddress.pinCode) {
+        newErrors.taxInformation_businessAddress_pinCode = 'PIN code is required';
       }
     }
     
@@ -641,16 +641,16 @@ const PaymentInfo = () => {
                     <div className="mt-1 flex space-x-4">
                       <div className="flex items-center">
                         <input
-                          id="accountTypeChecking"
+                          id="accountTypeCurrent"
                           name="bankAccount.accountType"
                           type="radio"
-                          value="checking"
-                          checked={formData.bankAccount.accountType === 'checking'}
+                          value="current"
+                          checked={formData.bankAccount.accountType === 'current'}
                           onChange={handleChange}
                           className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                         />
-                        <label htmlFor="accountTypeChecking" className="ml-2 block text-sm text-gray-700">
-                          Checking
+                        <label htmlFor="accountTypeCurrent" className="ml-2 block text-sm text-gray-700">
+                          Current Account
                         </label>
                       </div>
                       <div className="flex items-center">
@@ -664,7 +664,7 @@ const PaymentInfo = () => {
                           className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                         />
                         <label htmlFor="accountTypeSavings" className="ml-2 block text-sm text-gray-700">
-                          Savings
+                          Savings Account
                         </label>
                       </div>
                     </div>
@@ -672,7 +672,7 @@ const PaymentInfo = () => {
                   
                   <div>
                     <label htmlFor="routingNumber" className="block text-sm font-medium text-gray-700">
-                      Routing Number <span className="text-red-500">*</span>
+                      IFSC Code <span className="text-red-500">*</span>
                     </label>
                     <div className="mt-1">
                       <input
@@ -890,30 +890,30 @@ const PaymentInfo = () => {
                   <div className="flex space-x-4">
                     <div className="flex items-center">
                       <input
-                        id="taxIdTypeSsn"
+                        id="taxIdTypePan"
                         name="taxInformation.taxIdType"
                         type="radio"
-                        value="ssn"
-                        checked={formData.taxInformation.taxIdType === 'ssn'}
+                        value="pan"
+                        checked={formData.taxInformation.taxIdType === 'pan'}
                         onChange={handleChange}
                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                       />
-                      <label htmlFor="taxIdTypeSsn" className="ml-2 block text-sm text-gray-700">
-                        Social Security Number (SSN)
+                      <label htmlFor="taxIdTypePan" className="ml-2 block text-sm text-gray-700">
+                        PAN (Permanent Account Number)
                       </label>
                     </div>
                     <div className="flex items-center">
                       <input
-                        id="taxIdTypeEin"
+                        id="taxIdTypeGst"
                         name="taxInformation.taxIdType"
                         type="radio"
-                        value="ein"
-                        checked={formData.taxInformation.taxIdType === 'ein'}
+                        value="gst"
+                        checked={formData.taxInformation.taxIdType === 'gst'}
                         onChange={handleChange}
                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                       />
-                      <label htmlFor="taxIdTypeEin" className="ml-2 block text-sm text-gray-700">
-                        Employer Identification Number (EIN)
+                      <label htmlFor="taxIdTypeGst" className="ml-2 block text-sm text-gray-700">
+                        GST Number (for registered businesses)
                       </label>
                     </div>
                   </div>
@@ -921,7 +921,7 @@ const PaymentInfo = () => {
                 
                 <div className="sm:col-span-2">
                   <label htmlFor="taxId" className="block text-sm font-medium text-gray-700">
-                    {formData.taxInformation.taxIdType === 'ssn' ? 'Social Security Number (SSN)' : 'Employer Identification Number (EIN)'} <span className="text-red-500">*</span>
+                    {formData.taxInformation.taxIdType === 'pan' ? 'PAN Number' : 'GST Number'} <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -936,8 +936,8 @@ const PaymentInfo = () => {
                       className={`pl-10 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
                         errors.taxInformation_taxId ? 'border-red-300' : ''
                       }`}
-                      placeholder={formData.taxInformation.taxIdType === 'ssn' ? '123-45-6789' : '12-3456789'}
-                      maxLength={formData.taxInformation.taxIdType === 'ssn' ? 11 : 10}
+                      placeholder={formData.taxInformation.taxIdType === 'pan' ? 'ABCDE1234F' : '12ABCDE1234F1Z5'}
+                      maxLength={formData.taxInformation.taxIdType === 'pan' ? 10 : 15}
                     />
                   </div>
                   {errors.taxInformation_taxId ? (
@@ -979,35 +979,35 @@ const PaymentInfo = () => {
                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                       />
                       <label htmlFor="businessTypeSoleProprietor" className="ml-2 block text-sm text-gray-700">
-                        Sole Proprietor
+                        Sole Proprietorship
                       </label>
                     </div>
                     <div className="flex items-center">
                       <input
-                        id="businessTypeLlc"
+                        id="businessTypePartnership"
                         name="taxInformation.businessType"
                         type="radio"
-                        value="llc"
-                        checked={formData.taxInformation.businessType === 'llc'}
+                        value="partnership"
+                        checked={formData.taxInformation.businessType === 'partnership'}
                         onChange={handleChange}
                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                       />
-                      <label htmlFor="businessTypeLlc" className="ml-2 block text-sm text-gray-700">
-                        LLC
+                      <label htmlFor="businessTypePartnership" className="ml-2 block text-sm text-gray-700">
+                        Partnership
                       </label>
                     </div>
                     <div className="flex items-center">
                       <input
-                        id="businessTypeCorporation"
+                        id="businessTypePrivateLimited"
                         name="taxInformation.businessType"
                         type="radio"
-                        value="corporation"
-                        checked={formData.taxInformation.businessType === 'corporation'}
+                        value="privateLimited"
+                        checked={formData.taxInformation.businessType === 'privateLimited'}
                         onChange={handleChange}
                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                       />
-                      <label htmlFor="businessTypeCorporation" className="ml-2 block text-sm text-gray-700">
-                        Corporation
+                      <label htmlFor="businessTypePrivateLimited" className="ml-2 block text-sm text-gray-700">
+                        Private Limited Company
                       </label>
                     </div>
                   </div>
@@ -1100,20 +1100,20 @@ const PaymentInfo = () => {
                         </div>
                         
                         <div className="sm:col-span-1">
-                          <label htmlFor="zipCode" className="sr-only">ZIP Code</label>
+                          <label htmlFor="pinCode" className="sr-only">PIN Code</label>
                           <input
                             type="text"
-                            id="zipCode"
-                            name="taxInformation.businessAddress.zipCode"
-                            value={formData.taxInformation.businessAddress.zipCode}
+                            id="pinCode"
+                            name="taxInformation.businessAddress.pinCode"
+                            value={formData.taxInformation.businessAddress.pinCode}
                             onChange={handleChange}
                             className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                              errors.taxInformation_businessAddress_zipCode ? 'border-red-300' : ''
+                              errors.taxInformation_businessAddress_pinCode ? 'border-red-300' : ''
                             }`}
-                            placeholder="ZIP"
+                            placeholder="PIN Code"
                           />
-                          {errors.taxInformation_businessAddress_zipCode && (
-                            <p className="mt-1 text-sm text-red-600">{errors.taxInformation_businessAddress_zipCode}</p>
+                          {errors.taxInformation_businessAddress_pinCode && (
+                            <p className="mt-1 text-sm text-red-600">{errors.taxInformation_businessAddress_pinCode}</p>
                           )}
                         </div>
                       </div>

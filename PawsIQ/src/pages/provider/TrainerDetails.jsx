@@ -168,45 +168,23 @@ const TrainerDetails = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    // Training Qualifications validation
-    if (!formData.trainingMethodology) {
-      newErrors.trainingMethodology = 'Training methodology is required';
-    }
-    
-    if (!formData.yearsTrainingExperience) {
-      newErrors.yearsTrainingExperience = 'Years of training experience is required';
-    } else if (formData.yearsTrainingExperience < 0) {
+    // Training Qualifications validation - Made optional for Indian market
+    if (formData.yearsTrainingExperience && formData.yearsTrainingExperience < 0) {
       newErrors.yearsTrainingExperience = 'Years of experience cannot be negative';
     }
     
-    // Check if at least one specialization is selected
-    const hasSpecializations = Object.values(formData.specializations).some(value => value === true);
-    if (!hasSpecializations) {
-      newErrors.specializations = 'At least one specialization must be selected';
-    }
+    // Specializations are now optional - removed mandatory validation
     
     // Check if "other" specialization is selected but no details provided
     if (formData.specializations.other && !formData.otherSpecializations) {
       newErrors.otherSpecializations = 'Please specify other specializations';
     }
     
-    // Check if at least one training setting is selected
-    const hasTrainingSettings = Object.values(formData.trainingSettings).some(value => value === true);
-    if (!hasTrainingSettings) {
-      newErrors.trainingSettings = 'At least one training setting must be selected';
-    }
+    // Training settings are now optional - removed mandatory validation
     
-    // Check if at least one age group is selected
-    const hasAgeGroups = Object.values(formData.ageGroups).some(value => value === true);
-    if (!hasAgeGroups) {
-      newErrors.ageGroups = 'At least one age group must be selected';
-    }
+    // Age groups are now optional - removed mandatory validation
     
-    // Check if at least one dog size is selected
-    const hasDogSizes = Object.values(formData.dogSizes).some(value => value === true);
-    if (!hasDogSizes) {
-      newErrors.dogSizes = 'At least one dog size must be selected';
-    }
+    // Dog sizes are now optional - removed mandatory validation
     
     // Facility validation (if applicable)
     if (formData.hasFacility) {
@@ -312,17 +290,18 @@ const TrainerDetails = () => {
     }
   };
   
-  // Certification options
+  // Certification options - Updated for Indian market
   const certificationOptions = [
-    'Certified Professional Dog Trainer (CPDT-KA)',
-    'Certified Dog Behavior Consultant (CDBC)',
-    'Karen Pryor Academy Certified Training Partner (KPA CTP)',
-    'International Association of Animal Behavior Consultants (IAABC)',
-    'Association of Professional Dog Trainers (APDT)',
-    'Animal Behavior College Certified Dog Trainer (ABCDT)',
-    'Victoria Stilwell Academy for Dog Training & Behavior',
-    'Certification Council for Professional Dog Trainers (CCPDT)',
-    'AKC Canine Good Citizen Evaluator'
+    'Professional Dog Training Certification - India',
+    'Animal Behavior and Training Certificate',
+    'Kennel Club of India (KCI) Training Certification',
+    'Pet Training and Behavior Modification Course',
+    'Canine Behavior Consultant Certification',
+    'Dog Obedience Training Certificate',
+    'Service Dog Training Certification',
+    'Animal Welfare Board of India (AWBI) Training',
+    'Pet Psychology and Behavior Course',
+    'Advanced Dog Training Specialist Certificate'
   ];
   
   // Training methodology options

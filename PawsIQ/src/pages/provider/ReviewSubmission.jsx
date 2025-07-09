@@ -196,15 +196,6 @@ const ReviewSubmission = () => {
     }
   };
   
-  // Format date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
   
   // Mask sensitive information
   const maskSensitiveInfo = (text, showLast = 4) => {
@@ -367,7 +358,7 @@ const ReviewSubmission = () => {
                         <div className="sm:col-span-2">
                           <dt className="text-sm font-medium text-gray-500">Business Address</dt>
                           <dd className="mt-1 text-sm text-gray-900">
-                            {professionalInfo.businessAddress.street}, {professionalInfo.businessAddress.city}, {professionalInfo.businessAddress.state} {professionalInfo.businessAddress.zipCode}
+                            {professionalInfo.businessAddress.street}, {professionalInfo.businessAddress.city}, {professionalInfo.businessAddress.state} {professionalInfo.businessAddress.pinCode}
                           </dd>
                         </div>
                         <div className="sm:col-span-2">

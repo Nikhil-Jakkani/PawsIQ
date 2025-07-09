@@ -52,30 +52,30 @@ const DocumentUpload = () => {
       case 'Veterinarian':
         requiredDocs = [
           ...requiredDocs,
-          { id: 'veterinaryLicense', label: 'Veterinary License', required: true, description: 'Your current veterinary license' },
-          { id: 'deaRegistration', label: 'DEA Registration', required: false, description: 'If you prescribe controlled substances' },
-          { id: 'professionalLiability', label: 'Professional Liability Insurance', required: true, description: 'Proof of current malpractice insurance' }
+          { id: 'veterinaryLicense', label: 'Veterinary License', required: true, description: 'Your current veterinary license from VCI' },
+          { id: 'stateCouncilRegistration', label: 'State Veterinary Council Registration', required: true, description: 'Your state veterinary council registration' },
+          { id: 'professionalLiability', label: 'Professional Liability Insurance', required: false, description: 'Proof of current malpractice insurance (optional)' }
         ];
         break;
       case 'Trainer':
         requiredDocs = [
           ...requiredDocs,
           { id: 'certifications', label: 'Training Certifications', required: false, description: 'Any professional training certifications you hold' },
-          { id: 'liabilityInsurance', label: 'Liability Insurance', required: true, description: 'Proof of current liability insurance' }
+          { id: 'liabilityInsurance', label: 'Liability Insurance', required: false, description: 'Proof of current liability insurance (optional)' }
         ];
         break;
       case 'Groomer':
         requiredDocs = [
           ...requiredDocs,
           { id: 'groomerCertifications', label: 'Grooming Certifications', required: false, description: 'Any professional grooming certifications you hold' },
-          { id: 'liabilityInsurance', label: 'Liability Insurance', required: true, description: 'Proof of current liability insurance' }
+          { id: 'liabilityInsurance', label: 'Liability Insurance', required: false, description: 'Proof of current liability insurance (optional)' }
         ];
         break;
       case 'Pet Sitter':
         requiredDocs = [
           ...requiredDocs,
           { id: 'bondingInsurance', label: 'Bonding Insurance', required: false, description: 'If you are bonded' },
-          { id: 'liabilityInsurance', label: 'Liability Insurance', required: true, description: 'Proof of current liability insurance' },
+          { id: 'liabilityInsurance', label: 'Liability Insurance', required: false, description: 'Proof of current liability insurance (optional)' },
           { id: 'backgroundCheck', label: 'Background Check', required: false, description: 'Recent background check results if available' }
         ];
         break;

@@ -9,7 +9,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "clean": "rm -rf node_modules/.vite"
+    "preview:pwa": "vite preview --port 4173",
+    "clean": "rm -rf node_modules/.vite",
+    "pwa:dev": "vite --host"
   },
   "dependencies": {
     "chart.js": "^4.4.0",
@@ -17,7 +19,9 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "react-router-dom": "^6.14.2"
+    "react-router-dom": "^6.14.2",
+    "vite-plugin-pwa": "^1.0.1",
+    "workbox-window": "^7.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^8.44.0",
