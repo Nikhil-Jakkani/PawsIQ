@@ -544,7 +544,7 @@ const Home = () => {
                 
                 {/* Contact info */}
                 <div className="mt-4 text-center text-indigo-200 text-sm animate-fadeInUp animation-delay-1100">
-                  <p>Customer Support: <a href="tel:+18005551234" className="font-medium hover:text-white transition-colors duration-300">1-800-555-1234</a> • <a href="mailto:support@pawsiq.com" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.com</a></p>
+                  <p>Customer Support: <a href="tel: +91 6363047838" className="font-medium hover:text-white transition-colors duration-300">+91 6363047838</a> • <a href="mailto:support@pawsiq.in" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.in</a></p>
                 </div>
                 
                 {/* Scroll down button */}
@@ -1557,8 +1557,8 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Customer Support</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        <a href="tel:+18005551234" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
-                          1-800-555-1234
+                        <a href="tel: +91 6363047838" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                          +91 6363047838
                         </a><br />
                         Mon-Fri: 8am-8pm EST<br />
                         Sat-Sun: 9am-5pm EST
@@ -1575,15 +1575,15 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Email Us</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        <a href="mailto:support@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
-                          support@pawsiq.com
+                        <a href="mailto:support@pawsiq.in" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                          support@pawsiq.in
                         </a><br />
-                        <a href="mailto:providers@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                        {/* <a href="mailto:providers@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                           providers@pawsiq.com
                         </a> (for service providers)<br />
                         <a href="mailto:press@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                           press@pawsiq.com
-                        </a> (for media inquiries)
+                        </a> (for media inquiries) */}
                       </p>
                     </div>
                   </div>
