@@ -105,7 +105,7 @@ const Home = () => {
       block: 'start'
     });
   };
-  
+
   // Check if element is in viewport
   const isInViewport = (element, offset = 100) => {
     if (!element) return false;
@@ -261,7 +261,58 @@ const Home = () => {
   };
   
   return (
-    <div className="bg-white relative overflow-y-auto scrollbar-pet h-full w-full">
+    <>
+      {/* Coming Soon Button */}
+      <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+        <div 
+          className="group relative bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer animate-pulse hover:animate-none"
+          onClick={() => alert('🐾 PawsIQ is coming soon! Get ready for the ultimate pet care experience! 🐾')}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          {/* Animated paw prints on hover */}
+          <div className={`absolute inset-0 overflow-hidden rounded-full transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="absolute top-1 left-2 text-white text-opacity-30 text-xs animate-bounce">
+              <FaPaw />
+            </div>
+            <div className="absolute bottom-1 right-2 text-white text-opacity-30 text-xs animate-bounce" style={{animationDelay: '0.5s'}}>
+              <FaPaw />
+            </div>
+          </div>
+          
+          {/* Main content */}
+          <div className="flex items-center space-x-3 relative z-30">
+            <div className="text-white text-lg animate-bounce">
+              <FaDog />
+            </div>
+            <span className="text-white font-bold text-base whitespace-nowrap">
+              🐾 Coming Soon
+            </span>
+            <div className="text-white text-lg animate-bounce" style={{animationDelay: '0.3s'}}>
+              <FaCat />
+            </div>
+          </div>
+         
+          {/* Hover tooltip */}
+          <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 transition-all duration-300 ${
+            isHovering ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+          }`}>
+            <div className="bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
+              Click for more info! 🐾
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-gray-800"></div>
+            </div>
+          </div>
+          
+          {/* Floating heart on hover */}
+          <div className={`absolute -top-2 -right-2 text-pink-300 text-xs transition-all duration-300 ${
+            isHovering ? 'opacity-100 animate-ping' : 'opacity-0'
+          }`}>
+            <FaRegHeart />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white relative overflow-y-auto scrollbar-pet h-full w-full">
       
       {/* Scroll progress indicator */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
@@ -544,7 +595,7 @@ const Home = () => {
                 
                 {/* Contact info */}
                 <div className="mt-4 text-center text-indigo-200 text-sm animate-fadeInUp animation-delay-1100">
-                  <p>Customer Support: <a href="tel:+18005551234" className="font-medium hover:text-white transition-colors duration-300">1-800-555-1234</a> • <a href="mailto:support@pawsiq.com" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.com</a></p>
+                  <p>Customer Support: <a href="tel: +91 6363047838" className="font-medium hover:text-white transition-colors duration-300">+91 6363047838</a> • <a href="mailto:support@pawsiq.in" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.in</a></p>
                 </div>
                 
                 {/* Scroll down button */}
@@ -1509,15 +1560,15 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Our Headquarters</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        123 Pet Care Avenue<br />
-                        Suite 456<br />
-                        San Francisco, CA 94107
+                        27th Main Rd HSR Layout, <br />
+                        Bangalore,<br />
+                        India 560102
                       </p>
                       
                       {/* Interactive map */}
                       <div className="mt-4 h-48 bg-gray-200 rounded-lg overflow-hidden shadow-md relative">
                         <img 
-                          src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+4f46e5(122.4194,37.7749)/122.4194,37.7749,13,0/400x200@2x?access_token=pk.placeholder" 
+                          src="https://www.google.com/maps/place/27th+Main+Rd,+Bengaluru,+Karnataka/@12.9119202,77.651873,16z/data=!3m1!4b1!4m6!3m5!1s0x3bae1483292c815f:0x2078ab134177b75b!8m2!3d12.9119202!4d77.651873!16s%2Fg%2F1tzvt_79?entry=ttu&g_ep=EgoyMDI1MDcwOC4wIKXMDSoASAFQAw%3D%3D" 
                           alt="Map of PawsIQ headquarters" 
                           className="w-full h-full object-cover"
                         />
@@ -1531,7 +1582,7 @@ const Home = () => {
                         </div>
                         <div className="absolute bottom-2 right-2">
                           <a 
-                            href="https://maps.google.com/?q=San+Francisco,+CA+94107" 
+                            href="https://www.google.com/maps/place/27th+Main+Rd,+Bengaluru,+Karnataka/@12.9119202,77.651873,16z/data=!3m1!4b1!4m6!3m5!1s0x3bae1483292c815f:0x2078ab134177b75b!8m2!3d12.9119202!4d77.651873!16s%2Fg%2F1tzvt_79?entry=ttu&g_ep=EgoyMDI1MDcwOC4wIKXMDSoASAFQAw%3D%3D" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="bg-white rounded-full p-2 shadow-md text-indigo-600 hover:text-indigo-800 transition-colors duration-300 text-sm"
@@ -1557,8 +1608,8 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Customer Support</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        <a href="tel:+18005551234" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
-                          1-800-555-1234
+                        <a href="tel: +91 6363047838" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                          +91 6363047838
                         </a><br />
                         Mon-Fri: 8am-8pm EST<br />
                         Sat-Sun: 9am-5pm EST
@@ -1575,15 +1626,15 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Email Us</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        <a href="mailto:support@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
-                          support@pawsiq.com
+                        <a href="mailto:support@pawsiq.in" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                          support@pawsiq.in
                         </a><br />
-                        <a href="mailto:providers@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
+                        {/* <a href="mailto:providers@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                           providers@pawsiq.com
                         </a> (for service providers)<br />
                         <a href="mailto:press@pawsiq.com" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                           press@pawsiq.com
-                        </a> (for media inquiries)
+                        </a> (for media inquiries) */}
                       </p>
                     </div>
                   </div>
@@ -2091,7 +2142,8 @@ const Home = () => {
         </div>
       </footer>
     </div>
+    </>
   );
-};
+}
 
 export default Home;

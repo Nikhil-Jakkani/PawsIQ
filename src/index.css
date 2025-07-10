@@ -94,6 +94,17 @@
 }
 
 @layer utilities {
+  /* Custom slow spin for star icon */
+  .animate-spin-slow {
+    animation: spin 6s linear infinite;
+  }
+
+  /* Animated gradient for banner */
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradientX 4s ease-in-out infinite;
+  }
+
   /* Custom scrollbar */
   .scrollbar-pet::-webkit-scrollbar {
     width: 8px;
@@ -339,6 +350,18 @@
 }
 
 @keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientX {
   0% {
     background-position: 0% 50%;
   }
