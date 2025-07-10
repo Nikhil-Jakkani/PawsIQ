@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaStethoscope, FaCut, FaGraduationCap, FaDog, FaShieldAlt, FaPercentage, FaStar, FaExclamationTriangle } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   FaHome, 
   FaUsers, 
@@ -48,6 +48,7 @@ import logoImage from '../../assets/icons/logo.jpg';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { currentUser, logout } = useAuth();
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [minimized, setMinimized] = useState(false);
@@ -86,7 +87,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       items: [
         { path: '/users/profiles', icon: <FaIdCard />, label: 'User Profiles' },
         { path: '/users/roles', icon: <FaUserShield />, label: 'User Roles' },
-        { path: '/users/activity', icon: <FaDatabase />, label: 'Activity Logs' }
+        // { path: '/users/activity', icon: <FaDatabase />, label: 'Activity Logs' }
       ]
     },
     {
@@ -236,6 +237,24 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     }
   };
 
+  // Handle category click - navigate or expand
+  const handleCategoryClick = (category) => {
+    // If category has no subitems, navigate directly
+    if (category.items.length === 0) {
+      navigate(category.path);
+      return;
+    }
+    
+    // If sidebar is minimized, navigate to main category page
+    if (minimized) {
+      navigate(category.path);
+      return;
+    }
+    
+    // Otherwise, toggle expansion
+    toggleCategory(category.id);
+  };
+
   // Check if a category or any of its items is active
   const isCategoryActive = (category) => {
     if (location.pathname === category.path) return true;
@@ -301,7 +320,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     className={`flex items-center ${minimized ? 'justify-center' : 'justify-between'} 
                       ${minimized ? 'px-2' : 'px-3'} py-2 rounded-md cursor-pointer
                       ${isCategoryActive(category) ? 'bg-indigo-700 text-white' : 'text-indigo-100 hover:bg-indigo-800'}`}
-                    onClick={() => minimized ? null : toggleCategory(category.id)}
+                    onClick={() => handleCategoryClick(category)}
                     title={minimized ? category.label : ""}
                   >
                     {minimized ? (
