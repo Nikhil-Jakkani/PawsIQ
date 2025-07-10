@@ -1509,15 +1509,15 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Our Headquarters</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        123 Pet Care Avenue<br />
-                        Suite 456<br />
-                        San Francisco, CA 94107
+                        27th Main Rd HSR Layout, <br />
+                        Bangalore,<br />
+                        India 560102
                       </p>
                       
                       {/* Interactive map */}
                       <div className="mt-4 h-48 bg-gray-200 rounded-lg overflow-hidden shadow-md relative">
                         <img 
-                          src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+4f46e5(122.4194,37.7749)/122.4194,37.7749,13,0/400x200@2x?access_token=pk.placeholder" 
+                          src="https://www.google.com/maps/place/27th+Main+Rd,+Bengaluru,+Karnataka/@12.9119202,77.651873,16z/data=!3m1!4b1!4m6!3m5!1s0x3bae1483292c815f:0x2078ab134177b75b!8m2!3d12.9119202!4d77.651873!16s%2Fg%2F1tzvt_79?entry=ttu&g_ep=EgoyMDI1MDcwOC4wIKXMDSoASAFQAw%3D%3D" 
                           alt="Map of PawsIQ headquarters" 
                           className="w-full h-full object-cover"
                         />
