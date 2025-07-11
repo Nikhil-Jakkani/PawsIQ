@@ -4,7 +4,7 @@ import { FaEnvelope, FaLock, FaGoogle, FaFacebook, FaApple, FaPaw } from 'react-
 import { useAuth } from '../../context/AuthContext';
 
 // Cute pet-themed logo
-const logoImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234f46e5'/%3E%3Cpath d='M35 40Q40 20 50 40Q60 20 65 40Q80 40 65 60Q70 80 50 70Q30 80 35 60Q20 40 35 40Z' fill='white'/%3E%3C/svg%3E";
+const logoImage = "/1.svg";
 
 const ProviderLogin = () => {
   const navigate = useNavigate();
