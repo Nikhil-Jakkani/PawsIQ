@@ -454,7 +454,7 @@ const Home = () => {
                   <span className="block text-white animate-fadeInUp">The smart way to</span>
                   <span className="block text-indigo-200 animate-fadeInUp animation-delay-300">care for your pets</span>
                 </h1>
-                <p className="mt-6 max-w-lg mx-auto text-center text-xl text-indigo-200 sm:max-w-3xl animate-fadeInUp animation-delay-500">
+                <p className="mt-6 max-w-lg mx-auto text-center text-xl text-indigo-200 sm:max-w-3xl animate-fadeInUp animation-delay-500 md:text-left">
                   Connect with trusted pet care professionals for veterinary services, training, grooming, and pet sitting.
                 </p>
                 
