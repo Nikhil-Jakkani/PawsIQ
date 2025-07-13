@@ -113,7 +113,7 @@ function App() {
           {/* Main Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signin" element={<Login />} />
+          
 
           {/* Admin Routes */}
           <Route path="/dashboard" element={<AdminProtectedRoute><Dashboard /></AdminProtectedRoute>} />
