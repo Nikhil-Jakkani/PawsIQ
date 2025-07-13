@@ -47,6 +47,5 @@ vite.config.js.timestamp-*.mjs
 *.sln
 *.sw?
 
-# Lock files (only keep the one you use)
+# Lock files
 pnpm-lock.yaml
-yarn.lock
