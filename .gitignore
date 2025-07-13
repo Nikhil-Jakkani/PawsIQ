@@ -19,12 +19,22 @@ lerna-debug.log*
 vite.config.js.timestamp-*.mjs
 *.local
 
+# Vite cache
+.vite
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Jest cache
+.jest_cache
+
 # Supabase
 /supabase
 
 # Environment variables
 .env
 .env.*
+.env.local
 
 # Editor directories and files
 .vscode/*
@@ -36,3 +46,7 @@ vite.config.js.timestamp-*.mjs
 *.njsproj
 *.sln
 *.sw?
+
+# Lock files (only keep the one you use)
+pnpm-lock.yaml
+yarn.lock
