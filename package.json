@@ -5,14 +5,14 @@
   "type": "module",
   "scripts": {
     "dev:frontend": "vite --port 3001",
-    "dev:backend": "ts-node-dev --respawn --transpile-only server/src/index.ts",
+    "dev:backend": "nodemon --watch server/src --ext ts --exec \"node --loader ts-node/esm server/src/index.ts\"",
     "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
     "build:frontend": "vite build",
-    "build:backend": "tsc --project server/tsconfig.json",
+    "build:backend": "tsc --project tsconfig.json",
     "build": "npm run build:frontend && npm run build:backend",
     "start": "concurrently \"npm:start:frontend\" \"npm:start:backend\"",
     "start:frontend": "vite preview",
-    "start:backend": "node server/dist/index.js",
+    "start:backend": "node dist/index.js",
     "lint": "eslint ."
   },
   "dependencies": {

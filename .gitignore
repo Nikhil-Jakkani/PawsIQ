@@ -25,7 +25,6 @@ lerna-debug.log*
 # Contains sensitive credentials, NEVER commit these files!
 .env
 .env.*
-!.env.example
 
 # Editor directories and files
 .vscode/*
