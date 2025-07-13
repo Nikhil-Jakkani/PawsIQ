@@ -28,9 +28,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       return next(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
 
-    // You can attach the admin to the request object if needed
-    // (req as any).admin = admin;
-
     next();
   } catch (error) {
     return next(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));

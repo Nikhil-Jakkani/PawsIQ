@@ -23,8 +23,6 @@ const auth = async (req, res, next) => {
         if (error || !admin) {
             return next(new ApiError_js_1.ApiError(http_status_1.default.UNAUTHORIZED, 'Please authenticate'));
         }
-        // You can attach the admin to the request object if needed
-        // (req as any).admin = admin;
         next();
     }
     catch (error) {
