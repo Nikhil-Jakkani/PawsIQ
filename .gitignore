@@ -7,10 +7,34 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+/node_modules
+
+# Build artifacts
+/dist
+/dist-ssr
+/build
+/coverage
+/dev-dist
+vite.config.js.timestamp-*.mjs
 *.local
+
+# Vite cache
+.vite
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Jest cache
+.jest_cache
+
+# Supabase
+/supabase
+
+# Environment variables
+.env
+.env.*
+.env.local
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +46,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Lock files
+pnpm-lock.yaml

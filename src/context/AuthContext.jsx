@@ -93,39 +93,37 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (email, password, isProvider = false) => {
+  const login = async (email, password) => {
     setError('');
     setLoading(true);
-    
+
     try {
-      let user;
-      
-      if (isProvider) {
-        // Find provider with matching credentials
-        user = PROVIDERS.find(
-          (p) => p.email.toLowerCase() === email.toLowerCase() && p.password === password
-        );
-      } else {
-        // Find user with matching credentials
-        user = USERS.find(
-          (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-        );
+      const response = await fetch('http://localhost:5173/api/v1/admin/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Invalid email or password');
       }
 
-      if (user) {
-        // Remove password before storing
-        const { password: _unused, ...userWithoutPassword } = user;
-        setCurrentUser(userWithoutPassword);
-        localStorage.setItem('pawsiq_user', JSON.stringify(userWithoutPassword));
-        setLoading(false);
-        return { success: true, userType: user.role };
-      } else {
-        setError('Invalid email or password');
-        setLoading(false);
-        return { success: false };
-      }
+      const { user, token } = data;
+      
+      // Combine user data and token for storage
+      const userData = { ...user, token };
+
+      setCurrentUser(userData);
+      localStorage.setItem('pawsiq_user', JSON.stringify(userData));
+      setLoading(false);
+      return { success: true, userType: user.role };
+
     } catch (error) {
-      setError('An error occurred during login');
+      setError(error.message || 'An error occurred during login');
       setLoading(false);
       return { success: false };
     }

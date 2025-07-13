@@ -41,8 +41,8 @@ const Login = () => {
     setLocalError('');
     
     try {
-      const success = await login(email, password);
-      if (success) {
+      const response = await login(email, password);
+      if (response && response.success) {
         navigate('/dashboard');
       } else {
         setLocalError('Invalid email or password. Please try again.');
