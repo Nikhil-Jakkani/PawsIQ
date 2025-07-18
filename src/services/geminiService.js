@@ -1,12 +1,7 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const API_KEY = 'AIzaSyCCoBo9LVDOd_sdG4yzyt1-IMQay-IV1Pk';
-const genAI = new GoogleGenerativeAI(API_KEY);
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 export const generatePetCareSuggestions = async (petData) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
     const prompt = `
     As a professional veterinarian and pet care expert, provide comprehensive care recommendations for the following pet:
 
@@ -63,62 +58,29 @@ export const generatePetCareSuggestions = async (petData) => {
     Make sure all recommendations are specific to the pet's breed, age, and current health status. Be thorough but practical.
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    
-    // Try to parse the JSON response
-    try {
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authentication token not found.');
     }
-    
-    // Fallback if JSON parsing fails
-    return {
-      health: {
-        recommendations: ["Regular health monitoring recommended", "Consult with veterinarian for personalized care plan"],
-        priority: "medium",
-        nextCheckup: "6 months"
+
+    const response = await fetch(`${API_URL}/user/ai/suggestions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
-      grooming: {
-        recommendations: ["Regular brushing", "Nail trimming as needed"],
-        frequency: "weekly",
-        specialCare: ["Check ears regularly", "Dental care"]
-      },
-      vaccinations: {
-        upcoming: ["Annual boosters"],
-        schedule: "As per veterinary schedule",
-        boosters: ["Core vaccines"]
-      },
-      nutrition: {
-        recommendations: ["High-quality pet food", "Proper portion control"],
-        dailyCalories: "Consult veterinarian",
-        feedingSchedule: "2-3 times daily"
-      },
-      exercise: {
-        recommendations: ["Daily exercise", "Mental stimulation"],
-        duration: "30-60 minutes",
-        activities: ["Walking", "Playing"]
-      },
-      behavioral: {
-        recommendations: ["Positive reinforcement training", "Socialization"],
-        training: ["Basic commands", "House training"],
-        enrichment: ["Interactive toys", "Puzzle feeders"]
-      },
-      preventive: {
-        recommendations: ["Regular health checks", "Parasite prevention"],
-        seasonalCare: ["Weather-appropriate care"],
-        emergencyTips: ["Know emergency vet contact", "First aid basics"]
-      }
-    };
-    
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch suggestions');
+    }
+
+    return await response.json();
   } catch (error) {
     console.error('Error generating pet care suggestions:', error);
-    throw new Error('Failed to generate pet care suggestions. Please try again.');
+    throw new Error(error.message || 'Failed to generate pet care suggestions. Please try again.');
   }
 };
 
