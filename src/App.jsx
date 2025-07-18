@@ -11,10 +11,12 @@ import UserBookAppointment from './pages/user/UserBookAppointment.jsx';
 import UserServices from './pages/user/UserServices.jsx';
 import UserMarketplace from './pages/user/UserMarketplace.jsx';
 import UserOrders from './pages/user/UserOrders.jsx';
+import UserPayments from './pages/user/UserPayments.jsx';
 import UserSettings from './pages/user/UserSettings.jsx';
 import UserNotifications from './pages/user/UserNotifications.jsx';
 import UserHelp from './pages/user/UserHelp.jsx';
 import UserCommunity from './pages/user/UserCommunity.jsx';
+import AIPetCare from './pages/user/AIPetCare.jsx';
 import Users from './pages/Users.jsx';
 import UserProfiles from './pages/users/UserProfiles.jsx';
 import UserRoles from './pages/users/UserRoles.jsx';
@@ -78,6 +80,7 @@ import { useAuth } from './context/AuthContext';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import PWAUpdateNotification from './components/PWAUpdateNotification';
 import OfflineStatus from './components/OfflineStatus';
+
 import './App.css'; 
 
 // Protected route component for admin
@@ -163,17 +166,62 @@ function App() {
           {/* User Routes */}
           <Route path="/user/login" element={currentUser ? (currentUser.role === 'user' ? <Navigate to="/user/dashboard" /> : <Navigate to="/dashboard" />) : <UserLogin />} />
           <Route path="/user/dashboard" element={<UserProtectedRoute><UserDashboard /></UserProtectedRoute>} />
+          
+          {/* Pet Management Routes */}
           <Route path="/user/pets" element={<UserProtectedRoute><UserPets /></UserProtectedRoute>} />
           <Route path="/user/pets/add" element={<UserProtectedRoute><UserAddPet /></UserProtectedRoute>} />
+          <Route path="/user/pets/profiles" element={<UserProtectedRoute><UserPets /></UserProtectedRoute>} />
+          <Route path="/user/pets/health" element={<UserProtectedRoute><UserPets /></UserProtectedRoute>} />
+          
+          {/* AI Pet Care */}
+          <Route path="/user/ai-pet-care" element={<UserProtectedRoute><AIPetCare /></UserProtectedRoute>} />
+          
+          {/* Appointment Routes */}
           <Route path="/user/appointments" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           <Route path="/user/appointments/new" element={<UserProtectedRoute><UserBookAppointment /></UserProtectedRoute>} />
+          <Route path="/user/appointments/upcoming" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
+          <Route path="/user/appointments/history" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
+          
+          {/* Service Routes */}
           <Route path="/user/services" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />
+          <Route path="/user/services/vets" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />
+          <Route path="/user/services/grooming" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />
+          <Route path="/user/services/sitting" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />
+          <Route path="/user/services/training" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />
+          
+          {/* Marketplace Routes */}
           <Route path="/user/marketplace" element={<UserProtectedRoute><UserMarketplace /></UserProtectedRoute>} />
+          <Route path="/user/marketplace/food" element={<UserProtectedRoute><UserMarketplace /></UserProtectedRoute>} />
+          <Route path="/user/marketplace/toys" element={<UserProtectedRoute><UserMarketplace /></UserProtectedRoute>} />
+          <Route path="/user/marketplace/health" element={<UserProtectedRoute><UserMarketplace /></UserProtectedRoute>} />
+          
+          {/* Order Routes */}
           <Route path="/user/orders" element={<UserProtectedRoute><UserOrders /></UserProtectedRoute>} />
-          <Route path="/user/settings" element={<UserProtectedRoute><UserSettings /></UserProtectedRoute>} />
-          <Route path="/user/notifications" element={<UserProtectedRoute><UserNotifications /></UserProtectedRoute>} />
-          <Route path="/user/help" element={<UserProtectedRoute><UserHelp /></UserProtectedRoute>} />
+          
+          {/* Payment Routes */}
+          <Route path="/user/payments" element={<UserProtectedRoute><UserPayments /></UserProtectedRoute>} />
+          <Route path="/user/payments/methods" element={<UserProtectedRoute><UserPayments /></UserProtectedRoute>} />
+          <Route path="/user/payments/history" element={<UserProtectedRoute><UserPayments /></UserProtectedRoute>} />
+          
+          {/* Community Routes */}
           <Route path="/user/community" element={<UserProtectedRoute><UserCommunity /></UserProtectedRoute>} />
+          <Route path="/user/community/forum" element={<UserProtectedRoute><UserCommunity /></UserProtectedRoute>} />
+          <Route path="/user/community/events" element={<UserProtectedRoute><UserCommunity /></UserProtectedRoute>} />
+          
+          {/* Notification Routes */}
+          <Route path="/user/notifications" element={<UserProtectedRoute><UserNotifications /></UserProtectedRoute>} />
+          
+          {/* Settings Routes */}
+          <Route path="/user/settings" element={<UserProtectedRoute><UserSettings /></UserProtectedRoute>} />
+          <Route path="/user/settings/profile" element={<UserProtectedRoute><UserSettings /></UserProtectedRoute>} />
+          <Route path="/user/settings/notifications" element={<UserProtectedRoute><UserSettings /></UserProtectedRoute>} />
+          <Route path="/user/settings/security" element={<UserProtectedRoute><UserSettings /></UserProtectedRoute>} />
+          
+          {/* Help & Support Routes */}
+          <Route path="/user/help" element={<UserProtectedRoute><UserHelp /></UserProtectedRoute>} />
+          <Route path="/user/help/faq" element={<UserProtectedRoute><UserHelp /></UserProtectedRoute>} />
+          <Route path="/user/help/contact" element={<UserProtectedRoute><UserHelp /></UserProtectedRoute>} />
+          <Route path="/user/help/support" element={<UserProtectedRoute><UserHelp /></UserProtectedRoute>} />
 
           {/* Provider Routes */}
           <Route path="/provider/login" element={<ProviderLogin />} />

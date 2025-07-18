@@ -14,13 +14,7 @@ const UserLogin = () => {
   const { login, error: authError, currentUser } = useAuth();
   const navigate = useNavigate();
   
-  // Hide loading screen when Login component mounts
-  useEffect(() => {
-    const loadingElement = document.getElementById('loading');
-    if (loadingElement) {
-      loadingElement.style.display = 'none';
-    }
-  }, []);
+  // Component mounted - loading screen should be handled by AuthContext
   
   // Check if already logged in
   useEffect(() => {

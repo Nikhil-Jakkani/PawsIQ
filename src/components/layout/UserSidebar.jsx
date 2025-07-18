@@ -23,7 +23,8 @@ import {
   FaAngleLeft,
   FaAngleRight,
   FaChevronDown,
-  FaChevronRight
+  FaChevronRight,
+  FaRobot
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
@@ -72,6 +73,13 @@ const UserSidebar = ({ isOpen, toggleSidebar }) => {
         { path: '/user/pets/profiles', icon: <FaUser />, label: 'Pet Profiles' },
         { path: '/user/pets/health', icon: <FaHeart />, label: 'Health Records' }
       ]
+    },
+    {
+      id: 'ai-pet-care',
+      icon: <FaRobot />,
+      label: 'AI Pet Care',
+      path: '/user/ai-pet-care',
+      items: []
     },
     {
       id: 'appointments',
@@ -235,31 +243,60 @@ const UserSidebar = ({ isOpen, toggleSidebar }) => {
               {menuCategories.map((category) => (
                 <li key={category.id} className={minimized ? "px-1" : "px-2"}>
                   {/* Category header */}
-                  <div 
-                    className={`flex items-center ${minimized ? 'justify-center' : 'justify-between'} 
-                      ${minimized ? 'px-2' : 'px-3'} py-2 rounded-md cursor-pointer
-                      ${isCategoryActive(category) ? 'bg-white bg-opacity-20 text-white' : 'text-white hover:bg-white hover:bg-opacity-10'}`}
-                    onClick={() => minimized ? null : toggleCategory(category.id)}
-                    title={minimized ? category.label : ""}
-                  >
-                    {minimized ? (
-                      <span className={`text-white text-xl ${isCategoryActive(category) ? 'text-white' : ''}`}>
-                        {category.icon}
-                      </span>
-                    ) : (
-                      <>
+                  {category.items.length > 0 ? (
+                    // Categories with sub-items - expandable
+                    <div className="flex items-center">
+                      {minimized ? (
+                        <Link
+                          to={category.path}
+                          className={`flex items-center justify-center px-2 py-2 rounded-md cursor-pointer w-full
+                            ${isCategoryActive(category) ? 'bg-white bg-opacity-20 text-white' : 'text-white hover:bg-white hover:bg-opacity-10'}`}
+                          title={category.label}
+                        >
+                          <span className={`text-white text-xl ${isCategoryActive(category) ? 'text-white' : ''}`}>
+                            {category.icon}
+                          </span>
+                        </Link>
+                      ) : (
+                        <>
+                          <Link
+                            to={category.path}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer flex-1
+                              ${isCategoryActive(category) ? 'bg-white bg-opacity-20 text-white' : 'text-white hover:bg-white hover:bg-opacity-10'}`}
+                          >
+                            <span className="text-white">{category.icon}</span>
+                            <span className="font-medium">{category.label}</span>
+                          </Link>
+                          <button
+                            onClick={() => toggleCategory(category.id)}
+                            className="px-2 py-2 text-white hover:bg-white hover:bg-opacity-10 rounded-md"
+                          >
+                            {expandedCategory === category.id ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    // Categories without sub-items - direct links
+                    <Link
+                      to={category.path}
+                      className={`flex items-center ${minimized ? 'justify-center' : 'justify-between'} 
+                        ${minimized ? 'px-2' : 'px-3'} py-2 rounded-md cursor-pointer
+                        ${isCategoryActive(category) ? 'bg-white bg-opacity-20 text-white' : 'text-white hover:bg-white hover:bg-opacity-10'}`}
+                      title={minimized ? category.label : ""}
+                    >
+                      {minimized ? (
+                        <span className={`text-white text-xl ${isCategoryActive(category) ? 'text-white' : ''}`}>
+                          {category.icon}
+                        </span>
+                      ) : (
                         <div className="flex items-center gap-3">
                           <span className="text-white">{category.icon}</span>
                           <span className="font-medium">{category.label}</span>
                         </div>
-                        {category.items.length > 0 && (
-                          <span className="text-white">
-                            {expandedCategory === category.id ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </div>
+                      )}
+                    </Link>
+                  )}
                   
                   {/* Subcategory items - only show when not minimized */}
                   {!minimized && category.items.length > 0 && expandedCategory === category.id && (

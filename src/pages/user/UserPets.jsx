@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaPaw, FaPlus, FaSearch, FaFilter, FaEdit, FaTrash, FaHeart, FaCalendarAlt } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaPaw, FaPlus, FaSearch, FaFilter, FaEdit, FaTrash, FaHeart, FaCalendarAlt, FaUser, FaClipboardList } from 'react-icons/fa';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserPets = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  
+  // Determine current view based on route
+  const getCurrentView = () => {
+    if (location.pathname.includes('/profiles')) return 'profiles';
+    if (location.pathname.includes('/health')) return 'health';
+    return 'overview';
+  };
+  
+  const currentView = getCurrentView();
   
   // Mock pet data
   const [pets, setPets] = useState([

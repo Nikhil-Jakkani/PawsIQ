@@ -101,10 +101,19 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('pawsiq_user');
     } finally {
       // Hide loading screen after auth check is complete
-      const loadingElement = document.getElementById('loading');
-      if (loadingElement) {
-        loadingElement.style.display = 'none';
-      }
+      setTimeout(() => {
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement && loadingElement.style.display !== 'none') {
+          console.log('AuthContext: Hiding loading screen after auth check');
+          loadingElement.style.opacity = '0';
+          loadingElement.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(() => {
+            if (loadingElement) {
+              loadingElement.style.display = 'none';
+            }
+          }, 300);
+        }
+      }, 100);
     }
   }, []);
 
@@ -114,7 +123,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // First try API authentication
-      const response = await fetch('http://localhost:5173/api/v1/admin/auth/login', {
+      const response = await fetch('http://localhost:8080/api/v1/admin/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

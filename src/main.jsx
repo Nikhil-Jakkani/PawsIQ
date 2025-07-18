@@ -55,14 +55,18 @@ class ErrorBoundary extends React.Component {
 // Function to hide loading screen
 const hideLoadingScreen = () => {
   const loadingElement = document.getElementById('loading');
-  if (loadingElement) {
+  if (loadingElement && loadingElement.style.display !== 'none') {
+    console.log('Hiding loading screen...');
     // Add fade-out effect
     loadingElement.style.opacity = '0';
     loadingElement.style.transition = 'opacity 0.3s ease-out';
     
     // Remove element after transition
     setTimeout(() => {
-      loadingElement.style.display = 'none';
+      if (loadingElement) {
+        loadingElement.style.display = 'none';
+        console.log('Loading screen hidden');
+      }
     }, 300);
   }
 };

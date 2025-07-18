@@ -1,14 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 import UserStatCard from '../../components/user/UserStatCard';
 import UserAppointments from '../../components/user/UserAppointments';
 import PetProfiles from '../../components/user/PetProfiles';
+import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
+import PetSelector from '../../components/user/PetSelector';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const [selectedPetForAI, setSelectedPetForAI] = useState(null);
+
+  // Mock data for pets (in a real app, this would come from your state management or API)
+  const pets = [
+    {
+      id: 1,
+      name: 'Max',
+      type: 'dog',
+      breed: 'Golden Retriever',
+      age: '3 years',
+      weight: '65 lbs',
+      gender: 'male',
+      birthday: '2022-05-15',
+      image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z29sZGVuJTIwcmV0cmlldmVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+      lastCheckup: '2025-05-01',
+      vaccinations: 'Up to date'
+    },
+    {
+      id: 2,
+      name: 'Luna',
+      type: 'cat',
+      breed: 'Siamese',
+      age: '2 years',
+      weight: '9 lbs',
+      gender: 'female',
+      birthday: '2023-02-10',
+      image: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lhbWVzZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+      lastCheckup: '2025-04-15',
+      vaccinations: 'Up to date'
+    }
+  ];
 
   return (
     <UserLayout>
@@ -45,7 +78,7 @@ const UserDashboard = () => {
             <FaPaw className="text-pink-600" />
             Quick Actions
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <button 
               onClick={() => navigate('/user/pets/add')}
               className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
@@ -81,6 +114,15 @@ const UserDashboard = () => {
                 <FaBone className="text-green-600 text-xl" />
               </div>
               <h3 className="font-semibold text-gray-800">Find Services</h3>
+            </button>
+            <button 
+              onClick={() => navigate('/user/ai-pet-care')}
+              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
+            >
+              <div className="bg-indigo-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
+                <FaRobot className="text-indigo-600 text-xl" />
+              </div>
+              <h3 className="font-semibold text-gray-800">AI Pet Care</h3>
             </button>
           </div>
         </div>
@@ -118,6 +160,16 @@ const UserDashboard = () => {
         
         {/* Upcoming Appointments */}
         <UserAppointments />
+        
+        {/* AI Pet Care Suggestions */}
+        <div className="space-y-6">
+          <PetSelector 
+            pets={pets}
+            selectedPet={selectedPetForAI}
+            onPetSelect={setSelectedPetForAI}
+          />
+          <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+        </div>
         
         {/* Pet Care Tips */}
         <div className="bg-pink-50 rounded-xl p-6 border border-pink-100">

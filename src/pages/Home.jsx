@@ -451,11 +451,11 @@ const Home = () => {
               </div>
               <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
                 <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-                  <span className="block text-white animate-fadeInUp">The smart way to</span>
-                  <span className="block text-indigo-200 animate-fadeInUp animation-delay-300">care for your pets</span>
+                  <span className="block text-white animate-fadeInUp">Reimagining Pet Wellness with Technology</span>
+                  {/* <span className="block text-indigo-200 animate-fadeInUp animation-delay-300">care for your pets</span> */}
                 </h1>
                 <p className="mt-6 max-w-lg mx-auto text-center text-xl text-indigo-200 sm:max-w-3xl animate-fadeInUp animation-delay-500 md:text-left">
-                  Connect with trusted pet care professionals for veterinary services, training, grooming, and pet sitting.
+                  Empowering pet parents with intelligent tools to ensure their companions live longer, healthier, and happier lives.
                 </p>
                 
                 {/* Interactive pet selector */}
@@ -559,14 +559,14 @@ const Home = () => {
                         Dog Training
                       </button>
                       <span className="text-gray-300">•</span>
-                      <button 
+                      {/* <button 
                         onClick={() => {setSelectedPet('bird'); setServiceType('vet');}}
                         className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline transition-colors duration-300"
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
                       >
                         Bird Specialists
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>

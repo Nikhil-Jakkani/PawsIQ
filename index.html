@@ -77,32 +77,14 @@
       <div class="spinner"></div>
     </div>
     <script>
-      // Hide loading screen after a short timeout to ensure the app loads
-      // First attempt with timeout
+      // Fallback to hide loading screen if React doesn't load
       setTimeout(function() {
         const loadingElement = document.getElementById('loading');
-        if (loadingElement) {
+        if (loadingElement && loadingElement.style.display !== 'none') {
+          console.log('Fallback: Hiding loading screen after 5 seconds');
           loadingElement.style.display = 'none';
         }
-      }, 3000);
-      
-      // Second attempt when window loads
-      window.addEventListener('load', function() {
-        const loadingElement = document.getElementById('loading');
-        if (loadingElement) {
-          loadingElement.style.display = 'none';
-        }
-      });
-      
-      // Final fallback
-      document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-          const loadingElement = document.getElementById('loading');
-          if (loadingElement) {
-            loadingElement.style.display = 'none';
-          }
-        }, 500);
-      });
+      }, 5000);
     </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
