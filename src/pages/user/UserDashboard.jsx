@@ -56,20 +56,7 @@ const UserDashboard = () => {
             </div>
             <p className="text-gray-500 mt-1">Welcome to your PawsIQ dashboard!</p>
           </div>
-          <div className="flex gap-3">
-            <PetIconButton 
-              type="dog" 
-              variant="secondary" 
-              label="Find Services" 
-              onClick={() => navigate('/user/services')}
-            />
-            <PetIconButton 
-              type="cat" 
-              variant="primary" 
-              label="Book Appointment" 
-              onClick={() => navigate('/user/appointments/new')}
-            />
-          </div>
+          
         </div>
       
         {/* Quick Actions */}
@@ -155,8 +142,8 @@ const UserDashboard = () => {
           />
         </div>
         
-        {/* Pet Profiles */}
-        <PetProfiles />
+        {/* Pet Profiles
+        <PetProfiles /> */}
         
         {/* Upcoming Appointments */}
         <UserAppointments />
