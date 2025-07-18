@@ -31,6 +31,21 @@ const USERS = [
         breed: 'Siamese'
       }
     ]
+  },
+  {
+    email: 'user@pawsiq.in',
+    password: 'user1234',
+    role: 'user',
+    name: 'PawsIQ User',
+    avatar: '/avatar-user.png',
+    pets: [
+      {
+        id: 3,
+        name: 'Buddy',
+        type: 'dog',
+        breed: 'Labrador'
+      }
+    ]
   }
 ];
 
@@ -98,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
 
     try {
+      // First try API authentication
       const response = await fetch('http://localhost:5173/api/v1/admin/auth/login', {
         method: 'POST',
         headers: {
@@ -108,19 +124,46 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Invalid email or password');
+      if (response.ok) {
+        const { user, token } = data;
+        
+        // Combine user data and token for storage
+        const userData = { ...user, token };
+
+        setCurrentUser(userData);
+        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
+        setLoading(false);
+        return { success: true, userType: user.role };
+      }
+    } catch (apiError) {
+      // API failed, fallback to mock authentication
+      console.log('API authentication failed, using mock data');
+    }
+
+    // Fallback to mock authentication
+    try {
+      // Check in USERS array
+      const user = USERS.find(u => u.email === email && u.password === password);
+      if (user) {
+        const userData = { ...user, token: 'mock-token-' + Date.now() };
+        setCurrentUser(userData);
+        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
+        setLoading(false);
+        return { success: true, userType: user.role };
       }
 
-      const { user, token } = data;
-      
-      // Combine user data and token for storage
-      const userData = { ...user, token };
+      // Check in PROVIDERS array
+      const provider = PROVIDERS.find(p => p.email === email && p.password === password);
+      if (provider) {
+        const userData = { ...provider, token: 'mock-token-' + Date.now() };
+        setCurrentUser(userData);
+        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
+        setLoading(false);
+        return { success: true, userType: provider.role };
+      }
 
-      setCurrentUser(userData);
-      localStorage.setItem('pawsiq_user', JSON.stringify(userData));
-      setLoading(false);
-      return { success: true, userType: user.role };
+      // No user found
+      throw new Error('Invalid email or password');
 
     } catch (error) {
       setError(error.message || 'An error occurred during login');
