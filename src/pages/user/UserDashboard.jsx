@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 import UserStatCard from '../../components/user/UserStatCard';
 import UserAppointments from '../../components/user/UserAppointments';
 import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
+import AISymptomChecker from '../../components/user/AISymptomChecker';
 import PetSelector from '../../components/user/PetSelector';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
+
+  const scrollToSymptomChecker = () => {
+    const element = document.getElementById('symptom-checker');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Mock data for pets (in a real app, this would come from your state management or API)
   const pets = [
@@ -65,7 +73,7 @@ const UserDashboard = () => {
             <FaPaw className="text-pink-600" />
             Quick Actions
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <button 
               onClick={() => navigate('/user/pets/add')}
               className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
@@ -110,6 +118,15 @@ const UserDashboard = () => {
                 <FaRobot className="text-indigo-600 text-xl" />
               </div>
               <h3 className="font-semibold text-gray-800">AI Pet Care</h3>
+            </button>
+            <button 
+              onClick={scrollToSymptomChecker}
+              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
+            >
+              <div className="bg-red-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
+                <FaStethoscope className="text-red-600 text-xl" />
+              </div>
+              <h3 className="font-semibold text-gray-800">Symptom Checker</h3>
             </button>
           </div>
         </div>
@@ -156,6 +173,11 @@ const UserDashboard = () => {
             onPetSelect={setSelectedPetForAI}
           />
           <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+        </div>
+        
+        {/* AI Symptom Checker */}
+        <div id="symptom-checker">
+          <AISymptomChecker selectedPet={selectedPetForAI} />
         </div>
         
         {/* Pet Care Tips */}
