@@ -36,7 +36,7 @@ import {
 } from 'react-icons/fa';
 
 // Cute pet-themed logo
-const logoImage = "/1.svg";
+const logoImage = "/2.svg";
 
 const Home = () => {
   // State for UI interactions
@@ -864,103 +864,6 @@ const Home = () => {
                 </dd>
               </div>
             </dl>
-            
-            {/* Service coverage map */}
-            <div className="mt-16 bg-white rounded-xl shadow-lg overflow-hidden animate-fadeInUp animation-delay-900">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-4">
-                  Our Service Coverage
-                </h3>
-                <div className="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
-                  <img 
-                    src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-98,38,3,0/800x400@2x?access_token=pk.placeholder" 
-                    alt="Map of service coverage" 
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {/* Major city markers */}
-                  <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <FaMapMarkerAlt className="h-5 w-5 text-red-500 animate-bounce" />
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white rounded px-2 py-1 text-xs font-medium shadow-sm">
-                        New York
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-1/3 left-1/5 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <FaMapMarkerAlt className="h-5 w-5 text-red-500 animate-bounce animation-delay-300" />
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white rounded px-2 py-1 text-xs font-medium shadow-sm">
-                        Chicago
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute bottom-1/3 left-1/6 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <FaMapMarkerAlt className="h-5 w-5 text-red-500 animate-bounce animation-delay-600" />
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white rounded px-2 py-1 text-xs font-medium shadow-sm">
-                        Miami
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <FaMapMarkerAlt className="h-5 w-5 text-red-500 animate-bounce animation-delay-900" />
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white rounded px-2 py-1 text-xs font-medium shadow-sm">
-                        Los Angeles
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-1/4 right-1/5 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="relative">
-                      <FaMapMarkerAlt className="h-5 w-5 text-red-500 animate-bounce animation-delay-1200" />
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white rounded px-2 py-1 text-xs font-medium shadow-sm">
-                        Seattle
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Coverage overlay */}
-                  <div className="absolute inset-0 bg-indigo-500 mix-blend-multiply opacity-10"></div>
-                </div>
-                
-                {/* Popular locations */}
-                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-sm">
-                  <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Mumbai</span>
-                    <div className="text-xs text-gray-500">200+ providers</div>
-                  </div>
-                  <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Delhi</span>
-                    <div className="text-xs text-gray-500">180+ providers</div>
-                  </div>
-                  <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Bangalore</span>
-                    <div className="text-xs text-gray-500">150+ providers</div>
-                  </div>
-                  <div className="bg-indigo-50 rounded-md py-2 px-3 transform transition-all duration-300 hover:bg-indigo-100 hover:scale-105">
-                    <span className="font-medium text-indigo-800">Pune</span>
-                    <div className="text-xs text-gray-500">120+ providers</div>
-                  </div>
-                </div>
-                
-                {/* Check coverage button */}
-                <div className="mt-4 text-center">
-                  <button
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-all duration-300 hover:scale-105"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                  >
-                    <FaMapMarkerAlt className="mr-2" />
-                    Check if we serve your area
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -1345,31 +1248,7 @@ const Home = () => {
                 </div>
                 
                 {/* App store buttons */}
-                <div className="mt-10 flex flex-col sm:flex-row justify-center sm:justify-start space-y-4 sm:space-y-0 sm:space-x-4 animate-fadeInUp animation-delay-900">
-                  <a 
-                    href="#" 
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-300 transform hover:scale-105"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                  >
-                    <svg className="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.5646 12.9838C17.5458 10.1518 19.8734 8.97171 19.9621 8.9193C18.6229 7.0107 16.5807 6.73193 15.8428 6.71435C14.0547 6.5271 12.3398 7.75524 11.4264 7.75524C10.4954 7.75524 9.10099 6.73193 7.58242 6.76709C5.65302 6.80225 3.85546 7.89614 2.88651 9.59935C0.887844 13.0584 2.39642 18.1948 4.31633 21.0092C5.28528 22.3901 6.41633 23.9405 7.89642 23.8702C9.34153 23.7999 9.88242 22.9392 11.6178 22.9392C13.3357 22.9392 13.8414 23.8702 15.3639 23.8351C16.9217 23.7999 17.8906 22.4189 18.8244 21.0268C19.9621 19.4413 20.4151 17.8909 20.4326 17.8206C20.3967 17.8031 17.5822 16.6741 17.5646 12.9838Z" />
-                      <path d="M14.5498 4.30371C15.3404 3.33476 15.8812 2.01371 15.7406 0.675293C14.6115 0.727871 13.2129 1.44981 12.3871 2.40117C11.6492 3.24371 10.9992 4.61152 11.1574 5.89215C12.4205 5.98086 13.7416 5.27293 14.5498 4.30371Z" />
-                    </svg>
-                    <span>Download on the<br /><span className="text-lg font-semibold">App Store</span></span>
-                  </a>
-                  <a 
-                    href="#" 
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-300 transform hover:scale-105"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                  >
-                    <svg className="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3.60001 2.40002C3.29001 2.40002 3.00001 2.69002 3.00001 3.00002V21C3.00001 21.31 3.29001 21.6 3.60001 21.6H20.4C20.71 21.6 21 21.31 21 21V3.00002C21 2.69002 20.71 2.40002 20.4 2.40002H3.60001ZM12 16.8C10.21 16.8 8.70001 15.69 8.10001 14.1L9.60001 13.5C9.90001 14.4 10.8 15 12 15C13.2 15 14.1 14.4 14.4 13.5L15.9 14.1C15.3 15.69 13.79 16.8 12 16.8ZM9.00001 9.00002H7.50001V7.50002H9.00001V9.00002ZM16.5 9.00002H15V7.50002H16.5V9.00002Z" />
-                    </svg>
-                    <span>Get it on<br /><span className="text-lg font-semibold">Google Play</span></span>
-                  </a>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -1611,8 +1490,8 @@ const Home = () => {
                         <a href="tel: +91 6363047838" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                           +91 6363047838
                         </a><br />
-                        Mon-Fri: 8am-8pm EST<br />
-                        Sat-Sun: 9am-5pm EST
+                        Mon-Fri: 8am-8pm IST<br />
+                        Sat-Sun: 9am-5pm IST
                       </p>
                     </div>
                   </div>
@@ -1648,7 +1527,7 @@ const Home = () => {
                     <div className="ml-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Live Chat</h3>
                       <p className="mt-2 text-base text-gray-500">
-                        Available 24/7 through our mobile app<br />
+                        Available 24/7 <br />
                         <button 
                           className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300"
                           onMouseEnter={() => setIsHovering(true)}
