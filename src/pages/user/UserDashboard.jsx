@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 import UserStatCard from '../../components/user/UserStatCard';
 import UserAppointments from '../../components/user/UserAppointments';
@@ -8,6 +8,13 @@ import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
 import AISymptomChecker from '../../components/user/AISymptomChecker';
 import PetSelector from '../../components/user/PetSelector';
+import PetHealthCard from '../../components/user/PetHealthCard';
+import UpcomingSchedule from '../../components/user/UpcomingSchedule';
+import PetCareReminders from '../../components/user/PetCareReminders';
+import SmartInsights from '../../components/user/SmartInsights';
+import QuickStats from '../../components/user/QuickStats';
+import WeatherWidget from '../../components/user/WeatherWidget';
+import PetActivityTracker from '../../components/user/PetActivityTracker';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserDashboard = () => {
@@ -54,159 +61,184 @@ const UserDashboard = () => {
   return (
     <UserLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="bg-pink-100 p-2 rounded-lg">
-                <FaPaw className="text-pink-600 text-2xl" />
+        {/* Header with cute greeting */}
+        <div className="bg-gradient-to-r from-pink-100 via-purple-50 to-pink-100 rounded-2xl p-6 border border-pink-200 shadow-sm">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-gradient-to-br from-pink-400 to-purple-500 p-3 rounded-xl shadow-lg">
+                  <FaPaw className="text-white text-2xl" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                    Welcome Back! 🐾
+                  </h1>
+                  <p className="text-gray-600 mt-1">Your furry friends are happy to see you!</p>
+                </div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800">My Pet Dashboard</h1>
             </div>
-            <p className="text-gray-500 mt-1">Welcome to your PawsIQ dashboard!</p>
+            <div className="hidden md:flex items-center gap-2">
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Today is</div>
+                <div className="font-semibold text-gray-800">
+                  {new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              </div>
+              <div className="bg-yellow-100 p-2 rounded-lg">
+                <FaStar className="text-yellow-500 text-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Stats Overview */}
+        <QuickStats />
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Pet Health Cards */}
+          <div className="lg:col-span-1 space-y-6">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <FaHeart className="text-pink-600" />
+                My Pets Health
+              </h2>
+              <div className="space-y-4">
+                {pets.map((pet) => (
+                  <PetHealthCard key={pet.id} pet={pet} />
+                ))}
+              </div>
+            </div>
+
+            {/* Weather Widget */}
+            <WeatherWidget />
+          </div>
+
+          {/* Middle Column - Schedule & Appointments */}
+          <div className="lg:col-span-1 space-y-6">
+            <UpcomingSchedule />
+            <PetCareReminders />
+          </div>
+
+          {/* Right Column - Insights & AI */}
+          <div className="lg:col-span-1 space-y-6">
+            <SmartInsights />
+            
+            {/* Quick Actions - Compact Version */}
+            <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 shadow-sm">
+              <h2 className="text-lg font-semibold text-pink-900 mb-4 flex items-center gap-2">
+                <FaPaw className="text-pink-600" />
+                Quick Actions
+              </h2>
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={() => navigate('/user/pets/add')}
+                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="bg-pink-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
+                    <PetIcon type="dog" className="text-pink-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-sm">Add Pet</h3>
+                </button>
+                <button 
+                  onClick={() => navigate('/user/appointments/new')}
+                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="bg-purple-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
+                    <FaCalendarCheck className="text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-sm">Book Service</h3>
+                </button>
+                <button 
+                  onClick={() => navigate('/user/marketplace')}
+                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="bg-blue-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
+                    <FaShoppingCart className="text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-sm">Shop</h3>
+                </button>
+                <button 
+                  onClick={() => navigate('/user/ai-pet-care')}
+                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="bg-indigo-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
+                    <FaRobot className="text-indigo-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-sm">AI Care</h3>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Full Width Sections */}
+        <div className="space-y-6">
+          {/* Enhanced Appointments Section */}
+          <UserAppointments />
+          
+          {/* Pet Activity Tracker */}
+          <PetActivityTracker />
+          
+          {/* AI Pet Care Section */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+            <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">
+              <FaRobot className="text-indigo-600" />
+              AI Pet Care Assistant 🤖
+            </h2>
+            <div className="space-y-6">
+              <PetSelector 
+                pets={pets}
+                selectedPet={selectedPetForAI}
+                onPetSelect={setSelectedPetForAI}
+              />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+                <div id="symptom-checker">
+                  <AISymptomChecker selectedPet={selectedPetForAI} />
+                </div>
+              </div>
+            </div>
           </div>
           
-        </div>
-      
-        {/* Quick Actions */}
-        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 shadow-sm">
-          <h2 className="text-lg font-semibold text-pink-900 mb-4 flex items-center gap-2">
-            <FaPaw className="text-pink-600" />
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <button 
-              onClick={() => navigate('/user/pets/add')}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-pink-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <PetIcon type="dog" className="text-pink-600 text-xl" />
+          {/* Pet Care Tips - Enhanced */}
+          <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6 border border-green-100">
+            <h2 className="text-lg font-semibold text-green-900 mb-4 flex items-center gap-2">
+              <FaPaw className="text-green-600" />
+              Daily Pet Care Tips 💡
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-pink-100 p-2 rounded-full">
+                    <FaDog className="text-pink-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800">Dogs</h3>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">Regular exercise is crucial for a dog's physical and mental health. Aim for at least 30 minutes of activity daily to keep them happy and healthy! 🐕</p>
               </div>
-              <h3 className="font-semibold text-gray-800">Add a Pet</h3>
-            </button>
-            <button 
-              onClick={() => navigate('/user/appointments/new')}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-purple-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <FaCalendarCheck className="text-purple-600 text-xl" />
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-purple-100 p-2 rounded-full">
+                    <FaCat className="text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800">Cats</h3>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">Provide vertical spaces for cats to climb and perch. This satisfies their natural instinct to observe from heights and keeps them mentally stimulated! 🐱</p>
               </div>
-              <h3 className="font-semibold text-gray-800">Book Service</h3>
-            </button>
-            <button 
-              onClick={() => navigate('/user/marketplace')}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-blue-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <FaShoppingCart className="text-blue-600 text-xl" />
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-yellow-100 p-2 rounded-full">
+                    <PetIcon type="rabbit" className="text-yellow-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-800">Small Pets</h3>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">Small pets need daily handling to stay socialized. Spend at least 15-20 minutes interacting with them each day to build trust and bonding! 🐰</p>
               </div>
-              <h3 className="font-semibold text-gray-800">Shop Products</h3>
-            </button>
-            <button 
-              onClick={() => navigate('/user/services')}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-green-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <FaBone className="text-green-600 text-xl" />
-              </div>
-              <h3 className="font-semibold text-gray-800">Find Services</h3>
-            </button>
-            <button 
-              onClick={() => navigate('/user/ai-pet-care')}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-indigo-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <FaRobot className="text-indigo-600 text-xl" />
-              </div>
-              <h3 className="font-semibold text-gray-800">AI Pet Care</h3>
-            </button>
-            <button 
-              onClick={scrollToSymptomChecker}
-              className="bg-white rounded-lg p-4 text-center border border-pink-100 hover:shadow-md transition-shadow"
-            >
-              <div className="bg-red-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <FaStethoscope className="text-red-600 text-xl" />
-              </div>
-              <h3 className="font-semibold text-gray-800">Symptom Checker</h3>
-            </button>
-          </div>
-        </div>
-      
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <UserStatCard 
-            title="My Pets" 
-            value="2" 
-            icon={<PetIcon type="paw" size="lg" className="text-white" />} 
-            bgColor="bg-gradient-to-br from-pink-500 to-pink-600"
-            linkText="Manage Pets"
-            linkUrl="/user/pets"
-          />
-          <UserStatCard 
-            title="Upcoming Appointments" 
-            value="3" 
-            icon={<PetIcon type="cat" size="lg" className="text-white" />} 
-            bgColor="bg-gradient-to-br from-purple-500 to-purple-600"
-            linkText="View All"
-            linkUrl="/user/appointments"
-          />
-          <UserStatCard 
-            title="Recent Orders" 
-            value="1" 
-            icon={<PetIcon type="dog" size="lg" className="text-white" />} 
-            bgColor="bg-gradient-to-br from-blue-500 to-blue-600"
-            linkText="Order History"
-            linkUrl="/user/orders"
-          />
-        </div>
-        
-        {/* Pet Profiles
-        <PetProfiles /> */}
-        
-        {/* Upcoming Appointments */}
-        <UserAppointments />
-        
-        {/* AI Pet Care Suggestions */}
-        <div className="space-y-6">
-          <PetSelector 
-            pets={pets}
-            selectedPet={selectedPetForAI}
-            onPetSelect={setSelectedPetForAI}
-          />
-          <AIPetCareSuggestions selectedPet={selectedPetForAI} />
-        </div>
-        
-        {/* AI Symptom Checker */}
-        <div id="symptom-checker">
-          <AISymptomChecker selectedPet={selectedPetForAI} />
-        </div>
-        
-        {/* Pet Care Tips */}
-        <div className="bg-pink-50 rounded-xl p-6 border border-pink-100">
-          <h2 className="text-lg font-semibold text-pink-900 mb-4 flex items-center gap-2">
-            <FaPaw className="text-pink-600" />
-            Pet Care Tips of the Day
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg p-4 shadow-sm border border-pink-50">
-              <div className="flex items-center gap-2 mb-2 text-pink-600">
-                <FaDog />
-                <h3 className="font-medium">Dogs</h3>
-              </div>
-              <p className="text-gray-600 text-sm">Regular exercise is crucial for a dog's physical and mental health. Aim for at least 30 minutes of activity daily.</p>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border border-pink-50">
-              <div className="flex items-center gap-2 mb-2 text-pink-600">
-                <FaCat />
-                <h3 className="font-medium">Cats</h3>
-              </div>
-              <p className="text-gray-600 text-sm">Provide vertical spaces for cats to climb and perch. This satisfies their natural instinct to observe from heights.</p>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border border-pink-50">
-              <div className="flex items-center gap-2 mb-2 text-pink-600">
-                <PetIcon type="rabbit" />
-                <h3 className="font-medium">Small Pets</h3>
-              </div>
-              <p className="text-gray-600 text-sm">Small pets need daily handling to stay socialized. Spend at least 15-20 minutes interacting with them each day.</p>
             </div>
           </div>
         </div>

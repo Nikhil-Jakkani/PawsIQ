@@ -114,7 +114,15 @@ function App() {
       <Router>
         <Routes>
           {/* Main Routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={
+            currentUser ? (
+              currentUser.role === 'admin' ? <Navigate to="/dashboard" replace /> :
+              currentUser.role === 'user' ? <Navigate to="/user/dashboard" replace /> :
+              currentUser.role === 'provider' ? <Navigate to="/provider/dashboard" replace /> :
+              <Home />
+            ) : <Home />
+          } />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           
 

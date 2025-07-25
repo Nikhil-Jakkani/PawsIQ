@@ -36,7 +36,7 @@ import {
 } from 'react-icons/fa';
 
 // Cute pet-themed logo
-const logoImage = "/2.svg";
+const logoImage = "/1.svg";
 
 const Home = () => {
   // State for UI interactions
@@ -265,7 +265,7 @@ const Home = () => {
       {/* Coming Soon Button */}
       <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
         <div 
-          className="group relative bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer animate-pulse hover:animate-none"
+          className="group relative bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-full px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer animate-pulse hover:animate-none"
           onClick={() => alert('🐾 PawsIQ is coming soon! Get ready for the ultimate pet care experience! 🐾')}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
@@ -404,22 +404,33 @@ const Home = () => {
               </a>
             </div>
             
-            <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+            <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0 space-x-4">
+              <Link 
+                to="/user/login" 
+                className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300 flex items-center gap-2"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
+                <FaPaw className="text-pink-500" />
+                Pet Owner Login
+              </Link>
+              <Link 
+                to="/provider/login" 
+                className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300 flex items-center gap-2"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
+                <FaUserMd className="text-blue-500" />
+                Provider Login
+              </Link>
               <Link 
                 to="/login" 
-                className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300"
+                className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300 flex items-center gap-2"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
               >
-                Sign in
-              </Link>
-              <Link
-                to="/signup"
-                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-              >
-                Sign up
+                <FaShieldAlt className="text-green-500" />
+                Admin Login
               </Link>
             </div>
           </div>
@@ -447,7 +458,7 @@ const Home = () => {
                     alt="Cat with owner"
                   />
                 )}
-                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-800 to-purple-900 mix-blend-multiply"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-800 to-indigo-900 mix-blend-multiply"></div>
               </div>
               <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
                 <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
@@ -572,25 +583,56 @@ const Home = () => {
                 </div>
                 
                 {/* Action buttons */}
-                <div className="mt-6 flex justify-center space-x-4 animate-fadeInUp animation-delay-1000">
+                <div className="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 animate-fadeInUp animation-delay-1000">
                   <Link
-                    to="/login"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300"
+                    to="/user/login"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-all duration-300 transform hover:scale-105 shadow-lg"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                   >
-                    <FaSearch className="mr-2" />
-                    Find Services
+                    <FaPaw className="mr-2" />
+                    Pet Owner Dashboard
                   </Link>
                   <Link
-                    to="/provider/signup"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300"
+                    to="/provider/login"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform hover:scale-105 shadow-lg"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                   >
                     <FaUserMd className="mr-2" />
-                    Become a Provider
+                    Provider Portal
                   </Link>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                  >
+                    <FaShieldAlt className="mr-2" />
+                    Admin Access
+                  </Link>
+                </div>
+                
+                {/* Quick Demo Access */}
+                <div className="mt-4 text-center animate-fadeInUp animation-delay-1200">
+                  <p className="text-indigo-200 text-sm mb-2">🚀 Try the demo with these credentials:</p>
+                  <div className="flex flex-wrap justify-center gap-4 text-xs">
+                    <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2">
+                      <span className="text-pink-200 font-semibold">Pet Owner:</span>
+                      <br />
+                      <span className="text-white">user@pawsiq.com / user123</span>
+                    </div>
+                    <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2">
+                      <span className="text-blue-200 font-semibold">Provider:</span>
+                      <br />
+                      <span className="text-white">vet@pawsiq.com / provider123</span>
+                    </div>
+                    <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2">
+                      <span className="text-green-200 font-semibold">Admin:</span>
+                      <br />
+                      <span className="text-white">admin@pawsiq.com / admin123</span>
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Contact info */}
@@ -1314,7 +1356,7 @@ const Home = () => {
                   <FaUserMd className="h-6 w-6 text-indigo-500" />
                 </div>
                 <div className="absolute top-1/3 right-1/4 bg-white rounded-full p-2 shadow-lg animate-float animation-delay-500">
-                  <FaRegHeart className="h-6 w-6 text-pink-500" />
+                  <FaRegHeart className="h-6 w-6 text-indigo-500" />
                 </div>
               </div>
             </div>
@@ -1741,7 +1783,7 @@ const Home = () => {
                       />
                       {newsletter && (
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                          <FaCheckCircle className={`h-5 w-5 ${newsletter.includes('@') ? 'text-green-500' : 'text-gray-300'}`} />
+                          <FaCheckCircle className={`h-5 w-5 ${newsletter.includes('@') ? 'text-indigo-500' : 'text-gray-300'}`} />
                         </div>
                       )}
                     </div>
@@ -1764,19 +1806,19 @@ const Home = () => {
                 {/* Newsletter benefits */}
                 <div className="mt-6 grid grid-cols-2 gap-4 text-sm text-gray-500">
                   <div className="flex items-start">
-                    <FaCheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <FaCheckCircle className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                     <span>Weekly pet care tips</span>
                   </div>
                   <div className="flex items-start">
-                    <FaCheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <FaCheckCircle className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                     <span>Exclusive discounts</span>
                   </div>
                   <div className="flex items-start">
-                    <FaCheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <FaCheckCircle className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                     <span>New provider alerts</span>
                   </div>
                   <div className="flex items-start">
-                    <FaCheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <FaCheckCircle className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                     <span>Seasonal pet advice</span>
                   </div>
                 </div>
