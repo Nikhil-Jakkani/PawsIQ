@@ -120,7 +120,7 @@ const UserDashboard = () => {
 
           {/* Middle Column - Schedule & Appointments */}
           <div className="lg:col-span-1 space-y-6">
-            <UpcomingSchedule />
+            <UpcomingSchedule />  
             <PetCareReminders />
           </div>
 
