@@ -4,6 +4,10 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "rootDir": "./server/src",
+    "baseUrl": ".",
+    "paths": {
+      "@config/*": ["server/src/config/*"]
+    },
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

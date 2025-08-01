@@ -8,7 +8,7 @@ const logoImage = "/1.svg";
 
 const ProviderLogin = () => {
   const navigate = useNavigate();
-  const { login, currentUser, error: authError } = useAuth();
+    const { providerLogin, currentUser, error: authError } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -86,7 +86,7 @@ const ProviderLogin = () => {
     
     try {
       // Call the login function with isProvider=true
-      const result = await login(formData.email, formData.password, true);
+            const result = await providerLogin(formData.email, formData.password);
       
       if (result.success) {
         // Login successful

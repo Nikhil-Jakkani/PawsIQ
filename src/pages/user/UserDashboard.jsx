@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight, FaRunning, FaUtensils, FaCut, FaHeartbeat, FaBrain, FaThermometerHalf, FaClock, FaTint, FaPlay, FaMinus, FaWeight, FaBirthdayCake } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
-// import UserStatCard from '../../components/user/UserStatCard';
-
+import UserStatCard from '../../components/user/UserStatCard';
+// import UserAppointments from '../../components/user/UserAppointments';
 import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
 import PetSelector from '../../components/user/PetSelector';
@@ -365,18 +365,30 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Main Content Grid with Enhanced Styling */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-          {/* Left Column - Pet Health Cards with Smart Insights */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
-              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
-                <div className="bg-gradient-to-br from-pink-500 to-red-500 p-2 rounded-xl">
-                  <FaHeart className="text-white text-lg" />
-                </div>
-                My Pets Health
-                <div className="ml-auto bg-pink-100 text-pink-700 text-xs font-semibold px-3 py-1 rounded-full">
-                  {pets.length} pets
+        {/* Full Width Sections */}
+        <div className="space-y-6">
+          {/* Enhanced Appointments Section */}
+          {/* <UserAppointments /> */}
+          
+          {/* Pet Activity Tracker */}
+          <PetActivityTracker />
+          
+          {/* AI Pet Care Section */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+            <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">
+              <FaRobot className="text-indigo-600" />
+              AI Pet Care Assistant 🤖
+            </h2>
+            <div className="space-y-6">
+              <PetSelector 
+                pets={pets}
+                selectedPet={selectedPetForAI}
+                onPetSelect={setSelectedPetForAI}
+              />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+                <div id="symptom-checker">
+                  <AISymptomChecker selectedPet={selectedPetForAI} />
                 </div>
               </h2>
               
