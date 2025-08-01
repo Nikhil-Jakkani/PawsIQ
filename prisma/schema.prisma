@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model PIQ_Food_Avoid_master {
   food_avoid_id     Int       @id(map: "PIQ_Food_Avoid_pkey") @default(autoincrement())
   pet_type          String?   @db.VarChar
@@ -21,7 +20,6 @@ model PIQ_Food_Avoid_master {
   created_at        DateTime  @default(now()) @db.Timestamptz(6)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model PIQ_Pet_Weight_master {
   pet_wght_mstr_id   Int       @id(map: "PIQ_Pet_weight_master_pkey") @default(autoincrement())
   pet_type           String?   @db.VarChar
@@ -36,7 +34,6 @@ model PIQ_Pet_Weight_master {
   last_updated_dtm   DateTime? @db.Timestamp(6)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_Pets {
   pet_id           BigInt             @id @default(autoincrement())
   user_id          BigInt?
@@ -54,7 +51,6 @@ model PIQ_Pets {
   PIQ_pets_profile PIQ_pets_profile[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_Pets_Photo {
   pet_photo_id     BigInt    @id @default(autoincrement())
   pet_id           BigInt?
@@ -67,7 +63,6 @@ model PIQ_Pets_Photo {
   PIQ_Pets         PIQ_Pets? @relation(fields: [pet_id], references: [pet_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_Service_Master {
   services_id       Int       @id @default(autoincrement())
   service_types     String    @db.VarChar
@@ -80,7 +75,6 @@ model PIQ_Service_Master {
   last_updated_dtm  DateTime? @db.Timestamp(6)
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model PIQ_Service_Provider {
   service_provider_id     Int       @id @default(autoincrement())
   provider_name           String?   @db.VarChar
@@ -97,7 +91,6 @@ model PIQ_Service_Provider {
   services_offered        String?   @db.VarChar
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_Service_Provider_Dtls {
   serv_provider_dtls_id         Int       @id @default(autoincrement())
   service_provider_id           Int?
@@ -115,7 +108,6 @@ model PIQ_Service_Provider_Dtls {
   last_updated_dtm              DateTime? @db.Timestamp(6)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_User {
   user_id                  BigInt     @id @default(autoincrement())
   user_full_name           String     @db.VarChar
@@ -130,7 +122,6 @@ model PIQ_User {
   PIQ_Pets                 PIQ_Pets[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model PIQ_pets_profile {
   pets_profile_id    Int       @id @default(autoincrement())
   pet_id             BigInt
