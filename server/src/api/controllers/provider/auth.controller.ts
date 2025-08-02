@@ -9,9 +9,9 @@ const register = catchAsync(async (req: Request, res: Response) => {
 });
 
 const login = catchAsync(async (req: Request, res: Response) => {
-  const { provider_email_id, provider_password } = req.body;
-  const result = await providerAuthService.login(provider_email_id, provider_password);
-  res.send(result);
+  const { provider_email, provider_password } = req.body;
+  const { provider, tokens } = await providerAuthService.login(provider_email, provider_password);
+  res.send({ provider, tokens });
 });
 
 export const providerAuthController = {

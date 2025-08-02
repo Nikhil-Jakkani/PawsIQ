@@ -106,7 +106,7 @@ const ProviderDashboard = () => {
                   )}
                   <div className="ml-4">
                     <h2 className="text-lg font-medium text-gray-900">{currentUser.name}</h2>
-                    <p className="text-sm text-gray-500">{currentUser.providerType}</p>
+                    <p className="text-sm text-gray-500">{currentUser.services_offered}</p>
                   </div>
                 </div>
               </div>
@@ -163,7 +163,7 @@ const ProviderDashboard = () => {
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back, {currentUser.name}!</h2>
                 <p className="text-gray-600">
-                  Here's what's happening with your {currentUser.providerType.toLowerCase()} practice today.
+                  Here's what's happening with your {currentUser.services_offered && currentUser.services_offered.toLowerCase()} practice today.
                 </p>
               </div>
             </div>

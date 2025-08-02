@@ -13,8 +13,8 @@ export const AuthProvider = ({ children }) => {
       if (storedUser) {
         setCurrentUser(JSON.parse(storedUser));
       }
-    } catch (err) {
-      console.error("Failed to parse user from localStorage", err);
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
       localStorage.removeItem('pawsiq_user');
     } finally {
       setLoading(false);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.message || 'Failed to login');
       }
       const { user, tokens } = data;
-      const userData = { ...user, tokens };
+      const userData = { ...user, tokens, role: 'user' };
       setCurrentUser(userData);
       localStorage.setItem('pawsiq_user', JSON.stringify(userData));
       return { success: true, userType: user.role };
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch('/api/v1/provider/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider_email_id: email, provider_password: password }),
+        body: JSON.stringify({ provider_email: email, provider_password: password }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -99,6 +99,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const providerRegister = async (userData) => {
+    try {
+      const response = await fetch(`${API_URL}/provider/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to register');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Provider registration error:', error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem('pawsiq_user');
@@ -111,6 +131,7 @@ export const AuthProvider = ({ children }) => {
     login,
     providerLogin,
     adminLogin,
+    providerRegister,
     logout,
     isProvider: () => currentUser?.role === 'provider',
     isUser: () => currentUser?.role === 'user',

@@ -13,16 +13,16 @@ const password = (value: string, helpers: any) => {
 export const providerAuthValidation = {
   register: {
     body: Joi.object().keys({
-      provider_full_name: Joi.string().required(),
-      provider_email_id: Joi.string().required().email(),
+      provider_name: Joi.string().required(),
+      provider_email: Joi.string().required().email(),
       provider_password: Joi.string().required().custom(password),
-      provider_phone_number: Joi.string().required(),
-      // Add other required fields for provider registration here
+      provider_contact_number: Joi.string().required(),
+      services_offered: Joi.string().required(),
     }),
   },
   login: {
     body: Joi.object().keys({
-      provider_email_id: Joi.string().required().email(),
+      provider_email: Joi.string().required().email(),
       provider_password: Joi.string().required(),
     }),
   },

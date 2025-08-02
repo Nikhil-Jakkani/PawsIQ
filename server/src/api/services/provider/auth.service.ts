@@ -9,7 +9,7 @@ const login = async (email: string, password: string) => {
   const { data: provider, error } = await db
     .from('PIQ_Service_Provider')
     .select('*')
-    .eq('provider_email_id', email)
+    .eq('provider_email', email)
     .single();
 
   if (error || !provider) {
@@ -32,8 +32,8 @@ const login = async (email: string, password: string) => {
 const register = async (providerBody: any) => {
   const { data: existingProvider } = await db
     .from('PIQ_Service_Provider')
-    .select('provider_email_id')
-    .eq('provider_email_id', providerBody.provider_email_id)
+    .select('provider_email')
+    .eq('provider_email', providerBody.provider_email)
     .single();
 
   if (existingProvider) {
@@ -44,7 +44,7 @@ const register = async (providerBody: any) => {
   const newProviderData = {
     ...providerBody,
     provider_password: hashedPassword,
-    provider_status: 'pending', // Or 'active' if no verification is needed
+    provider_status: 'active',
   };
 
   const { data: newProvider, error } = await db
