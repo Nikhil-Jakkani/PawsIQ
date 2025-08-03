@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 import UserStatCard from '../../components/user/UserStatCard';
 
@@ -20,12 +20,28 @@ import UserLayout from '../../components/layout/UserLayout';
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
 
   const scrollToSymptomChecker = () => {
     const element = document.getElementById('symptom-checker');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const getGreeting = () => {
+    const hour = currentTime.getHours();
+    if (hour < 12) return 'Good Morning! ☀️';
+    if (hour < 17) return 'Good Afternoon! 🌤️';
+    return 'Good Evening! 🌙';
   };
 
   // Mock data for pets (in a real app, this would come from your state management or API)
@@ -60,116 +76,170 @@ const UserDashboard = () => {
 
   return (
     <UserLayout>
-      <div className="space-y-6">
-        {/* Header with cute greeting */}
-        <div className="bg-gradient-to-r from-pink-100 via-purple-50 to-pink-100 rounded-2xl p-6 border border-pink-200 shadow-sm">
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-gradient-to-br from-pink-400 to-purple-500 p-3 rounded-xl shadow-lg">
-                  <FaPaw className="text-white text-2xl" />
+      <div className="space-y-8">
+        {/* Modern Header with Dynamic Greeting */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-purple-100/20 to-indigo-100/20"></div>
+          <div className="relative z-10">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-pink-500 to-purple-600 p-4 rounded-2xl shadow-lg transform hover:scale-110 transition-transform duration-300">
+                    <FaPaw className="text-white text-3xl" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 bg-yellow-400 rounded-full p-1 animate-bounce">
+                    <FaMagic className="text-yellow-800 text-xs" />
+                  </div>
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                    Welcome Back! 🐾
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                    {getGreeting()}
                   </h1>
-                  <p className="text-gray-600 mt-1">Your furry friends are happy to see you!</p>
+                  <p className="text-gray-600 text-lg">Your furry friends are excited to see you!</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="flex -space-x-2">
+                      {pets.map((pet, index) => (
+                        <div key={pet.id} className="w-8 h-8 rounded-full border-2 border-white shadow-sm overflow-hidden transform hover:scale-110 transition-transform duration-200" style={{zIndex: pets.length - index}}>
+                          <img src={pet.image} alt={pet.name} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                    <span className="text-sm text-gray-500 ml-2">{pets.length} pets waiting for you</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="text-right">
-                <div className="text-sm text-gray-500">Today is</div>
-                <div className="font-semibold text-gray-800">
-                  {new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
+              <div className="hidden md:flex items-center gap-4">
+                <div className="text-right bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-sm text-gray-500 mb-1">Today is</div>
+                  <div className="font-bold text-gray-800 text-lg">
+                    {currentTime.toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {currentTime.toLocaleTimeString('en-US', { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </div>
                 </div>
-              </div>
-              <div className="bg-yellow-100 p-2 rounded-lg">
-                <FaStar className="text-yellow-500 text-xl" />
+                <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
+                  <FaStar className="text-white text-2xl" />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Stats Overview */}
-        <QuickStats />
+        {/* Enhanced Quick Stats Overview */}
+        <div className="transform hover:scale-[1.02] transition-transform duration-300">
+          <QuickStats />
+        </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content Grid with Enhanced Styling */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Pet Health Cards */}
           <div className="lg:col-span-1 space-y-6">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <FaHeart className="text-pink-600" />
+            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                <div className="bg-gradient-to-br from-pink-500 to-red-500 p-2 rounded-xl">
+                  <FaHeart className="text-white text-lg" />
+                </div>
                 My Pets Health
+                <div className="ml-auto bg-pink-100 text-pink-700 text-xs font-semibold px-3 py-1 rounded-full">
+                  {pets.length} pets
+                </div>
               </h2>
               <div className="space-y-4">
                 {pets.map((pet) => (
-                  <PetHealthCard key={pet.id} pet={pet} />
+                  <div key={pet.id} className="transform hover:scale-105 transition-transform duration-200">
+                    <PetHealthCard pet={pet} />
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Weather Widget */}
-            <WeatherWidget />
+            {/* Enhanced Weather Widget */}
+            <div className="transform hover:scale-105 transition-transform duration-300">
+              <WeatherWidget />
+            </div>
           </div>
 
           {/* Middle Column - Schedule & Appointments */}
           <div className="lg:col-span-1 space-y-6">
-            <UpcomingSchedule />  
-            <PetCareReminders />
+            <div className="transform hover:scale-105 transition-transform duration-300">
+              <UpcomingSchedule />
+            </div>
+            <div className="transform hover:scale-105 transition-transform duration-300">
+              <PetCareReminders />
+            </div>
           </div>
 
           {/* Right Column - Insights & AI */}
           <div className="lg:col-span-1 space-y-6">
-            <SmartInsights />
+            <div className="transform hover:scale-105 transition-transform duration-300">
+              <SmartInsights />
+            </div>
             
-            {/* Quick Actions - Compact Version */}
-            <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 shadow-sm">
-              <h2 className="text-lg font-semibold text-pink-900 mb-4 flex items-center gap-2">
-                <FaPaw className="text-pink-600" />
-                Quick Actions
-              </h2>
-              <div className="grid grid-cols-2 gap-3">
+            {/* Enhanced Quick Actions */}
+            <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-6 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-pink-900 flex items-center gap-3">
+                  <div className="bg-gradient-to-br from-pink-500 to-purple-600 p-2 rounded-xl">
+                    <FaPaw className="text-white text-lg" />
+                  </div>
+                  Quick Actions
+                </h2>
+                <div className="bg-gradient-to-r from-pink-400 to-purple-500 text-white text-xs font-semibold px-3 py-1 rounded-full animate-pulse">
+                  NEW
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <button 
                   onClick={() => navigate('/user/pets/add')}
-                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                  className="group bg-white rounded-xl p-4 text-center border border-pink-100 hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-pink-200"
                 >
-                  <div className="bg-pink-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
-                    <PetIcon type="dog" className="text-pink-600" />
+                  <div className="bg-gradient-to-br from-pink-100 to-pink-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+                    <PetIcon type="dog" className="text-pink-600 text-xl" />
                   </div>
-                  <h3 className="font-semibold text-gray-800 text-sm">Add Pet</h3>
+                  <h3 className="font-bold text-gray-800 text-sm mb-1">Add Pet</h3>
+                  <p className="text-xs text-gray-500">Register new friend</p>
+                  <FaArrowRight className="text-pink-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </button>
                 <button 
                   onClick={() => navigate('/user/appointments/new')}
-                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                  className="group bg-white rounded-xl p-4 text-center border border-purple-100 hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-purple-200"
                 >
-                  <div className="bg-purple-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
-                    <FaCalendarCheck className="text-purple-600" />
+                  <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+                    <FaCalendarCheck className="text-purple-600 text-xl" />
                   </div>
-                  <h3 className="font-semibold text-gray-800 text-sm">Book Service</h3>
+                  <h3 className="font-bold text-gray-800 text-sm mb-1">Book Service</h3>
+                  <p className="text-xs text-gray-500">Schedule appointment</p>
+                  <FaArrowRight className="text-purple-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </button>
                 <button 
                   onClick={() => navigate('/user/marketplace')}
-                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                  className="group bg-white rounded-xl p-4 text-center border border-blue-100 hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-blue-200"
                 >
-                  <div className="bg-blue-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
-                    <FaShoppingCart className="text-blue-600" />
+                  <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+                    <FaShoppingCart className="text-blue-600 text-xl" />
                   </div>
-                  <h3 className="font-semibold text-gray-800 text-sm">Shop</h3>
+                  <h3 className="font-bold text-gray-800 text-sm mb-1">Shop</h3>
+                  <p className="text-xs text-gray-500">Browse products</p>
+                  <FaArrowRight className="text-blue-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </button>
                 <button 
                   onClick={() => navigate('/user/ai-pet-care')}
-                  className="bg-white rounded-lg p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-200 hover:scale-105"
+                  className="group bg-white rounded-xl p-4 text-center border border-indigo-100 hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-indigo-200"
                 >
-                  <div className="bg-indigo-50 w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2">
-                    <FaRobot className="text-indigo-600" />
+                  <div className="bg-gradient-to-br from-indigo-100 to-indigo-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+                    <FaRobot className="text-indigo-600 text-xl" />
                   </div>
-                  <h3 className="font-semibold text-gray-800 text-sm">AI Care</h3>
+                  <h3 className="font-bold text-gray-800 text-sm mb-1">AI Care</h3>
+                  <p className="text-xs text-gray-500">Smart assistance</p>
+                  <FaArrowRight className="text-indigo-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </button>
               </div>
             </div>
@@ -177,67 +247,166 @@ const UserDashboard = () => {
         </div>
 
         {/* Full Width Sections */}
-        <div className="space-y-6">
-          {/* Pet Activity Tracker */}
-          <PetActivityTracker />
-          
-          {/* AI Pet Care Section */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
-            <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">
-              <FaRobot className="text-indigo-600" />
-              AI Pet Care Assistant 🤖
-            </h2>
-            <div className="space-y-6">
-              <PetSelector 
-                pets={pets}
-                selectedPet={selectedPetForAI}
-                onPetSelect={setSelectedPetForAI}
-              />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <AIPetCareSuggestions selectedPet={selectedPetForAI} />
-                <div id="symptom-checker">
+        <div className="space-y-8">
+          {/* Enhanced AI Pet Care Section */}
+          <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl p-8 border border-indigo-100 shadow-lg hover:shadow-xl transition-all duration-500">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg">
+                    <FaRobot className="text-white text-2xl" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 bg-green-400 rounded-full p-1 animate-pulse">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    AI Pet Care Assistant
+                  </h2>
+                  <p className="text-gray-600 mt-1">Get personalized care recommendations powered by AI 🤖</p>
+                </div>
+              </div>
+              <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-gray-700">AI Online</span>
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              <div className="transform hover:scale-[1.02] transition-transform duration-300">
+                <PetSelector 
+                  pets={pets}
+                  selectedPet={selectedPetForAI}
+                  onPetSelect={setSelectedPetForAI}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="transform hover:scale-105 transition-transform duration-300">
+                  <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+                </div>
+                <div id="symptom-checker" className="transform hover:scale-105 transition-transform duration-300">
                   <AISymptomChecker selectedPet={selectedPetForAI} />
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Enhanced Pet Activity Tracker */}
+          <div className="bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 rounded-3xl p-8 border border-green-100 shadow-lg hover:shadow-xl transition-all duration-500">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="bg-gradient-to-br from-green-500 to-teal-600 p-4 rounded-2xl shadow-lg">
+                  <FaChartLine className="text-white text-2xl" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+                    Pet Activity Tracker
+                  </h2>
+                  <p className="text-gray-600 mt-1">Monitor your pets' daily activities and health metrics 📊</p>
+                </div>
+              </div>
+              <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                <FaMagic className="text-green-500 text-sm" />
+                <span className="text-sm font-medium text-gray-700">Live Data</span>
+              </div>
+            </div>
+            <div className="transform hover:scale-[1.02] transition-transform duration-300">
+              <PetActivityTracker />
+            </div>
+          </div>
           
-          {/* Pet Care Tips - Enhanced */}
-          <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6 border border-green-100">
-            <h2 className="text-lg font-semibold text-green-900 mb-4 flex items-center gap-2">
-              <FaPaw className="text-green-600" />
-              Daily Pet Care Tips 💡
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-pink-100 p-2 rounded-full">
-                    <FaDog className="text-pink-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">Dogs</h3>
+          {/* Enhanced Pet Care Tips */}
+          <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 rounded-3xl p-8 border border-orange-100 shadow-lg hover:shadow-xl transition-all duration-500">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-4 rounded-2xl shadow-lg">
+                  <FaPaw className="text-white text-2xl" />
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">Regular exercise is crucial for a dog's physical and mental health. Aim for at least 30 minutes of activity daily to keep them happy and healthy! 🐕</p>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                    Daily Pet Care Tips
+                  </h2>
+                  <p className="text-gray-600 mt-1">Expert advice to keep your pets happy and healthy 💡</p>
+                </div>
               </div>
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-purple-100 p-2 rounded-full">
-                    <FaCat className="text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">Cats</h3>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed">Provide vertical spaces for cats to climb and perch. This satisfies their natural instinct to observe from heights and keeps them mentally stimulated! 🐱</p>
+              <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                <FaMagic className="text-orange-500 text-sm animate-pulse" />
+                <span className="text-sm font-medium text-gray-700">Daily Tips</span>
               </div>
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-green-50 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-yellow-100 p-2 rounded-full">
-                    <PetIcon type="rabbit" className="text-yellow-600" />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="group bg-white rounded-2xl p-6 shadow-lg border border-orange-50 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-pink-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-gradient-to-br from-pink-100 to-pink-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-200">
+                    <FaDog className="text-pink-600 text-xl" />
                   </div>
-                  <h3 className="font-semibold text-gray-800">Small Pets</h3>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">Dogs</h3>
+                    <div className="w-8 h-1 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full"></div>
+                  </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">Small pets need daily handling to stay socialized. Spend at least 15-20 minutes interacting with them each day to build trust and bonding! 🐰</p>
+                <p className="text-gray-600 leading-relaxed">Regular exercise is crucial for a dog's physical and mental health. Aim for at least 30 minutes of activity daily to keep them happy and healthy! 🐕</p>
+                <div className="mt-4 flex items-center text-pink-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <span>Learn more</span>
+                  <FaArrowRight className="ml-2 text-xs" />
+                </div>
+              </div>
+              
+              <div className="group bg-white rounded-2xl p-6 shadow-lg border border-orange-50 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-purple-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-200">
+                    <FaCat className="text-purple-600 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">Cats</h3>
+                    <div className="w-8 h-1 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full"></div>
+                  </div>
+                </div>
+                <p className="text-gray-600 leading-relaxed">Provide vertical spaces for cats to climb and perch. This satisfies their natural instinct to observe from heights and keeps them mentally stimulated! 🐱</p>
+                <div className="mt-4 flex items-center text-purple-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <span>Learn more</span>
+                  <FaArrowRight className="ml-2 text-xs" />
+                </div>
+              </div>
+              
+              <div className="group bg-white rounded-2xl p-6 shadow-lg border border-orange-50 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-yellow-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-200">
+                    <PetIcon type="rabbit" className="text-yellow-600 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">Small Pets</h3>
+                    <div className="w-8 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full"></div>
+                  </div>
+                </div>
+                <p className="text-gray-600 leading-relaxed">Small pets need daily handling to stay socialized. Spend at least 15-20 minutes interacting with them each day to build trust and bonding! 🐰</p>
+                <div className="mt-4 flex items-center text-yellow-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <span>Learn more</span>
+                  <FaArrowRight className="ml-2 text-xs" />
+                </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Floating Action Button */}
+        <div className="fixed bottom-8 right-8 z-50">
+          <button
+            onClick={scrollToSymptomChecker}
+            className="group bg-gradient-to-br from-pink-500 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
+            title="Quick AI Health Check"
+          >
+            <div className="relative">
+              <FaRobot className="text-2xl" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            </div>
+            <div className="absolute right-full mr-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+              AI Health Check
+              <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-800"></div>
+            </div>
+          </button>
         </div>
       </div>
     </UserLayout>
