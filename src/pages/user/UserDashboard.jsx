@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 import UserStatCard from '../../components/user/UserStatCard';
-import UserAppointments from '../../components/user/UserAppointments';
+
 import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
 import AISymptomChecker from '../../components/user/AISymptomChecker';
@@ -178,9 +178,6 @@ const UserDashboard = () => {
 
         {/* Full Width Sections */}
         <div className="space-y-6">
-          {/* Enhanced Appointments Section */}
-          <UserAppointments />
-          
           {/* Pet Activity Tracker */}
           <PetActivityTracker />
           
