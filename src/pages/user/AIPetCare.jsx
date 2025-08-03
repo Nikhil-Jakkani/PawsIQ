@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { FaRobot, FaPaw, FaArrowLeft } from 'react-icons/fa';
+import { FaRobot, FaPaw, FaArrowLeft, FaStethoscope, FaHeart } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserLayout from '../../components/layout/UserLayout';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
+import AISymptomChecker from '../../components/user/AISymptomChecker';
 import PetSelector from '../../components/user/PetSelector';
 
 const AIPetCare = () => {
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
+  const [activeTab, setActiveTab] = useState('suggestions');
 
   // Mock data for pets (in a real app, this would come from your state management or API)
   const pets = [
@@ -81,16 +83,22 @@ const AIPetCare = () => {
             <FaPaw className="text-pink-600" />
             What Our AI Can Help With
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="bg-white rounded-lg p-4 text-center border border-pink-100">
               <div className="bg-red-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <span className="text-red-600 text-xl">🏥</span>
+                <FaStethoscope className="text-red-600 text-lg" />
+              </div>
+              <h3 className="font-semibold text-gray-800 text-sm">Symptom Analysis</h3>
+            </div>
+            <div className="bg-white rounded-lg p-4 text-center border border-pink-100">
+              <div className="bg-blue-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
+                <span className="text-blue-600 text-xl">🏥</span>
               </div>
               <h3 className="font-semibold text-gray-800 text-sm">Health Monitoring</h3>
             </div>
             <div className="bg-white rounded-lg p-4 text-center border border-pink-100">
-              <div className="bg-blue-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
-                <span className="text-blue-600 text-xl">✂️</span>
+              <div className="bg-purple-50 w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3">
+                <span className="text-purple-600 text-xl">✂️</span>
               </div>
               <h3 className="font-semibold text-gray-800 text-sm">Grooming Care</h3>
             </div>
@@ -116,8 +124,50 @@ const AIPetCare = () => {
           onPetSelect={setSelectedPetForAI}
         />
 
-        {/* AI Suggestions */}
-        <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+        {/* AI Services Tabs */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Tab Navigation */}
+          <div className="border-b border-gray-200">
+            <div className="flex">
+              <button
+                onClick={() => setActiveTab('suggestions')}
+                className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+                  activeTab === 'suggestions'
+                    ? 'bg-pink-50 text-pink-700 border-b-2 border-pink-500'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <FaHeart className="text-lg" />
+                  <span>Care Suggestions</span>
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('symptom-checker')}
+                className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+                  activeTab === 'symptom-checker'
+                    ? 'bg-red-50 text-red-700 border-b-2 border-red-500'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <FaStethoscope className="text-lg" />
+                  <span>Symptom Checker</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === 'suggestions' && (
+              <AIPetCareSuggestions selectedPet={selectedPetForAI} />
+            )}
+            {activeTab === 'symptom-checker' && (
+              <AISymptomChecker selectedPet={selectedPetForAI} />
+            )}
+          </div>
+        </div>
 
         {/* Additional Information */}
         <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">

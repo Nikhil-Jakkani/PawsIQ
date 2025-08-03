@@ -96,16 +96,7 @@ const AISymptomChecker = ({ selectedPet }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="bg-indigo-100 p-2 rounded-lg">
-          <FaRobot className="text-indigo-600 text-xl" />
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800">AI Symptom Checker</h2>
-          <p className="text-sm text-gray-500">Get AI-powered insights about your pet's symptoms</p>
-        </div>
-      </div>
+    <div className="space-y-6">
 
       {!selectedPet ? (
         <div className="text-center py-8">
@@ -115,8 +106,8 @@ const AISymptomChecker = ({ selectedPet }) => {
       ) : (
         <div className="space-y-6">
           {/* Selected Pet Info */}
-          <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
-            <h3 className="font-medium text-indigo-900 mb-2">Analyzing symptoms for:</h3>
+          <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+            <h3 className="font-medium text-red-900 mb-2">Analyzing symptoms for:</h3>
             <div className="flex items-center gap-3">
               <img 
                 src={selectedPet.image} 
@@ -124,8 +115,8 @@ const AISymptomChecker = ({ selectedPet }) => {
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <p className="font-semibold text-indigo-800">{selectedPet.name}</p>
-                <p className="text-sm text-indigo-600">{selectedPet.breed} • {selectedPet.age}</p>
+                <p className="font-semibold text-red-800">{selectedPet.name}</p>
+                <p className="text-sm text-red-600">{selectedPet.breed} • {selectedPet.age}</p>
               </div>
             </div>
           </div>
@@ -133,14 +124,14 @@ const AISymptomChecker = ({ selectedPet }) => {
           {/* Common Symptoms */}
           <div>
             <h3 className="font-medium text-gray-800 mb-3">Common Symptoms (select all that apply):</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {commonSymptoms.map((symptom) => (
                 <button
                   key={symptom}
                   onClick={() => handleSymptomToggle(symptom)}
                   className={`text-sm p-2 rounded-lg border transition-colors ${
                     selectedSymptoms.includes(symptom)
-                      ? 'bg-indigo-100 border-indigo-300 text-indigo-800'
+                      ? 'bg-red-100 border-red-300 text-red-800'
                       : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
@@ -159,7 +150,7 @@ const AISymptomChecker = ({ selectedPet }) => {
               value={symptoms}
               onChange={(e) => setSymptoms(e.target.value)}
               placeholder="Describe any other symptoms, behaviors, or concerns you've noticed..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
               rows="3"
             />
           </div>
@@ -169,7 +160,7 @@ const AISymptomChecker = ({ selectedPet }) => {
             <button
               onClick={handleAnalyze}
               disabled={loading}
-              className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium"
             >
               {loading ? (
                 <>
@@ -185,7 +176,7 @@ const AISymptomChecker = ({ selectedPet }) => {
             </button>
             <button
               onClick={reset}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
             >
               Reset
             </button>
