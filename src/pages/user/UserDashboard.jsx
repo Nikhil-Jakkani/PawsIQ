@@ -216,19 +216,6 @@ const UserDashboard = () => {
       lastCheckup: '2025-04-15',
       vaccinations: 'Up to date'
     },
-    {
-      id: 3,
-      name: 'Charlie',
-      type: 'dog',
-      breed: 'Labrador',
-      age: '5 years',
-      weight: '70 lbs',
-      gender: 'male',
-      birthday: '2020-03-20',
-      image: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFicmFkb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-03-10',
-      vaccinations: 'Due for boosters'
-    }
   ];
 
   return (
