@@ -157,27 +157,7 @@ const SmartInsights = () => {
       </div>
 
       {/* Insights Summary */}
-      <div className="mt-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4 border border-pink-100">
-        {/* <div className="flex items-center gap-3">
-          <div className="bg-pink-100 rounded-full p-2">
-            <FaChartLine className="text-pink-600 text-sm" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-800">Weekly Pet Health Score</h3>
-            <p className="text-sm text-gray-600">Your pets are doing great! Overall health score: 85/100</p>
-          </div>
-          <div className="ml-auto">
-            <div className="text-right">
-              <div className="text-2xl font-bold text-pink-600">85</div>
-              <div className="text-xs text-gray-500">out of 100</div>
-            </div>
-          </div>
-        </div> */}
-        
-        <div className="mt-3 bg-gray-200 rounded-full h-2">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full" style={{ width: '85%' }}></div>
-        </div>
-      </div>
+      
     </div>
   );
 };
