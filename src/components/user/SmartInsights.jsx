@@ -43,19 +43,19 @@ const SmartInsights = () => {
       actionable: false,
       suggestion: null
     },
-    {
-      id: 4,
-      type: 'prediction',
-      title: 'Grooming reminder',
-      description: 'Based on Max\'s coat type and last grooming session, he\'ll need grooming in about 2 weeks.',
-      petName: 'Max',
-      petType: 'dog',
-      priority: 'low',
-      icon: FaLightbulb,
-      color: 'yellow',
-      actionable: true,
-      suggestion: 'Pre-book grooming appointment'
-    }
+    // {
+    //   id: 4,
+    //   type: 'prediction',
+    //   title: 'Grooming reminder',
+    //   description: 'Based on Max\'s coat type and last grooming session, he\'ll need grooming in about 2 weeks.',
+    //   petName: 'Max',
+    //   petType: 'dog',
+    //   priority: 'low',
+    //   icon: FaLightbulb,
+    //   color: 'yellow',
+    //   actionable: true,
+    //   suggestion: 'Pre-book grooming appointment'
+    // }
   ];
 
   const getColorClasses = (color, priority) => {
@@ -157,7 +157,7 @@ const SmartInsights = () => {
       </div>
 
       {/* Insights Summary */}
-      <div className="mt-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4 border border-pink-100">
+      {/* <div className="mt-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4 border border-pink-100">
         <div className="flex items-center gap-3">
           <div className="bg-pink-100 rounded-full p-2">
             <FaChartLine className="text-pink-600 text-sm" />
@@ -177,7 +177,7 @@ const SmartInsights = () => {
         <div className="mt-3 bg-gray-200 rounded-full h-2">
           <div className="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full" style={{ width: '85%' }}></div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
