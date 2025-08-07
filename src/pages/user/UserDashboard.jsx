@@ -223,7 +223,7 @@ const UserDashboard = () => {
 
   return (
     <UserLayout>
-      <div className="space-y-4">
+      <div className="space-y-8">
         {/* Modern Header with Dynamic Greeting */}
         {/* <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500"> */}
           <div className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-purple-100/20 to-indigo-100/20"></div>
@@ -239,11 +239,11 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-1">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                     {getGreeting()}
                   </h1>
                   <p className="text-gray-600 text-lg">Your furry friends are excited to see you!</p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-2">
                     <div className="flex -space-x-2">
                       {pets.map((pet, index) => (
                         <div key={pet.id} className="w-8 h-8 rounded-full border-2 border-white shadow-sm overflow-hidden transform hover:scale-110 transition-transform duration-200" style={{zIndex: pets.length - index}}>
@@ -309,7 +309,7 @@ const UserDashboard = () => {
             
           </div> */}
           
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <button 
               onClick={() => navigate('/user/pets/add')}
               className="group bg-white rounded-xl p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-pink-200"
@@ -371,11 +371,11 @@ const UserDashboard = () => {
         {/* </div> */}
 
         {/* Main Content Grid with Enhanced Styling */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Left Column - Pet Health Cards */}
-          <div className="lg:col-span-1 space-y-3">
+          <div className="lg:col-span-1 space-y-4">
             <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
-              <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-3">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-pink-500 to-red-500 p-2 rounded-xl">
                   <FaHeart className="text-white text-lg" />
                 </div>
@@ -384,7 +384,7 @@ const UserDashboard = () => {
                   {pets.length} pets
                 </div>
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {pets.map((pet) => (
                   <div key={pet.id} className="transform hover:scale-105 transition-transform duration-200">
                     <PetHealthCard pet={pet} />
@@ -399,13 +399,13 @@ const UserDashboard = () => {
 
 
           {/* Middle Column - Schedule and Reminders */}
-          <div className="lg:col-span-1 space-y-3">
+          <div className="lg:col-span-1 space-y-4">
             {/* Today's Schedule */}
             <UpcomingSchedule />
 
             {/* Care Reminders */}
             <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-50">
-              <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-3">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-xl">
                   <FaBell className="text-white text-lg" />
                 </div>
@@ -420,13 +420,13 @@ const UserDashboard = () => {
           </div>
 
           {/* Right Column - Pet Activity Tracker */}
-          <div className="lg:col-span-1 space-y-3">
+          <div className="lg:col-span-1 space-y-4">
             {/* Enhanced Pet Activity Tracker with Carousel */}
             <PetActivityTracker />
 
             {/* Enhanced Smart Insights */}
             <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-indigo-50">
-              <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-3">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-2 rounded-xl">
                   <FaChartLine className="text-white text-lg" />
                 </div>
@@ -435,7 +435,7 @@ const UserDashboard = () => {
                   AI Powered
                 </div>
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
@@ -463,12 +463,12 @@ const UserDashboard = () => {
         </div>
 
         {/* Full Width Sections */}
-        <div className="space-y-4">
+        <div className="space-y-8">
 
 
           {/* AI-Powered Pet Care Tips */}
           <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 rounded-3xl p-8 border border-orange-100 shadow-lg hover:shadow-xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-4 rounded-2xl shadow-lg">
                   <FaRobot className="text-white text-2xl" />
@@ -486,7 +486,7 @@ const UserDashboard = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {getAIPetCareTips().map((tip) => {
                 const IconComponent = tip.icon;
                 const colorClasses = {
