@@ -225,7 +225,7 @@ const UserDashboard = () => {
     <UserLayout>
       <div className="space-y-8">
         {/* Modern Header with Dynamic Greeting */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500">
+        {/* <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500"> */}
           <div className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-purple-100/20 to-indigo-100/20"></div>
           <div className="relative z-10">
             <div className="flex justify-between items-center">
@@ -298,7 +298,7 @@ const UserDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        {/* </div> */}
 
         {/* Compact Quick Actions Overview */}
         {/* <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-pink-100 shadow-md hover:shadow-lg transition-all duration-300"> */}
