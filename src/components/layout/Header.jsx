@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FaBell, FaSearch, FaEnvelope, FaQuestionCircle, FaPaw, FaBone, FaDog, FaCat } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { FaBell, FaSearch, FaEnvelope, FaQuestionCircle, FaPaw, FaBone, FaDog, FaCat, FaSun, FaCloud, FaCloudRain, FaSnowflake, FaClock, FaCalendarAlt } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { PetIcon, PetIconButton } from './PetIcons';
 
@@ -7,11 +7,50 @@ const Header = () => {
   const { currentUser } = useAuth();
   const [notifications] = useState(3);
   const [messages] = useState(5);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Mock weather data (in a real app, this would come from a weather API)
+  const weather = {
+    temperature: 72,
+    condition: 'sunny',
+    location: 'New York, NY'
+  };
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const getWeatherIcon = (condition) => {
+    switch (condition) {
+      case 'sunny': return FaSun;
+      case 'cloudy': return FaCloud;
+      case 'rainy': return FaCloudRain;
+      case 'snowy': return FaSnowflake;
+      default: return FaSun;
+    }
+  };
+
+  const getWeatherColor = (condition) => {
+    switch (condition) {
+      case 'sunny': return 'text-yellow-500';
+      case 'cloudy': return 'text-gray-500';
+      case 'rainy': return 'text-blue-500';
+      case 'snowy': return 'text-blue-300';
+      default: return 'text-yellow-500';
+    }
+  };
+
+  const WeatherIcon = getWeatherIcon(weather.condition);
 
   return (
     <header className="bg-white shadow-md h-20 fixed top-0 right-0 left-72 z-10 rounded-bl-2xl">
       <div className="flex items-center justify-between h-full px-8">
-        <div className="w-1/3">
+        <div className="w-1/4">
           <div className="relative">
             <input
               type="text"
@@ -26,8 +65,42 @@ const Header = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-5">
+          {/* Date, Time, and Weather Section */}
+          <div className="flex items-center gap-4 mr-2">
+            {/* Date */}
+            <div className="flex items-center gap-1 text-gray-600">
+              <FaCalendarAlt className="text-indigo-500 text-sm" />
+              <div className="text-xs font-medium">
+                {currentTime.toLocaleDateString('en-US', { 
+                  weekday: 'short', 
+                  month: 'short', 
+                  day: 'numeric' 
+                })}
+              </div>
+            </div>
+
+            {/* Time */}
+            <div className="flex items-center gap-1 text-gray-600">
+              <FaClock className="text-indigo-500 text-sm" />
+              <div className="text-xs font-medium">
+                {currentTime.toLocaleTimeString('en-US', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                })}
+              </div>
+            </div>
+
+            {/* Weather */}
+            <div className="flex items-center gap-1 text-gray-600">
+              <WeatherIcon className={`${getWeatherColor(weather.condition)} text-sm`} />
+              <div className="text-xs">
+                <div className="font-medium">{weather.temperature}°F</div>
+              </div>
+            </div>
+          </div>
+
           <div className="relative">
             <button className="p-3 rounded-full hover:bg-indigo-50 transition-colors bg-indigo-100 text-indigo-600">
               <FaBell className="w-5 h-5" />

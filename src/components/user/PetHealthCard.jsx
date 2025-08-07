@@ -8,12 +8,35 @@ const PetHealthCard = ({ pet }) => {
     const lastCheckup = new Date(pet.lastCheckup);
     const daysSinceCheckup = Math.floor((today - lastCheckup) / (1000 * 60 * 60 * 24));
     
-    if (daysSinceCheckup < 90) return { status: 'excellent', color: 'green', message: 'Great health!' };
-    if (daysSinceCheckup < 180) return { status: 'good', color: 'yellow', message: 'Checkup due soon' };
-    return { status: 'needs-attention', color: 'red', message: 'Checkup overdue' };
+    if (daysSinceCheckup < 90) return { status: 'excellent', color: 'green', message: 'Great health!', score: 95 };
+    if (daysSinceCheckup < 180) return { status: 'good', color: 'yellow', message: 'Checkup due soon', score: 75 };
+    return { status: 'needs-attention', color: 'red', message: 'Checkup overdue', score: 50 };
+  };
+
+  const getHealthScore = (pet) => {
+    const today = new Date();
+    const lastCheckup = new Date(pet.lastCheckup);
+    const daysSinceCheckup = Math.floor((today - lastCheckup) / (1000 * 60 * 60 * 24));
+    
+    // Base score calculation
+    let score = 100;
+    
+    // Deduct points based on days since checkup
+    if (daysSinceCheckup > 90) score -= Math.min(40, (daysSinceCheckup - 90) / 3);
+    
+    // Age factor (older pets might need more attention)
+    const age = parseInt(pet.age);
+    if (age > 7) score -= 5;
+    if (age > 10) score -= 10;
+    
+    // Vaccination status
+    if (pet.vaccinations !== 'Up to date') score -= 15;
+    
+    return Math.max(50, Math.round(score));
   };
 
   const healthStatus = getHealthStatus(pet);
+  const healthScore = getHealthScore(pet);
 
   return (
     <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300">
@@ -37,12 +60,34 @@ const PetHealthCard = ({ pet }) => {
 
         {/* Pet Info */}
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1">
             <h3 className="text-lg font-bold text-gray-800">{pet.name}</h3>
             <PetIcon type={pet.type} className={`text-lg ${pet.type === 'cat' ? 'text-purple-600' : 'text-pink-600'}`} />
           </div>
           
-          <p className="text-sm text-gray-600 mb-3">{pet.breed}</p>
+          <div className="flex items-center gap-3 mb-2">
+            <p className="text-sm text-gray-600">{pet.breed}</p>
+            <span className="text-gray-400">•</span>
+            <p className="text-sm text-gray-600">Last checkup: {new Date(pet.lastCheckup).toLocaleDateString()}</p>
+          </div>
+          
+          {/* Health Score Bar */}
+          <div className="mb-3">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-medium text-gray-700">Health Score</span>
+              <span className="text-xs font-bold text-gray-800">{healthScore}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  healthScore >= 85 ? 'bg-gradient-to-r from-green-400 to-green-500' :
+                  healthScore >= 70 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
+                  'bg-gradient-to-r from-red-400 to-red-500'
+                }`}
+                style={{ width: `${healthScore}%` }}
+              ></div>
+            </div>
+          </div>
           
           <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
             healthStatus.color === 'green' ? 'bg-green-100 text-green-800' :

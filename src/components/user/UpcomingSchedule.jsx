@@ -64,102 +64,64 @@ const UpcomingSchedule = () => {
     return 'border-l-yellow-400 bg-yellow-50';
   };
 
+  // Filter only today's items
+  const todayItems = scheduleItems.filter(item => item.date === 'Today');
+
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-pink-100">
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-white rounded-xl shadow-sm p-4 border border-pink-100">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
           <FaCalendarAlt className="text-pink-600" />
           Today's Schedule
         </h2>
-        <div className="flex items-center gap-2">
-          <span className="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded-full font-medium">
-            {scheduleItems.filter(item => item.date === 'Today').length} items today
-          </span>
-        </div>
+        <span className="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded-full font-medium">
+          {todayItems.length} items
+        </span>
       </div>
 
-      <div className="space-y-3">
-        {scheduleItems.map((item) => {
+      <div className="space-y-2">
+        {todayItems.map((item) => {
           const IconComponent = getItemIcon(item.type);
           
           return (
             <div 
               key={item.id}
-              className={`border-l-4 rounded-lg p-4 ${getStatusColor(item.status, item.urgent)} hover:shadow-md transition-all duration-200`}
+              className={`border-l-4 rounded-lg p-3 ${getStatusColor(item.status, item.urgent)} hover:shadow-sm transition-all duration-200`}
             >
-              <div className="flex items-start gap-3">
-                <div className={`rounded-full p-2 ${
+              <div className="flex items-center gap-3">
+                <div className={`rounded-full p-1.5 ${
                   item.urgent ? 'bg-red-100' : 
                   item.petType === 'cat' ? 'bg-purple-100' : 'bg-pink-100'
                 }`}>
-                  <IconComponent className={`text-sm ${
+                  <IconComponent className={`text-xs ${
                     item.urgent ? 'text-red-600' :
                     item.petType === 'cat' ? 'text-purple-600' : 'text-pink-600'
                   }`} />
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                    <h3 className="font-medium text-gray-800 text-sm truncate flex items-center gap-1">
                       {item.title}
                       {item.urgent && (
-                        <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                          URGENT
+                        <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                          !
                         </span>
                       )}
                     </h3>
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <FaClock />
-                      {item.time}
-                    </div>
+                    <span className="text-xs text-gray-500 ml-2">{item.time}</span>
                   </div>
 
                   <div className="flex items-center gap-2 mt-1">
-                    <PetIcon type={item.petType} className={`text-sm ${
+                    <PetIcon type={item.petType} className={`text-xs ${
                       item.petType === 'cat' ? 'text-purple-600' : 'text-pink-600'
                     }`} />
-                    <span className="text-sm text-gray-600">{item.petName}</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                      {item.date}
-                    </span>
-                  </div>
-
-                  {item.location && (
-                    <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                      <FaMapMarkerAlt className="text-pink-500" />
-                      <span>{item.location}</span>
-                    </div>
-                  )}
-
-                  {item.medication && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      <span className="font-medium">Medication:</span> {item.medication}
-                    </div>
-                  )}
-
-                  {item.food && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      <span className="font-medium">Food:</span> {item.food}
-                    </div>
-                  )}
-
-                  <div className="flex gap-2 mt-3">
-                    {item.type === 'reminder' && item.status === 'pending' && (
+                    <span className="text-xs text-gray-600">{item.petName}</span>
+                    {item.location && (
                       <>
-                        <button className="flex items-center gap-1 text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full font-medium transition-colors">
-                          <FaCheck />
-                          Mark Done
-                        </button>
-                        <button className="flex items-center gap-1 text-xs bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-full font-medium transition-colors">
-                          <FaTimes />
-                          Skip
-                        </button>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 truncate">{item.location}</span>
                       </>
-                    )}
-                    {item.type === 'appointment' && (
-                      <button className="text-xs bg-pink-100 hover:bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-medium transition-colors">
-                        View Details
-                      </button>
                     )}
                   </div>
                 </div>
@@ -169,9 +131,9 @@ const UpcomingSchedule = () => {
         })}
       </div>
 
-      <div className="mt-6 text-center">
-        <button className="text-sm font-medium text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-4 py-2 rounded-lg transition-colors">
-          View Full Schedule
+      <div className="mt-4 text-center">
+        <button className="text-xs font-medium text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors">
+          View All
         </button>
       </div>
     </div>

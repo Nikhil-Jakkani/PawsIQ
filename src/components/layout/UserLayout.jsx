@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import UserSidebar from './UserSidebar';
-import { FaBell, FaSearch, FaUser, FaShoppingCart } from 'react-icons/fa';
+import { FaBell, FaSearch, FaUser, FaShoppingCart, FaSun, FaCloud, FaCloudRain, FaSnowflake, FaClock, FaCalendarAlt } from 'react-icons/fa';
 
 const UserLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const { currentUser, logout } = useAuth();
+
+  // Mock weather data (in a real app, this would come from a weather API)
+  const weather = {
+    temperature: 72,
+    condition: 'sunny',
+    location: 'New York, NY'
+  };
   
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
   // Check if sidebar is minimized on component mount
   useEffect(() => {
     const savedMinimizedState = localStorage.getItem('userSidebarMinimized');
@@ -37,6 +54,28 @@ const UserLayout = ({ children }) => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const getWeatherIcon = (condition) => {
+    switch (condition) {
+      case 'sunny': return FaSun;
+      case 'cloudy': return FaCloud;
+      case 'rainy': return FaCloudRain;
+      case 'snowy': return FaSnowflake;
+      default: return FaSun;
+    }
+  };
+
+  const getWeatherColor = (condition) => {
+    switch (condition) {
+      case 'sunny': return 'text-yellow-500';
+      case 'cloudy': return 'text-gray-500';
+      case 'rainy': return 'text-blue-500';
+      case 'snowy': return 'text-blue-300';
+      default: return 'text-yellow-500';
+    }
+  };
+
+  const WeatherIcon = getWeatherIcon(weather.condition);
   
   return (
     <div className="flex h-full bg-gray-50">
@@ -60,8 +99,42 @@ const UserLayout = ({ children }) => {
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
+            {/* Date, Time, and Weather Section */}
+            <div className="hidden lg:flex items-center gap-4 mr-2">
+              {/* Date */}
+              <div className="flex items-center gap-1 text-gray-600">
+                <FaCalendarAlt className="text-pink-500 text-sm" />
+                <div className="text-xs font-medium">
+                  {currentTime.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              </div>
+
+              {/* Time */}
+              <div className="flex items-center gap-1 text-gray-600">
+                <FaClock className="text-pink-500 text-sm" />
+                <div className="text-xs font-medium">
+                  {currentTime.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}
+                </div>
+              </div>
+
+              {/* Weather */}
+              <div className="flex items-center gap-1 text-gray-600">
+                <WeatherIcon className={`${getWeatherColor(weather.condition)} text-sm`} />
+                <div className="text-xs">
+                  <div className="font-medium">{weather.temperature}°F</div>
+                </div>
+              </div>
+            </div>
+
             <button className="relative p-2 text-gray-500 hover:text-pink-600 transition-colors">
               <FaShoppingCart size={20} />
               <span className="absolute top-0 right-0 bg-pink-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">

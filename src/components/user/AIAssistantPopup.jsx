@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes, FaRobot, FaStethoscope, FaHeart, FaPaw, FaSpinner } from 'react-icons/fa';
 import { analyzePetSymptoms } from '../../services/geminiService';
 
-const AIAssistantPopup = ({ isOpen, onClose, pets }) => {
-  const [activeService, setActiveService] = useState('suggestions');
+const AIAssistantPopup = ({ isOpen, onClose, pets, initialActiveService = 'suggestions' }) => {
+  const [activeService, setActiveService] = useState(initialActiveService);
   const [selectedPet, setSelectedPet] = useState(null);
   const [symptoms, setSymptoms] = useState('');
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Update activeService when initialActiveService prop changes
+  useEffect(() => {
+    setActiveService(initialActiveService);
+  }, [initialActiveService]);
 
   // Common pet symptoms
   const commonSymptoms = [
@@ -180,11 +185,22 @@ const AIAssistantPopup = ({ isOpen, onClose, pets }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white bg-opacity-20 p-2 rounded-xl">
-                <FaRobot className="text-2xl" />
+                {activeService === 'suggestions' ? (
+                  <FaHeart className="text-2xl" />
+                ) : (
+                  <FaStethoscope className="text-2xl" />
+                )}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">AI Pet Assistant</h2>
-                <p className="text-pink-100">Smart care for your furry friends</p>
+                <h2 className="text-2xl font-bold">
+                  {activeService === 'suggestions' ? 'AI Pet Care' : 'Pet Symptom Checker'}
+                </h2>
+                <p className="text-pink-100">
+                  {activeService === 'suggestions' 
+                    ? 'Smart care suggestions for your furry friends' 
+                    : 'AI-powered health analysis for your pets'
+                  }
+                </p>
               </div>
             </div>
             <button
@@ -210,7 +226,7 @@ const AIAssistantPopup = ({ isOpen, onClose, pets }) => {
               >
                 <div className="flex items-center justify-center gap-2">
                   <FaHeart />
-                  <span>Care Suggestions</span>
+                  <span>AI Care</span>
                 </div>
               </button>
               <button

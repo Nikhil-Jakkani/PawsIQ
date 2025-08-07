@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight, FaRunning, FaUtensils, FaCut, FaHeartbeat, FaBrain, FaThermometerHalf, FaClock } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight, FaRunning, FaUtensils, FaCut, FaHeartbeat, FaBrain, FaThermometerHalf, FaClock, FaTint, FaPlay } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 // import UserStatCard from '../../components/user/UserStatCard';
 
@@ -8,12 +8,14 @@ import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
 import PetSelector from '../../components/user/PetSelector';
 import PetHealthCard from '../../components/user/PetHealthCard';
-import UpcomingSchedule from '../../components/user/UpcomingSchedule';
 import SmartInsights from '../../components/user/SmartInsights';
-import QuickStats from '../../components/user/QuickStats';
+
 import WeatherWidget from '../../components/user/WeatherWidget';
-import PetActivityTracker from '../../components/user/PetActivityTracker';
+
 import AIAssistantPopup from '../../components/user/AIAssistantPopup';
+import UpcomingSchedule from '../../components/user/UpcomingSchedule';
+import CareReminders from '../../components/user/CareReminders';
+import PetActivityTracker from '../../components/user/PetActivityTracker';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserDashboard = () => {
@@ -21,6 +23,7 @@ const UserDashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showAIOptions, setShowAIOptions] = useState(false);
   const [showAIPopup, setShowAIPopup] = useState(false);
+  const [activeService, setActiveService] = useState('suggestions');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -252,25 +255,45 @@ const UserDashboard = () => {
                   </div>
                 </div>
               </div>
+              {/* Advertisement Section */}
               <div className="hidden md:flex items-center gap-4">
-                <div className="text-right bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-sm text-gray-500 mb-1">Today is</div>
-                  <div className="font-bold text-gray-800 text-lg">
-                    {currentTime.toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      month: 'short', 
-                      day: 'numeric' 
-                    })}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {currentTime.toLocaleTimeString('en-US', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                {/* Premium Pet Food Ad */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-2 rounded-lg group-hover:scale-110 transition-transform duration-200">
+                      <FaBone className="text-white text-lg" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-green-800">Premium Pet Food</div>
+                      <div className="text-xs text-green-600">20% OFF Today!</div>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
-                  <FaStar className="text-white text-2xl" />
+
+                {/* Vet Services Ad */}
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-2 rounded-lg group-hover:scale-110 transition-transform duration-200">
+                      <FaStethoscope className="text-white text-lg" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-blue-800">Vet Checkup</div>
+                      <div className="text-xs text-blue-600">Book Now!</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pet Toys Ad */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg group-hover:scale-110 transition-transform duration-200">
+                      <FaStar className="text-white text-lg" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-purple-800">New Toys</div>
+                      <div className="text-xs text-purple-600">Free Shipping</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -278,82 +301,81 @@ const UserDashboard = () => {
         </div>
 
         {/* Compact Quick Actions Overview */}
-        <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-pink-100 shadow-md hover:shadow-lg transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
+        {/* <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-pink-100 shadow-md hover:shadow-lg transition-all duration-300"> */}
+          {/* <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-pink-500 to-purple-600 p-2 rounded-xl shadow-md">
-                <FaPaw className="text-white text-lg" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                  Quick Actions
-                </h2>
-                <p className="text-gray-600 text-sm">Everything you need 🚀</p>
-              </div>
+              
             </div>
-            <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-lg px-3 py-1 border border-white/20">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs font-medium text-gray-700">Ready</span>
-            </div>
-          </div>
+            
+          </div> */}
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <button 
               onClick={() => navigate('/user/pets/add')}
-              className="group bg-white rounded-xl p-4 text-center border border-pink-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-pink-200"
+              className="group bg-white rounded-xl p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-pink-200"
             >
-              <div className="bg-gradient-to-br from-pink-100 to-pink-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+              <div className="bg-gradient-to-br from-pink-100 to-pink-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                 <PetIcon type="dog" className="text-pink-600 text-lg" />
               </div>
-              <h3 className="font-bold text-gray-800 text-sm mb-1">Add Pet</h3>
-              <p className="text-xs text-gray-500">Register new friend</p>
-              <FaArrowRight className="text-pink-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <h3 className="font-bold text-gray-800 text-sm">Add Pet</h3>
             </button>
             
             <button 
               onClick={() => navigate('/user/appointments/new')}
-              className="group bg-white rounded-xl p-4 text-center border border-purple-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-purple-200"
+              className="group bg-white rounded-xl p-3 text-center border border-purple-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-purple-200"
             >
-              <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                 <FaCalendarCheck className="text-purple-600 text-lg" />
               </div>
-              <h3 className="font-bold text-gray-800 text-sm mb-1">Book Service</h3>
-              <p className="text-xs text-gray-500">Schedule appointment</p>
-              <FaArrowRight className="text-purple-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <h3 className="font-bold text-gray-800 text-sm">Book Service</h3>
             </button>
             
             <button 
               onClick={() => navigate('/user/marketplace')}
-              className="group bg-white rounded-xl p-4 text-center border border-blue-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-blue-200"
+              className="group bg-white rounded-xl p-3 text-center border border-blue-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-blue-200"
             >
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                 <FaShoppingCart className="text-blue-600 text-lg" />
               </div>
-              <h3 className="font-bold text-gray-800 text-sm mb-1">Shop</h3>
-              <p className="text-xs text-gray-500">Browse products</p>
-              <FaArrowRight className="text-blue-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <h3 className="font-bold text-gray-800 text-sm">Shop</h3>
             </button>
             
             <button 
-              onClick={() => setShowAIPopup(true)}
-              className="group bg-white rounded-xl p-4 text-center border border-indigo-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-indigo-200"
+              onClick={() => {
+                setShowAIPopup(true);
+                // Set active service to suggestions when opening AI Care
+                setActiveService('suggestions');
+              }}
+              className="group bg-white rounded-xl p-3 text-center border border-green-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-green-200"
             >
-              <div className="bg-gradient-to-br from-indigo-100 to-indigo-200 w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                <FaRobot className="text-indigo-600 text-lg" />
+              <div className="bg-gradient-to-br from-green-100 to-green-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
+                <FaHeart className="text-green-600 text-lg" />
               </div>
-              <h3 className="font-bold text-gray-800 text-sm mb-1">AI Assistant</h3>
-              <p className="text-xs text-gray-500">Smart pet care</p>
-              <FaArrowRight className="text-indigo-500 text-xs mx-auto mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <h3 className="font-bold text-gray-800 text-sm">AI Care</h3>
+            </button>
+            
+            <button 
+              onClick={() => {
+                setShowAIPopup(true);
+                // Set active service to symptom-checker when opening Symptom Checker
+                setActiveService('symptom-checker');
+              }}
+              className="group bg-white rounded-xl p-3 text-center border border-red-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-red-200"
+            >
+              <div className="bg-gradient-to-br from-red-100 to-red-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
+                <FaStethoscope className="text-red-600 text-lg" />
+              </div>
+              <h3 className="font-bold text-gray-800 text-sm">Symptom Checker</h3>
             </button>
           </div>
-        </div>
+        {/* </div> */}
 
         {/* Main Content Grid with Enhanced Styling */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Left Column - Pet Health Cards */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-pink-500 to-red-500 p-2 rounded-xl">
                   <FaHeart className="text-white text-lg" />
                 </div>
@@ -374,46 +396,37 @@ const UserDashboard = () => {
 
           </div>
 
-          {/* Middle Column - Schedule & Appointments */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="transform hover:scale-105 transition-transform duration-300">
-              <UpcomingSchedule />
+
+
+          {/* Middle Column - Schedule and Reminders */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Today's Schedule */}
+            <UpcomingSchedule />
+
+            {/* Care Reminders */}
+            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-50">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-xl">
+                  <FaBell className="text-white text-lg" />
+                </div>
+                Care Reminders
+                <div className="ml-auto bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">
+                  Upcoming
+                </div>
+              </h2>
+              <CareReminders pets={pets} />
             </div>
+
           </div>
 
-          {/* Right Column - Additional Info */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Quick Stats */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-50">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 p-2 rounded-xl">
-                  <FaChartLine className="text-white text-lg" />
-                </div>
-                Quick Stats
-              </h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl">
-                  <div className="text-2xl font-bold text-pink-600">{pets.length}</div>
-                  <div className="text-sm text-pink-700">Total Pets</div>
-                </div>
-                <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-                  <div className="text-2xl font-bold text-green-600">100%</div>
-                  <div className="text-sm text-green-700">Health Score</div>
-                </div>
-                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                  <div className="text-2xl font-bold text-blue-600">0</div>
-                  <div className="text-sm text-blue-700">Pending Tasks</div>
-                </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                  <div className="text-2xl font-bold text-purple-600">2</div>
-                  <div className="text-sm text-purple-700">This Week</div>
-                </div>
-              </div>
-            </div>
+          {/* Right Column - Pet Activity Tracker */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Enhanced Pet Activity Tracker with Carousel */}
+            <PetActivityTracker />
 
             {/* Enhanced Smart Insights */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-indigo-50">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-indigo-50">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
                 <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-2 rounded-xl">
                   <FaChartLine className="text-white text-lg" />
                 </div>
@@ -452,30 +465,7 @@ const UserDashboard = () => {
         {/* Full Width Sections */}
         <div className="space-y-8">
 
-          {/* Enhanced Pet Activity Tracker */}
-          <div className="bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 rounded-3xl p-8 border border-green-100 shadow-lg hover:shadow-xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-green-500 to-teal-600 p-4 rounded-2xl shadow-lg">
-                  <FaChartLine className="text-white text-2xl" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-                    Pet Activity Tracker
-                  </h2>
-                  <p className="text-gray-600 mt-1">Monitor your pets' daily activities and health metrics 📊</p>
-                </div>
-              </div>
-              <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-                <FaMagic className="text-green-500 text-sm" />
-                <span className="text-sm font-medium text-gray-700">Live Data</span>
-              </div>
-            </div>
-            <div className="transform hover:scale-[1.02] transition-transform duration-300">
-              <PetActivityTracker />
-            </div>
-          </div>
-          
+
           {/* AI-Powered Pet Care Tips */}
           <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 rounded-3xl p-8 border border-orange-100 shadow-lg hover:shadow-xl transition-all duration-500">
             <div className="flex items-center justify-between mb-8">
@@ -557,16 +547,19 @@ const UserDashboard = () => {
         {/* Floating Action Button */}
         <div className="fixed bottom-8 right-8 z-40">
           <button
-            onClick={() => setShowAIPopup(true)}
-            className="group bg-gradient-to-br from-pink-500 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
-            title="AI Assistant"
+            onClick={() => {
+              setShowAIPopup(true);
+              setActiveService('suggestions');
+            }}
+            className="group bg-gradient-to-br from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
+            title="AI Pet Care"
           >
             <div className="relative">
-              <FaRobot className="text-2xl" />
+              <FaHeart className="text-2xl" />
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
             </div>
             <div className="absolute right-full mr-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-              AI Assistant
+              AI Pet Care
               <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-800"></div>
             </div>
           </button>
@@ -577,6 +570,7 @@ const UserDashboard = () => {
           isOpen={showAIPopup}
           onClose={() => setShowAIPopup(false)}
           pets={pets}
+          initialActiveService={activeService}
         />
       </div>
     </UserLayout>
