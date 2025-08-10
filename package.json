@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:frontend": "vite --port 3001",
-    "dev:backend": "nodemon --watch server/src --ext ts --exec \"tsx --import ./server/src/preload.ts server/src/index.ts\"",
+    "dev:backend": "nodemon --watch server/src --ext ts --exec \"npm run build:backend && npm run start:backend\"",
     "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
     "build:frontend": "vite build",
     "build:backend": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",

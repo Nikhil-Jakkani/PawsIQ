@@ -7,33 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PIQ_Food_Avoid_master {
-  food_avoid_id     Int       @id(map: "PIQ_Food_Avoid_pkey") @default(autoincrement())
-  pet_type          String?   @db.VarChar
-  pet_breed         String?   @db.VarChar
-  pet_built         String?   @db.VarChar
-  food_to_avoid     String?   @db.VarChar
-  food_avoid_reason String?   @db.VarChar
-  full_json_text    Json?     @db.Json
-  is_record_active  Boolean?
-  last_updated_dtm  DateTime? @db.Timestamp(6)
-  created_at        DateTime  @default(now()) @db.Timestamptz(6)
-}
-
-model PIQ_Pet_Weight_master {
-  pet_wght_mstr_id   Int       @id(map: "PIQ_Pet_weight_master_pkey") @default(autoincrement())
-  pet_type           String?   @db.VarChar
-  pet_gender         String?   @db.VarChar
-  pet_breed          String?   @db.VarChar
-  pet_built          String?   @db.VarChar
-  pet_age_group      String?   @db.VarChar
-  ideal_weight_range String?   @db.VarChar
-  ideal_weight_unit  String?   @db.VarChar
-  pet_comments       String?   @db.VarChar
-  created_at         DateTime  @default(now()) @db.Timestamptz(6)
-  last_updated_dtm   DateTime? @db.Timestamp(6)
-}
-
 model PIQ_Pets {
   pet_id           BigInt             @id @default(autoincrement())
   user_id          BigInt?
@@ -64,50 +37,39 @@ model PIQ_Pets_Photo {
 }
 
 model PIQ_Service_Master {
-  services_id       Int       @id @default(autoincrement())
-  service_types     String    @db.VarChar
-  service_sub_types String    @db.VarChar
-  service_title     String    @db.VarChar
-  service_desc      String    @db.VarChar
-  service_price_amt Int
-  service_duration  Int       @db.SmallInt
-  created_at        DateTime  @default(now()) @db.Timestamptz(6)
-  last_updated_dtm  DateTime? @db.Timestamp(6)
+  services_id         Int       @id @default(autoincrement())
+  service_type        String    @db.VarChar
+  service_sub_type    String    @db.VarChar
+  service_title       String    @db.VarChar
+  service_description String    @db.VarChar
+  service_price_amt   Int
+  service_duration    Int       @db.SmallInt
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm    DateTime? @db.Timestamp(6)
+  is_record_valid     Boolean?
+  pet_type            String?   @db.VarChar
 }
 
 model PIQ_Service_Provider {
-  service_provider_id     Int       @id @default(autoincrement())
-  provider_name           String?   @db.VarChar
-  provider_email          String?   @unique @db.VarChar
-  provider_contact_number String?   @db.VarChar
-  provider_password       String?   @db.VarChar
-  provider_status         String?   @db.VarChar
-  provider_src            String?   @db.VarChar
-  provider_request_dtm    DateTime? @db.Timestamp(6)
-  provider_approval_dtm   DateTime? @db.Timestamp(6)
-  is_provider_bgchecked   Boolean?
-  created_at              DateTime  @default(now()) @db.Timestamptz(6)
-  last_updated_dtm        DateTime? @db.Timestamp(6)
-  services_offered        String?   @db.VarChar
-  PIQ_Service_Provider_Dtls PIQ_Service_Provider_Dtls?
-}
-
-model PIQ_Service_Provider_Dtls {
-  serv_provider_dtls_id         Int       @id @default(autoincrement())
-  service_provider_id           Int?                          @unique
-  PIQ_Service_Provider        PIQ_Service_Provider?         @relation(fields: [service_provider_id], references: [service_provider_id], onDelete: NoAction, onUpdate: NoAction)
-  serv_provider_exp_years       Int?      @db.SmallInt
+  service_provider_id           Int       @id @default(autoincrement())
+  serv_provider_name            String?   @db.VarChar
+  serv_provider_email           String?   @db.VarChar
+  serv_provider_contact_nbr     String?   @db.VarChar
+  serv_provider_password        String?   @db.VarChar
+  serv_provider_exp_years       String?   @db.VarChar
   serv_provider_certificates    String?   @db.VarChar
   serv_provider_photo           Bytes?
   serv_provider_desc            String?   @db.VarChar
-  serv_provider_pet_type        String?   @db.VarChar
-  serv_provider_breed_serviced  String?   @db.VarChar
-  serv_provider_specialization  String?   @db.VarChar
-  serv_provider_servicetypes    String?   @db.VarChar
+  serv_provider_status          String?   @db.VarChar
+  serv_provider_request_dtm     DateTime? @default(now()) @db.Timestamp(6)
+  serv_provider_approval_dtm    DateTime? @db.Timestamp(6)
+  provider_src                  String?   @db.VarChar
+  is_provider_bgchecked         Boolean?
   serv_provider_insta_acct_dtls String?   @db.VarChar
   serv_provider_fb_acct_dtls    String?   @db.VarChar
-  created_dtm                   DateTime  @default(now()) @db.Timestamptz(6)
+  is_record_valid               Boolean?
   last_updated_dtm              DateTime? @db.Timestamp(6)
+  created_at                    DateTime  @default(now()) @db.Timestamptz(6)
 }
 
 model PIQ_User {
@@ -127,7 +89,7 @@ model PIQ_User {
 model PIQ_pets_profile {
   pets_profile_id    Int       @id @default(autoincrement())
   pet_id             BigInt
-  pet_age            Int       @db.SmallInt
+  pet_age            Int?      @db.SmallInt
   pet_weight         Int?      @db.SmallInt
   pet_weight_unit    String?   @db.VarChar
   pet_height         Int?      @db.SmallInt
@@ -151,13 +113,125 @@ model tokens {
   id          Int       @id @default(autoincrement())
   token       String
   user_id     Int?
-  provider_id Int?
   type        String    @db.VarChar(20)
   expires     DateTime  @db.Timestamptz(6)
   blacklisted Boolean?  @default(false)
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  provider_id Int?
 
   @@index([token], map: "idx_tokens_token")
   @@index([user_id], map: "idx_tokens_user_id")
   @@index([provider_id], map: "idx_tokens_provider_id")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_FoodAvoid_Master {
+  foodavoid_master_id    Int       @id @default(autoincrement())
+  pet_type               String?   @db.VarChar
+  pet_breed              String?   @db.VarChar
+  pet_gender             String?   @db.VarChar
+  pet_size_grp           String?   @db.VarChar
+  foodtype_to_avoid      String?   @db.VarChar
+  food_to_avoid_examples String?   @db.VarChar
+  food_avoid_reason      String?   @db.VarChar
+  potential_health_issue String?   @db.VarChar
+  health_issue_severity  String?   @db.VarChar
+  addtnl_comments        String?   @db.VarChar
+  is_record_valid        String?   @db.VarChar
+  created_at             DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm       DateTime? @db.Timestamp(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_Food_Master {
+  food_master_id      Int       @id @default(autoincrement())
+  pet_type            String?   @db.VarChar
+  pet_breed           String?   @db.VarChar
+  pet_age_grp         String?   @db.VarChar
+  food_category       String?   @db.VarChar
+  food_example        String?   @db.VarChar
+  food_key_nutrients  String?   @db.VarChar
+  food_benefits       String?   @db.VarChar
+  food_prep_portion   String?   @db.VarChar
+  food_feed_frequency String?   @db.VarChar
+  food_record_valid   String?   @db.VarChar
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm    DateTime? @db.Timestamp(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_Ideal_Weight_Master {
+  pet_wght_mstr_id   Int       @id @default(autoincrement())
+  pet_type           String?   @db.VarChar
+  pet_gender         String?   @db.VarChar
+  pet_breed          String?   @db.VarChar
+  pet_built          String?   @db.VarChar
+  pet_age_grp        String?   @db.VarChar
+  ideal_weight_range String?   @db.VarChar
+  ideal_weight_unit  String?   @db.VarChar
+  pet_comments       String?   @db.VarChar
+  created_at         DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_drm   DateTime? @db.Timestamp(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_Nutrition_Master {
+  nutrition_master_id   Int       @id @default(autoincrement())
+  pet_type              String?   @db.VarChar
+  pet_breed             String?   @db.VarChar
+  pet_age               String?   @db.VarChar
+  nutrition_name        String?   @db.VarChar
+  nutrition_function    String?   @db.VarChar
+  nutrition_source      String?   @db.VarChar
+  nutrition_daily_split String?   @db.VarChar
+  is_record_valid       Boolean?
+  created_at            DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm      DateTime? @db.Timestamp(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_Petbreed_Master {
+  pet_breed_id        Int       @id @default(autoincrement())
+  pet_type            String?   @db.VarChar
+  pet_breed_name      String?   @db.VarChar
+  pet_size            String?   @db.VarChar
+  pet_space_needs     String?   @db.VarChar
+  pet_exercise_needs  String?   @db.VarChar
+  pet_temperament     String?   @db.VarChar
+  pet_family_friendly String?   @db.VarChar
+  is_record_valid     Boolean?
+  last_updated_dtm    DateTime? @db.Timestamp(6)
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_PreventiveFoodCare_Master {
+  preventivecare_master_id BigInt    @id @default(autoincrement())
+  pet_type                 String?   @db.VarChar
+  pet_breed                String?   @db.VarChar
+  common_health_concern    String?   @db.VarChar
+  nutritional_focus        String?   @db.VarChar
+  recommend_food_types     String?   @db.VarChar
+  foods_to_limit           String?   @db.VarChar
+  is_record_valid          Boolean?
+  created_at               DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm         DateTime? @db.Timestamp(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PIQ_Vaccine_Master {
+  vaccine_mstr_id          Int       @id @default(autoincrement())
+  pet_type                 String?   @db.VarChar
+  pet_breed_group          String?   @db.VarChar
+  pet_breed                String?   @db.VarChar
+  pet_age_grp              String?   @db.VarChar
+  vaccine_name             String?   @db.VarChar
+  vaccine_purpose          String?   @db.VarChar
+  vaccine_description_dtls String?   @db.VarChar
+  vaccine_pet_age          String?   @db.VarChar
+  vaccine_frequency        String?   @db.VarChar
+  is_vaccine_core          Boolean?
+  is_vaccine_record_valid  Boolean?
+  created_at               DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm         DateTime? @db.Timestamp(6)
 }

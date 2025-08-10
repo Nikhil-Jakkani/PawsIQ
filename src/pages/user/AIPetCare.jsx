@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRobot, FaPaw, FaArrowLeft, FaStethoscope, FaHeart } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserLayout from '../../components/layout/UserLayout';
@@ -9,49 +9,52 @@ import PetSelector from '../../components/user/PetSelector';
 const AIPetCare = () => {
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
   const [activeTab, setActiveTab] = useState('suggestions');
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock data for pets (in a real app, this would come from your state management or API)
-  const pets = [
-    {
-      id: 1,
-      name: 'Max',
-      type: 'dog',
-      breed: 'Golden Retriever',
-      age: '3 years',
-      weight: '65 lbs',
-      gender: 'male',
-      birthday: '2022-05-15',
-      image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z29sZGVuJTIwcmV0cmlldmVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-05-01',
-      vaccinations: 'Up to date'
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      type: 'cat',
-      breed: 'Siamese',
-      age: '2 years',
-      weight: '9 lbs',
-      gender: 'female',
-      birthday: '2023-02-10',
-      image: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lhbWVzZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-04-15',
-      vaccinations: 'Up to date'
-    },
-    {
-      id: 3,
-      name: 'Charlie',
-      type: 'dog',
-      breed: 'Labrador',
-      age: '5 years',
-      weight: '70 lbs',
-      gender: 'male',
-      birthday: '2020-03-20',
-      image: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFicmFkb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-03-10',
-      vaccinations: 'Due for boosters'
-    }
-  ];
+  useEffect(() => {
+    const fetchUserPets = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const user = JSON.parse(localStorage.getItem('pawsiq_user'));
+        const token = user?.tokens?.access?.token;
+
+        if (!token) {
+          throw new Error('Authentication token not found. Please log in again.');
+        }
+
+        const response = await fetch('/api/v1/user/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('Your session has expired. Please log out and log in again.');
+          }
+          throw new Error('Failed to fetch user profile.');
+        }
+
+        const userData = await response.json();
+        const userPets = userData.pets || [];
+        setPets(userPets);
+
+                if (userPets.length > 0 && !selectedPetForAI) {
+          console.log('AIPetCare: Setting initial pet:', userPets[0]);
+          setSelectedPetForAI(userPets[0]);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserPets();
+  }, []);
 
   return (
     <UserLayout>
@@ -118,11 +121,26 @@ const AIPetCare = () => {
         </div>
 
         {/* Pet Selector */}
-        <PetSelector 
-          pets={pets}
-          selectedPet={selectedPetForAI}
-          onPetSelect={setSelectedPetForAI}
-        />
+        {loading && (
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <p className="text-gray-500">Loading your pets...</p>
+          </div>
+        )}
+        {error && (
+          <div className="text-center p-4 bg-red-50 rounded-lg">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
+        {!loading && !error && (
+          <PetSelector 
+            pets={pets}
+            selectedPet={selectedPetForAI}
+            onPetSelect={(pet) => {
+            console.log('AIPetCare: Pet selected via PetSelector:', pet);
+            setSelectedPetForAI(pet);
+          }}
+          />
+        )}
 
         {/* AI Services Tabs */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

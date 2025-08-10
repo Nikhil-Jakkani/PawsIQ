@@ -6,6 +6,14 @@ const app: Express = express();
 const port = process.env.PORT || 5173;
 
 app.use(cors());
+// Log incoming request headers for debugging
+app.use((req, res, next) => {
+  if (req.method === 'POST' && req.url === '/api/v1/user/ai/suggestions') {
+    console.log(`Request Content-Type for AI suggestions: ${req.headers['content-type']}`);
+  }
+  next();
+});
+
 app.use(express.json());
 
 import apiRoutes from './api/routes/index.js';

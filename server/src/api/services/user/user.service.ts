@@ -18,8 +18,23 @@ export const userService = {
       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
 
+    // Fetch user's pets
+    const { data: pets, error: petsError } = await db
+      .from('PIQ_Pets')
+      .select('*')
+      .eq('user_id', user.user_id);
+
+    if (petsError) {
+      // Log the error but don't fail the request
+      console.error('Error fetching pets:', petsError);
+    }
+
     // Remove sensitive data
     const { user_password, ...userWithoutPassword } = user;
+
+    // Attach pets to the user object
+    (userWithoutPassword as any).pets = pets || [];
+
     return userWithoutPassword;
   },
 

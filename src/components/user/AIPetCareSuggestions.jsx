@@ -28,12 +28,12 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
   const [error, setError] = useState(null);
   const [expandedSections, setExpandedSections] = useState({
     health: true,
-    grooming: false,
-    vaccinations: false,
-    nutrition: false,
-    exercise: false,
-    behavioral: false,
-    preventive: false
+    grooming: true,
+    vaccinations: true,
+    nutrition: true,
+    exercise: true,
+    behavioral: true,
+    preventive: true
   });
 
   const categoryIcons = {
@@ -61,10 +61,58 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
     
     setLoading(true);
     setError(null);
-    
+    setSuggestions(null);
+
     try {
-      const aiSuggestions = await generatePetCareSuggestions(selectedPet);
-      setSuggestions(aiSuggestions);
+      const user = JSON.parse(localStorage.getItem('pawsiq_user'));
+      const token = user?.tokens?.access?.token;
+
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+
+      const calculateAge = (birthDate) => {
+        if (!birthDate) return 'Unknown';
+        const birthDateObj = new Date(birthDate);
+        const today = new Date();
+        let age = today.getFullYear() - birthDateObj.getFullYear();
+        const monthDifference = today.getMonth() - birthDateObj.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+          age--;
+        }
+        if (age > 0) return `${age} year(s)`;
+        const months = today.getMonth() - birthDateObj.getMonth() + (12 * (today.getFullYear() - birthDateObj.getFullYear()));
+        return `${months <= 0 ? 0 : months} month(s)`;
+      };
+
+      const petDataForAI = {
+        name: selectedPet.pet_name,
+        type: selectedPet.pet_type,
+        breed: selectedPet.pet_breed,
+        age: calculateAge(selectedPet.pet_birth_dtm),
+        gender: selectedPet.pet_gender,
+        health_details: selectedPet.health_details || 'Not specified',
+      };
+
+      const response = await fetch('/api/v1/user/ai/suggestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(petDataForAI),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Your session has expired. Please log out and log in again.');
+        }
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch suggestions from the server.');
+      }
+
+      const data = await response.json();
+      setSuggestions(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,8 +120,16 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
     }
   };
 
-  useEffect(() => {
-    fetchSuggestions();
+    useEffect(() => {
+    console.log('AIPetCareSuggestions: Received selectedPet prop:', selectedPet);
+    if (selectedPet && selectedPet.pet_id) {
+      fetchSuggestions();
+    } else {
+      // Clear suggestions and stop loading if no valid pet is selected
+      setSuggestions(null);
+      setLoading(false);
+      setError(null);
+    }
   }, [selectedPet]);
 
   const toggleSection = (section) => {
@@ -93,9 +149,12 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
   };
 
   const renderRecommendationItem = (item, index) => (
-    <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-      <FaStar className="text-yellow-500 mt-1 flex-shrink-0" size={10} />
-      <span>{item}</span>
+    <li key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+      <FaStar className="text-yellow-500 mt-1 flex-shrink-0" size={12} />
+      <div>
+        <p className="font-semibold text-gray-800">{item.suggestion}</p>
+        <p className="text-gray-600 text-xs">{item.details}</p>
+      </div>
     </li>
   );
 

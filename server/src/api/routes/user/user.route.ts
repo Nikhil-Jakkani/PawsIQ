@@ -1,19 +1,17 @@
 import express from 'express';
 import { userController } from '../../controllers/user/user.controller.js';
 import { auth } from '../../../middlewares/auth.js';
+import { userAuth } from '../../middlewares/user.auth.js';
 import { validate } from '../../../middlewares/validate.js';
 import { userValidation } from '../../validations/user/user.validation.js';
 
 const router = express.Router();
 
-// Protected routes - require authentication
-router.use(auth());
-
 // User profile routes
 router
   .route('/profile')
-  .get(userController.getProfile)
-  .patch(validate(userValidation.updateProfile), userController.updateProfile);
+  .get(userAuth, userController.getProfile)
+  .patch(userAuth, validate(userValidation.updateProfile), userController.updateProfile);
 
 // User management routes (admin only)
 router.use(auth('admin'));

@@ -4,8 +4,9 @@ import { catchAsync } from '../../utils/catchAsync.js';
 import { aiService } from '../../services/user/index.js';
 
 const generatePetCareSuggestions = catchAsync(async (req: Request, res: Response) => {
-  const { prompt } = req.body;
-  const suggestions = await aiService.generatePetCareSuggestions(prompt);
+  // Receive the simplified pet object directly from the frontend
+  const pet = req.body;
+  const suggestions = await aiService.generatePetCareSuggestions(pet);
   res.status(httpStatus.OK).send(suggestions);
 });
 

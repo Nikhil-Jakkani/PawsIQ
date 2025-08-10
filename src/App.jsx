@@ -6,7 +6,7 @@ import UserLogin from './pages/user/UserLogin.jsx';
 import UserDashboard from './pages/user/UserDashboard.jsx';
 import UserPets from './pages/user/UserPets.jsx';
 import UserAddPet from './pages/user/UserAddPet.jsx';
-// import UserAppointments from './pages/user/UserAppointments.jsx';
+import UserAppointments from './pages/user/UserAppointments.jsx';
 import UserBookAppointment from './pages/user/UserBookAppointment.jsx';
 import UserAppointmentConfirmation from './pages/user/UserAppointmentConfirmation.jsx';
 import UserServices from './pages/user/UserServices.jsx';
@@ -186,10 +186,10 @@ function App() {
           <Route path="/user/ai-pet-care" element={<UserProtectedRoute><AIPetCare /></UserProtectedRoute>} />
           
           {/* Appointment Routes */}
-          {/* <Route path="/user/appointments" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} /> */}
+          <Route path="/user/appointments" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           <Route path="/user/appointments/new" element={<UserProtectedRoute><UserBookAppointment /></UserProtectedRoute>} />
-          {/* <Route path="/user/appointments/upcoming" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
-          <Route path="/user/appointments/history" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} /> */}
+          <Route path="/user/appointments/upcoming" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
+          <Route path="/user/appointments/history" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           
           {/* Service Routes */}
           <Route path="/user/services" element={<UserProtectedRoute><UserServices /></UserProtectedRoute>} />

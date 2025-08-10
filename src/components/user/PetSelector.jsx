@@ -15,10 +15,10 @@ const PetSelector = ({ pets, selectedPet, onPetSelect }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {pets.map((pet) => (
           <button
-            key={pet.id}
+            key={pet.pet_id}
             onClick={() => onPetSelect(pet)}
             className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
-              selectedPet?.id === pet.id
+              selectedPet?.pet_id === pet.pet_id
                 ? 'border-pink-500 bg-pink-50 shadow-md'
                 : 'border-gray-200 hover:border-pink-300 hover:bg-pink-25'
             }`}
@@ -42,7 +42,7 @@ const PetSelector = ({ pets, selectedPet, onPetSelect }) => {
                 <p className="text-sm text-gray-600 truncate">{pet.breed}</p>
                 <p className="text-xs text-gray-500">{pet.age} • {pet.weight}</p>
               </div>
-              {selectedPet?.id === pet.id && (
+              {selectedPet?.pet_id === pet.pet_id && (
                 <div className="text-pink-600">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
