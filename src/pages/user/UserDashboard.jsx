@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight, FaRunning, FaUtensils, FaCut, FaHeartbeat, FaBrain, FaThermometerHalf, FaClock, FaTint, FaPlay } from 'react-icons/fa';
+import { FaCalendarCheck, FaShoppingCart, FaPaw, FaDog, FaCat, FaBone, FaRobot, FaStethoscope, FaHeart, FaStar, FaBell, FaChartLine, FaMagic, FaArrowRight, FaRunning, FaUtensils, FaCut, FaHeartbeat, FaBrain, FaThermometerHalf, FaClock, FaTint, FaPlay, FaMinus, FaWeight, FaBirthdayCake } from 'react-icons/fa';
 import { PetIcon, PetIconButton } from '../../components/layout/PetIcons';
 // import UserStatCard from '../../components/user/UserStatCard';
 
@@ -24,6 +24,7 @@ const UserDashboard = () => {
   const [showAIOptions, setShowAIOptions] = useState(false);
   const [showAIPopup, setShowAIPopup] = useState(false);
   const [activeService, setActiveService] = useState('suggestions');
+  const [showAllTips, setShowAllTips] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -225,7 +226,7 @@ const UserDashboard = () => {
     <UserLayout>
       <div className="space-y-8">
         {/* Modern Header with Dynamic Greeting */}
-        {/* <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500"> */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-3xl p-8 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-500">
           <div className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-purple-100/20 to-indigo-100/20"></div>
           <div className="relative z-10">
             <div className="flex justify-between items-center">
@@ -298,26 +299,20 @@ const UserDashboard = () => {
               </div>
             </div>
           </div>
-        {/* </div> */}
+        </div>
 
         {/* Compact Quick Actions Overview */}
-        {/* <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-pink-100 shadow-md hover:shadow-lg transition-all duration-300"> */}
-          {/* <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              
-            </div>
-            
-          </div> */}
+        <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-pink-100 shadow-md hover:shadow-lg transition-all duration-300">
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <button 
-              onClick={() => navigate('/user/pets/add')}
-              className="group bg-white rounded-xl p-3 text-center border border-pink-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-pink-200"
+              onClick={() => navigate('/user/community')}
+              className="group bg-white rounded-xl p-3 text-center border border-orange-100 hover:shadow-md transition-all duration-300 hover:scale-105 hover:border-orange-200"
             >
-              <div className="bg-gradient-to-br from-pink-100 to-pink-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
-                <PetIcon type="dog" className="text-pink-600 text-lg" />
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
+                <FaHeart className="text-orange-600 text-lg" />
               </div>
-              <h3 className="font-bold text-gray-800 text-sm">Add Pet</h3>
+              <h3 className="font-bold text-gray-800 text-sm">Community</h3>
             </button>
             
             <button 
@@ -368,11 +363,11 @@ const UserDashboard = () => {
               <h3 className="font-bold text-gray-800 text-sm">Symptom Checker</h3>
             </button>
           </div>
-        {/* </div> */}
+        </div>
 
         {/* Main Content Grid with Enhanced Styling */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-          {/* Left Column - Pet Health Cards */}
+          {/* Left Column - Pet Health Cards with Smart Insights */}
           <div className="lg:col-span-1 space-y-4">
             <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
@@ -384,16 +379,38 @@ const UserDashboard = () => {
                   {pets.length} pets
                 </div>
               </h2>
-              <div className="space-y-4">
-                {pets.map((pet) => (
-                  <div key={pet.id} className="transform hover:scale-105 transition-transform duration-200">
-                    <PetHealthCard pet={pet} />
-                  </div>
-                ))}
+              
+              {/* Pet Health Cards with Individual Smart Insights */}
+              <div className="space-y-6">
+                {pets.map((pet) => {
+                  const lastCheckupDate = new Date(pet.lastCheckup);
+                  const daysSinceCheckup = Math.floor((new Date() - lastCheckupDate) / (1000 * 60 * 60 * 24));
+                  const age = parseInt(pet.age);
+                  
+                  // Health status based on actual pet data
+                  const healthStatus = daysSinceCheckup < 90 ? 'excellent' : daysSinceCheckup < 180 ? 'good' : 'needs-attention';
+                  const statusColors = {
+                    excellent: { bg: 'from-green-50 to-emerald-50', border: 'border-green-100', dot: 'bg-green-400', text: 'text-green-800', desc: 'text-green-700' },
+                    good: { bg: 'from-yellow-50 to-orange-50', border: 'border-yellow-100', dot: 'bg-yellow-400', text: 'text-yellow-800', desc: 'text-yellow-700' },
+                    'needs-attention': { bg: 'from-red-50 to-pink-50', border: 'border-red-100', dot: 'bg-red-400', text: 'text-red-800', desc: 'text-red-700' }
+                  };
+                  const colors = statusColors[healthStatus];
+
+                  return (
+                    <div key={pet.id} className="group bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
+                      {/* Pet Health Card */}
+                      <div className="transform hover:scale-105 transition-transform duration-200 mb-4">
+                        <PetHealthCard pet={pet} />
+                      </div>
+                      
+
+                    </div>
+                  );
+                })}
               </div>
+              
+
             </div>
-
-
           </div>
 
 
@@ -419,127 +436,105 @@ const UserDashboard = () => {
 
           </div>
 
-          {/* Right Column - Pet Activity Tracker */}
+          {/* Right Column - AI Pet Care Tips */}
           <div className="lg:col-span-1 space-y-4">
             {/* Enhanced Pet Activity Tracker with Carousel */}
             <PetActivityTracker />
 
-            {/* Enhanced Smart Insights */}
-            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-indigo-50">
-              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
-                <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-2 rounded-xl">
-                  <FaChartLine className="text-white text-lg" />
-                </div>
-                Smart Insights
-                <div className="ml-auto bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">
-                  AI Powered
-                </div>
-              </h2>
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="font-semibold text-green-800">Health Status</span>
+            {/* AI Pet Care Tips Section */}
+            <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-500 border border-orange-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-2 rounded-xl shadow-lg">
+                    <FaRobot className="text-white text-lg" />
                   </div>
-                  <p className="text-sm text-green-700">All pets are healthy and up-to-date with vaccinations</p>
-                </div>
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                    <span className="font-semibold text-blue-800">Activity Trend</span>
+                  <div>
+                    <h2 className="text-lg font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                      AI Pet Care Tips
+                    </h2>
+                    <p className="text-gray-600 text-xs">Personalized recommendations 🤖</p>
                   </div>
-                  <p className="text-sm text-blue-700">Exercise levels are optimal for {pets.length} pets this week</p>
                 </div>
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse"></div>
-                    <span className="font-semibold text-purple-800">Care Reminder</span>
-                  </div>
-                  <p className="text-sm text-purple-700">Next grooming session recommended in 2 weeks</p>
-                </div>
+                <button
+                  onClick={() => setShowAllTips(!showAllTips)}
+                  className="flex items-center gap-1 bg-white/70 hover:bg-white backdrop-blur-sm rounded-lg px-3 py-1.5 border border-orange-200 hover:border-orange-300 transition-all duration-200 text-xs font-medium text-orange-700 hover:text-orange-800"
+                >
+                  {showAllTips ? (
+                    <>
+                      <FaMinus className="text-xs" />
+                      <span>Less</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaArrowRight className="text-xs" />
+                      <span>More</span>
+                    </>
+                  )}
+                </button>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Full Width Sections */}
-        <div className="space-y-8">
-
-
-          {/* AI-Powered Pet Care Tips */}
-          <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 rounded-3xl p-8 border border-orange-100 shadow-lg hover:shadow-xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-4 rounded-2xl shadow-lg">
-                  <FaRobot className="text-white text-2xl" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                    AI Pet Care Tips
-                  </h2>
-                  <p className="text-gray-600 mt-1">Personalized recommendations for your pets 🤖</p>
-                </div>
-              </div>
-              <div className="hidden md:flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-                <FaMagic className="text-orange-500 text-sm animate-pulse" />
-                <span className="text-sm font-medium text-gray-700">AI Generated</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {getAIPetCareTips().map((tip) => {
-                const IconComponent = tip.icon;
-                const colorClasses = {
-                  pink: {
-                    bg: 'from-pink-100 to-pink-200',
-                    text: 'text-pink-600',
-                    border: 'hover:border-pink-200',
-                    gradient: 'from-pink-400 to-pink-600'
-                  },
-                  purple: {
-                    bg: 'from-purple-100 to-purple-200',
-                    text: 'text-purple-600',
-                    border: 'hover:border-purple-200',
-                    gradient: 'from-purple-400 to-purple-600'
-                  },
-                  green: {
-                    bg: 'from-green-100 to-green-200',
-                    text: 'text-green-600',
-                    border: 'hover:border-green-200',
-                    gradient: 'from-green-400 to-green-600'
-                  }
-                };
-                const colors = colorClasses[tip.color];
-                
-                return (
-                  <div key={tip.id} className={`group bg-white rounded-2xl p-6 shadow-lg border border-orange-50 hover:shadow-xl transition-all duration-300 hover:scale-105 ${colors.border}`}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`bg-gradient-to-br ${colors.bg} p-3 rounded-xl group-hover:scale-110 transition-transform duration-200`}>
-                        <IconComponent className={`${colors.text} text-xl`} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-gray-800 text-sm">{tip.title}</h3>
-                          {tip.aiGenerated && (
-                            <div className="bg-gradient-to-r from-blue-400 to-purple-500 text-white text-xs px-2 py-1 rounded-full">
-                              AI
-                            </div>
-                          )}
+              
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {getAIPetCareTips().slice(0, showAllTips ? undefined : 3).map((tip) => {
+                  const IconComponent = tip.icon;
+                  const colorClasses = {
+                    pink: {
+                      bg: 'from-pink-100 to-pink-200',
+                      text: 'text-pink-600',
+                      border: 'hover:border-pink-200',
+                      gradient: 'from-pink-400 to-pink-600'
+                    },
+                    purple: {
+                      bg: 'from-purple-100 to-purple-200',
+                      text: 'text-purple-600',
+                      border: 'hover:border-purple-200',
+                      gradient: 'from-purple-400 to-purple-600'
+                    },
+                    green: {
+                      bg: 'from-green-100 to-green-200',
+                      text: 'text-green-600',
+                      border: 'hover:border-green-200',
+                      gradient: 'from-green-400 to-green-600'
+                    }
+                  };
+                  const colors = colorClasses[tip.color];
+                  
+                  return (
+                    <div key={tip.id} className={`group bg-white rounded-lg p-3 shadow-sm border border-orange-50 hover:shadow-md transition-all duration-300 ${colors.border}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`bg-gradient-to-br ${colors.bg} p-1.5 rounded-lg group-hover:scale-110 transition-transform duration-200`}>
+                          <IconComponent className={`${colors.text} text-sm`} />
                         </div>
-                        <div className={`w-12 h-1 bg-gradient-to-r ${colors.gradient} rounded-full`}></div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-gray-800 text-xs truncate">{tip.title}</h3>
+                            {tip.aiGenerated && (
+                              <div className="bg-gradient-to-r from-blue-400 to-purple-500 text-white text-xs px-1 py-0.5 rounded-full flex-shrink-0">
+                                AI
+                              </div>
+                            )}
+                          </div>
+                          <div className={`w-6 h-0.5 bg-gradient-to-r ${colors.gradient} rounded-full mt-1`}></div>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 leading-relaxed text-xs mb-2" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{tip.tip}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500 truncate">For: {tip.petName}</span>
+                        <div className={`${colors.text} opacity-0 group-hover:opacity-100 transition-opacity duration-200`}>
+                          <FaPlay className="text-xs" />
+                        </div>
                       </div>
                     </div>
-                    <p className="text-gray-600 leading-relaxed text-sm mb-4">{tip.tip}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">For: {tip.petName}</span>
-                      <div className={`flex items-center ${colors.text} text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200`}>
-                        <span className="text-xs">Learn more</span>
-                        <FaArrowRight className="ml-2 text-xs" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              
+              {!showAllTips && getAIPetCareTips().length > 3 && (
+                <div className="mt-3 text-center">
+                  <p className="text-xs text-gray-500">
+                    Showing 3 of {getAIPetCareTips().length} tips
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

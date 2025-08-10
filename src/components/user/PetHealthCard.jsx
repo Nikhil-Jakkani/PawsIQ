@@ -1,8 +1,10 @@
-import React from 'react';
-import { FaHeart, FaWeight, FaBirthdayCake, FaSyringe, FaStethoscope, FaCalendarCheck } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaHeart, FaWeight, FaBirthdayCake, FaSyringe, FaStethoscope, FaCalendarCheck, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { PetIcon } from '../layout/PetIcons';
 
 const PetHealthCard = ({ pet }) => {
+  const [showInsights, setShowInsights] = useState(false);
+  
   const getHealthStatus = (pet) => {
     const today = new Date();
     const lastCheckup = new Date(pet.lastCheckup);
@@ -37,6 +39,11 @@ const PetHealthCard = ({ pet }) => {
 
   const healthStatus = getHealthStatus(pet);
   const healthScore = getHealthScore(pet);
+  
+  // Calculate days since checkup for insights
+  const today = new Date();
+  const lastCheckupDate = new Date(pet.lastCheckup);
+  const daysSinceCheckup = Math.floor((today - lastCheckupDate) / (1000 * 60 * 60 * 24));
 
   return (
     <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300">
@@ -63,6 +70,11 @@ const PetHealthCard = ({ pet }) => {
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-lg font-bold text-gray-800">{pet.name}</h3>
             <PetIcon type={pet.type} className={`text-lg ${pet.type === 'cat' ? 'text-purple-600' : 'text-pink-600'}`} />
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-sm font-medium text-gray-700">{pet.age}</span>
+            <span className="text-gray-400">•</span>
+            <span className="text-sm font-medium text-gray-700">{pet.weight}</span>
           </div>
           
           <div className="flex items-center gap-3 mb-2">
@@ -102,22 +114,6 @@ const PetHealthCard = ({ pet }) => {
       {/* Health Stats Grid */}
       <div className="mt-4 grid grid-cols-2 gap-3">
         <div className="bg-white rounded-lg p-3 shadow-sm">
-          <div className="flex items-center gap-2 text-pink-600 mb-1">
-            <FaBirthdayCake className="text-sm" />
-            <span className="text-xs font-medium">Age</span>
-          </div>
-          <p className="text-sm font-semibold text-gray-800">{pet.age}</p>
-        </div>
-        
-        <div className="bg-white rounded-lg p-3 shadow-sm">
-          <div className="flex items-center gap-2 text-purple-600 mb-1">
-            <FaWeight className="text-sm" />
-            <span className="text-xs font-medium">Weight</span>
-          </div>
-          <p className="text-sm font-semibold text-gray-800">{pet.weight}</p>
-        </div>
-        
-        <div className="bg-white rounded-lg p-3 shadow-sm">
           <div className="flex items-center gap-2 text-blue-600 mb-1">
             <FaSyringe className="text-sm" />
             <span className="text-xs font-medium">Vaccines</span>
@@ -134,6 +130,92 @@ const PetHealthCard = ({ pet }) => {
             {new Date(pet.lastCheckup).toLocaleDateString()}
           </p>
         </div>
+      </div>
+
+      {/* View More Insights Button */}
+      <div className="mt-4">
+        <button 
+          onClick={() => setShowInsights(!showInsights)}
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 rounded-lg p-3 border border-indigo-100 hover:border-indigo-200 transition-all duration-200"
+        >
+          <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-1.5 rounded-lg">
+            <FaStethoscope className="text-white text-xs" />
+          </div>
+          <span className="text-sm font-medium text-gray-700">
+            {showInsights ? 'Hide' : 'View'} AI Insights
+          </span>
+          <div className="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2 py-1 rounded-full">
+            AI
+          </div>
+          {showInsights ? 
+            <FaChevronUp className="text-gray-500 text-sm ml-auto" /> : 
+            <FaChevronDown className="text-gray-500 text-sm ml-auto" />
+          }
+        </button>
+        
+        {/* Pet Insights (Collapsible) */}
+        {showInsights && (
+          <div className="mt-3 space-y-2">
+            {/* Health Status Insight */}
+            <div className={`bg-gradient-to-r ${
+              daysSinceCheckup < 90 ? 'from-green-50 to-emerald-50 border-green-100' : 
+              daysSinceCheckup < 180 ? 'from-yellow-50 to-orange-50 border-yellow-100' : 
+              'from-red-50 to-pink-50 border-red-100'
+            } rounded-lg p-3 border`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`w-2 h-2 ${
+                  daysSinceCheckup < 90 ? 'bg-green-400' : 
+                  daysSinceCheckup < 180 ? 'bg-yellow-400' : 
+                  'bg-red-400'
+                } rounded-full animate-pulse`}></div>
+                <span className={`font-semibold ${
+                  daysSinceCheckup < 90 ? 'text-green-800' : 
+                  daysSinceCheckup < 180 ? 'text-yellow-800' : 
+                  'text-red-800'
+                } text-sm flex items-center gap-2`}>
+                  Health Status
+                </span>
+              </div>
+              <p className={`text-xs ${
+                daysSinceCheckup < 90 ? 'text-green-700' : 
+                daysSinceCheckup < 180 ? 'text-yellow-700' : 
+                'text-red-700'
+              }`}>
+                {daysSinceCheckup < 90 && `${pet.name} is in excellent health! Last checkup ${daysSinceCheckup} days ago.`}
+                {daysSinceCheckup >= 90 && daysSinceCheckup < 180 && `${pet.name} is healthy. Checkup due soon (${daysSinceCheckup} days ago).`}
+                {daysSinceCheckup >= 180 && `${pet.name} needs attention. Checkup overdue (${daysSinceCheckup} days ago).`}
+                {parseInt(pet.age) > 7 && ' Senior pet - monitor closely.'}
+              </p>
+            </div>
+
+            {/* Activity Recommendation */}
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3 border border-blue-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <span className="font-semibold text-blue-800 text-sm">Activity Level</span>
+              </div>
+              <p className="text-xs text-blue-700">
+                {pet.type === 'dog' && `${pet.name} needs ${pet.breed === 'Golden Retriever' ? '90-120' : '60-90'} minutes of daily exercise.`}
+                {pet.type === 'cat' && `${pet.name} benefits from 15-20 minutes of interactive play daily.`}
+                {parseInt(pet.age) > 7 && ' Adjust intensity for senior pet comfort.'}
+              </p>
+            </div>
+
+            {/* Nutrition Insight */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="font-semibold text-green-800 text-sm">Nutrition</span>
+              </div>
+              <p className="text-xs text-green-700">
+                {parseInt(pet.age) < 1 ? `Young ${pet.name} needs 3-4 small meals daily.` : 
+                 pet.type === 'cat' ? `Feed ${pet.name} 2-3 times daily.` : 
+                 `Feed ${pet.name} twice daily.`}
+                {parseInt(pet.weight) > 70 && ' Monitor portion sizes.'}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}

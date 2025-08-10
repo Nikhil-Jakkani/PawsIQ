@@ -141,42 +141,42 @@ const CareReminders = ({ pets }) => {
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             <h3 className="text-sm font-bold text-red-800">Urgent Care Needed</h3>
           </div>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="space-y-3">
             {reminders.filter(r => r.priority === 'high').map((reminder) => {
               const IconComponent = reminder.icon;
               return (
                 <div 
                   key={reminder.id}
-                  className="bg-white/90 backdrop-blur-sm rounded-lg p-3 border border-red-100 hover:shadow-md transition-all duration-200 group"
+                  className="bg-white/90 backdrop-blur-sm rounded-lg p-4 border border-red-100 hover:shadow-md transition-all duration-200 group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`${reminder.bgColor} rounded-lg p-2 group-hover:scale-105 transition-transform duration-200 flex-shrink-0`}>
-                      <IconComponent className={`text-sm ${reminder.textColor}`} />
+                  <div className="flex items-start gap-3">
+                    <div className={`${reminder.bgColor} rounded-lg p-2.5 group-hover:scale-105 transition-transform duration-200 flex-shrink-0`}>
+                      <IconComponent className={`text-base ${reminder.textColor}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-baseline gap-2">
                           <span className={`text-lg font-bold bg-gradient-to-r ${reminder.color} bg-clip-text text-transparent`}>
                             {reminder.value}
                           </span>
-                          <span className="text-xs text-gray-500 truncate">{reminder.subtitle}</span>
+                          <span className="text-xs text-gray-500">{reminder.subtitle}</span>
                         </div>
-                        <div className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
+                        <div className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium flex-shrink-0">
                           Urgent
                         </div>
                       </div>
-                      <div className="text-sm font-semibold text-gray-800 truncate mb-1">
+                      <div className="text-sm font-semibold text-gray-800 mb-2">
                         {reminder.title}
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
+                        <div className="w-5 h-5 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
                           <img 
                             src={`https://images.unsplash.com/photo-${reminder.petName === 'Max' ? '1552053831-71594a27632d' : '1592194996308-7b43878e84a6'}?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60`} 
                             alt={reminder.petName}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="text-xs text-gray-600 font-medium truncate">{reminder.petName}</span>
+                        <span className="text-xs text-gray-600 font-medium">{reminder.petName}</span>
                       </div>
                     </div>
                   </div>
@@ -194,43 +194,43 @@ const CareReminders = ({ pets }) => {
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
             <h3 className="text-sm font-semibold text-gray-700">Upcoming Care</h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="space-y-3">
             {reminders.filter(r => r.priority !== 'high').map((reminder) => {
               const IconComponent = reminder.icon;
               return (
                 <div 
                   key={reminder.id}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-3 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-300 group"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-300 group"
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`${reminder.bgColor} rounded-lg p-2 group-hover:scale-105 transition-transform duration-200 shadow-sm flex-shrink-0`}>
-                      <IconComponent className={`text-lg ${reminder.textColor}`} />
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className={`${reminder.bgColor} rounded-lg p-2.5 group-hover:scale-105 transition-transform duration-200 shadow-sm flex-shrink-0`}>
+                      <IconComponent className={`text-base ${reminder.textColor}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 mb-1">
                         <span className={`text-xl font-bold bg-gradient-to-r ${reminder.color} bg-clip-text text-transparent`}>
                           {reminder.value}
                         </span>
-                        <span className="text-xs text-gray-500 truncate">{reminder.subtitle}</span>
+                        <span className="text-xs text-gray-500">{reminder.subtitle}</span>
                       </div>
-                      <div className="text-sm font-semibold text-gray-800 truncate">
+                      <div className="text-sm font-semibold text-gray-800">
                         {reminder.title}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <div className="w-4 h-4 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
                         <img 
                           src={`https://images.unsplash.com/photo-${reminder.petName === 'Max' ? '1552053831-71594a27632d' : '1592194996308-7b43878e84a6'}?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=60`} 
                           alt={reminder.petName}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <span className="text-xs text-gray-600 font-medium truncate">{reminder.petName}</span>
+                      <span className="text-xs text-gray-600 font-medium">{reminder.petName}</span>
                     </div>
-                    <button className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-medium transition-colors flex-shrink-0">
+                    <button className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-full font-medium transition-colors flex-shrink-0">
                       Schedule
                     </button>
                   </div>
