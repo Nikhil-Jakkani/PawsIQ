@@ -14,6 +14,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -120,6 +121,23 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true, // Remove console logs in production
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate vendor dependencies
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          icons: ['react-icons/fa'],
+          supabase: ['@supabase/supabase-js'],
+          charts: ['chart.js', 'react-chartjs-2'],
+          ai: ['@google/generative-ai'],
+        },
+        // Optimize chunk naming and sizing
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
   },
