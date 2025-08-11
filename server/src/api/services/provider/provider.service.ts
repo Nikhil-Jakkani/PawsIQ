@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const getProviderById = async (id: number) => {
   const provider = await prisma.pIQ_Service_Provider.findUnique({
-    where: { provider_id: id },
+    where: { service_provider_id: id },
   });
   if (!provider) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Provider not found');

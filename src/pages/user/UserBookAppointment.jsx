@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaArrowLeft, FaPaw, FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaCheck, FaChevronRight, FaCalendarCheck, FaSearch, FaFilter, FaStar } from 'react-icons/fa';
+import { FaCalendarAlt, FaArrowLeft, FaPaw, FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaCheck, FaChevronRight, FaCalendarCheck } from 'react-icons/fa';
 import UserLayout from '../../components/layout/UserLayout';
+import { useAuth } from '../../context/AuthContext';
 
 const UserBookAppointment = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     petId: '',
@@ -18,13 +19,42 @@ const UserBookAppointment = () => {
     timeSlot: '',
     notes: ''
   });
-  
-  // Mock data
-  const pets = [
-    { id: 1, name: 'Max', type: 'dog', breed: 'Golden Retriever', image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' },
-    { id: 2, name: 'Luna', type: 'cat', breed: 'Siamese', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' }
-  ];
-  
+
+  // Auth and pets from backend
+  const { currentUser } = useAuth();
+  const accessToken = currentUser?.tokens?.access?.token;
+  const [pets, setPets] = useState([]);
+  const [loadingPets, setLoadingPets] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      if (!accessToken) return;
+      setLoadingPets(true);
+      setError('');
+      try {
+        const res = await fetch('/api/v1/user/profile', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || 'Failed to load pets');
+        const mapped = (data?.pets || []).map((p) => ({
+          id: Number(p.pet_id),
+          name: p.pet_name || 'Pet',
+          type: (p.pet_type || '').toLowerCase(),
+          breed: p.pet_breed || '',
+          image: p.pet_image || 'https://placehold.co/600x400?text=Pet',
+        }));
+        setPets(mapped);
+      } catch (e) {
+        setError(e.message || 'Failed to load pets');
+      } finally {
+        setLoadingPets(false);
+      }
+    };
+    fetchPets();
+  }, [accessToken]);
+
   const serviceTypes = [
     { id: 'vet', name: 'Veterinary Care', icon: '🩺', description: 'Health checkups, vaccinations, and medical treatments' },
     { id: 'grooming', name: 'Grooming', icon: '✂️', description: 'Bathing, haircuts, nail trimming, and more' },
@@ -33,7 +63,7 @@ const UserBookAppointment = () => {
     { id: 'daycare', name: 'Daycare', icon: '🐾', description: 'Supervised play and care during the day' },
     { id: 'walking', name: 'Dog Walking', icon: '🚶', description: 'Regular exercise and bathroom breaks for your dog' }
   ];
-  
+
   const services = {
     vet: [
       { id: 'vet1', name: 'Routine Checkup', price: 50, duration: '30 min' },
@@ -69,7 +99,7 @@ const UserBookAppointment = () => {
       { id: 'walk3', name: 'Group Walk', price: 15, duration: '45 min' }
     ]
   };
-  
+
   const providers = [
     { 
       id: 1, 
@@ -105,16 +135,18 @@ const UserBookAppointment = () => {
       services: ['train1', 'train2', 'train3', 'train4']
     }
   ];
-  
-  const availableDates = [
-    '2023-12-10',
-    '2023-12-11',
-    '2023-12-12',
-    '2023-12-13',
-    '2023-12-14',
-    '2023-12-15',
-  ];
-  
+
+  const availableDates = React.useMemo(() => {
+    const dates = [];
+    const now = new Date();
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      dates.push(d.toISOString().slice(0, 10));
+    }
+    return dates;
+  }, []);
+
   const timeSlots = [
     '9:00 AM',
     '10:00 AM',
@@ -124,7 +156,7 @@ const UserBookAppointment = () => {
     '3:00 PM',
     '4:00 PM',
   ];
-  
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,7 +165,7 @@ const UserBookAppointment = () => {
       [name]: value
     });
   };
-  
+
   // Handle pet selection
   const handlePetSelect = (petId) => {
     setFormData({
@@ -141,7 +173,7 @@ const UserBookAppointment = () => {
       petId
     });
   };
-  
+
   // Handle service type selection
   const handleServiceTypeSelect = (serviceType) => {
     setFormData({
@@ -151,7 +183,7 @@ const UserBookAppointment = () => {
       providerId: ''
     });
   };
-  
+
   // Handle specific service selection
   const handleServiceSelect = (serviceId) => {
     setFormData({
@@ -159,7 +191,7 @@ const UserBookAppointment = () => {
       serviceId
     });
   };
-  
+
   // Handle provider selection
   const handleProviderSelect = (providerId) => {
     setFormData({
@@ -167,7 +199,7 @@ const UserBookAppointment = () => {
       providerId
     });
   };
-  
+
   // Handle date selection
   const handleDateSelect = (date) => {
     setFormData({
@@ -175,7 +207,7 @@ const UserBookAppointment = () => {
       date
     });
   };
-  
+
   // Handle time slot selection
   const handleTimeSlotSelect = (timeSlot) => {
     setFormData({
@@ -183,48 +215,75 @@ const UserBookAppointment = () => {
       timeSlot
     });
   };
-  
+
   // Move to next step
   const nextStep = () => {
     setCurrentStep(currentStep + 1);
     window.scrollTo(0, 0);
   };
-  
+
   // Move to previous step
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
     window.scrollTo(0, 0);
   };
-  
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const selectedPet = getSelectedPet();
-      const selectedService = getSelectedService();
-      const selectedProvider = getSelectedProvider();
-      const total = Math.round((selectedService?.price || 0) * 1.08 * 100) / 100;
 
-      setIsSubmitting(false);
-      navigate('/user/appointments/confirmation', {
-        state: {
-          appointment: {
-            pet: selectedPet,
-            service: selectedService,
-            provider: selectedProvider,
-            date: formData.date,
-            timeSlot: formData.timeSlot,
-            notes: formData.notes,
-            total
-          }
-        }
-      });
-    }, 1200);
+  // Combine date and time to ISO string
+  const combineDateTime = (dateStr, timeStr) => {
+    if (!dateStr || !timeStr) return '';
+    const [time, meridiem] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (meridiem && meridiem.toUpperCase() === 'PM' && hours < 12) hours += 12;
+    if (meridiem && meridiem.toUpperCase() === 'AM' && hours === 12) hours = 0;
+    const d = new Date(`${dateStr}T00:00:00`);
+    d.setHours(hours, minutes || 0, 0, 0);
+    return d.toISOString();
   };
-  
+
+  // Map selected service to backend enum
+  const mapToAppointmentType = () => {
+    const st = formData.serviceType;
+    const sid = formData.serviceId;
+    if (st === 'grooming') return 'Grooming';
+    if (st === 'training') return 'Training';
+    if (st === 'vet') {
+      if (sid === 'vet2') return 'Vaccination';
+      return 'Checkup';
+    }
+    return 'Others';
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!accessToken) return;
+    setIsSubmitting(true);
+    try {
+      const appointment_date = combineDateTime(formData.date, formData.timeSlot);
+      const payload = {
+        pet_id: Number(formData.petId),
+        appointment_type: mapToAppointmentType(),
+        appointment_date,
+        appointment_comments: formData.notes?.trim() || undefined,
+      };
+      const res = await fetch('/api/v1/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || 'Failed to create appointment');
+      navigate('/user/appointments');
+    } catch (err) {
+      alert(err.message || 'Failed to create appointment');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Get selected service details
   const getSelectedService = () => {
     if (!formData.serviceType || !formData.serviceId) return null;

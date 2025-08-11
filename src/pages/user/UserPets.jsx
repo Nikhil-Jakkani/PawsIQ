@@ -1,49 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaPaw, FaPlus, FaSearch, FaFilter, FaEdit, FaTrash, FaHeart, FaCalendarAlt, FaUser, FaClipboardList } from 'react-icons/fa';
 import UserLayout from '../../components/layout/UserLayout';
+import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabaseClient';
 
 const UserPets = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  
+  const { currentUser } = useAuth();
+  const accessToken = currentUser?.tokens?.access?.token;
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   // Determine current view based on route
   const getCurrentView = () => {
     if (location.pathname.includes('/profiles')) return 'profiles';
     if (location.pathname.includes('/health')) return 'health';
     return 'overview';
   };
-  
+
   const currentView = getCurrentView();
-  
-  // Mock pet data
-  const [pets, setPets] = useState([
-    {
-      id: 1,
-      name: 'Max',
-      type: 'dog',
-      breed: 'Golden Retriever',
-      age: '3 years',
-      image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      healthStatus: 'Healthy',
-      lastCheckup: '2023-10-15',
-      upcomingAppointments: 1
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      type: 'cat',
-      breed: 'Siamese',
-      age: '2 years',
-      image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      healthStatus: 'Needs Vaccination',
-      lastCheckup: '2023-08-20',
-      upcomingAppointments: 0
-    }
-  ]);
-  
+
+  useEffect(() => {
+    if (!accessToken) return;
+    setLoading(true);
+    setError('');
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/user/profile', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || 'Failed to load pets');
+        const mapped = (data?.pets || []).map((p) => ({
+          id: Number(p.pet_id),
+          name: p.pet_name || 'Pet',
+          type: (p.pet_type || '').toLowerCase(),
+          breed: p.pet_breed || '',
+          age: '0 years',
+          imagePath: p.pet_image || '',
+          image: 'https://placehold.co/600x400?text=Pet',
+          healthStatus: '',
+          lastCheckup: new Date().toISOString().slice(0, 10),
+          upcomingAppointments: 0,
+        }));
+        setPets(mapped);
+        // Resolve signed URLs for any stored image paths
+        const withUrls = await Promise.all(
+          mapped.map(async (pet) => {
+            if (!pet.imagePath) return pet;
+            try {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath }).toString();
+              const urlRes = await fetch(`/api/v1/media/signed-url?${qs}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              });
+              const urlPayload = await urlRes.json().catch(() => ({}));
+              if (urlRes.ok && urlPayload?.url) {
+                return { ...pet, image: urlPayload.url };
+              }
+            } catch {}
+            return pet;
+          })
+        );
+        setPets(withUrls);
+      } catch (e) {
+        setError(e.message || 'Failed to load pets');
+        setPets([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [accessToken]);
+
   // Filter pets based on search term and filter type
   const filteredPets = pets.filter(pet => {
     const matchesSearch = pet.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -56,6 +88,60 @@ const UserPets = () => {
   const handleDeletePet = (id) => {
     if (window.confirm('Are you sure you want to remove this pet?')) {
       setPets(pets.filter(pet => pet.id !== id));
+    }
+  };
+
+  // Upload image flow
+  const uploadPetImage = async (petId, file) => {
+    if (!file) return;
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+      alert('Please upload a JPG, PNG, or WEBP image');
+      return;
+    }
+    try {
+      // 1) get signed upload
+      const res = await fetch('/api/v1/media/signed-upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bucket: 'pets-photos', entity: 'pet', entity_id: petId, file_ext: ext }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(payload?.message || 'Failed to get signed upload');
+
+      const { path, token } = payload;
+      // 2) upload to storage via signed URL token
+      const { data: upData, error: upErr } = await supabase.storage
+        .from('pets-photos')
+        .uploadToSignedUrl(path, token, file);
+      if (upErr) throw upErr;
+
+      // 3) update pet image path on backend
+      const upd = await fetch(`/api/v1/pets/${petId}/image`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path }),
+      });
+      const updPayload = await upd.json().catch(() => ({}));
+      if (!upd.ok) throw new Error(updPayload?.message || 'Failed to update pet');
+
+      // 4) get a signed view url and update UI
+      const qs = new URLSearchParams({ bucket: 'pets-photos', path }).toString();
+      const urlRes = await fetch(`/api/v1/media/signed-url?${qs}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const urlPayload = await urlRes.json().catch(() => ({}));
+      const signedUrl = urlPayload?.url;
+
+      setPets((prev) =>
+        prev.map((p) => (p.id === petId ? { ...p, imagePath: path, image: signedUrl || p.image } : p))
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || 'Upload failed');
     }
   };
   
@@ -123,6 +209,26 @@ const UserPets = () => {
                     alt={pet.name} 
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute bottom-2 right-2">
+                    <input
+                      id={`pet-upload-${pet.id}`}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (file) uploadPetImage(pet.id, file);
+                        // reset input so selecting same file again still triggers change
+                        e.target.value = '';
+                      }}
+                    />
+                    <label
+                      htmlFor={`pet-upload-${pet.id}`}
+                      className="cursor-pointer bg-white/90 hover:bg-white text-pink-700 text-xs font-medium px-2 py-1 rounded shadow"
+                    >
+                      Change Photo
+                    </label>
+                  </div>
                   <div className="absolute top-0 right-0 bg-white bg-opacity-90 m-2 px-2 py-1 rounded-lg text-sm font-medium text-gray-700">
                     {pet.type.charAt(0).toUpperCase() + pet.type.slice(1)}
                   </div>

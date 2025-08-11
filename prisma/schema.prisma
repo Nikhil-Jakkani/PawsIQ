@@ -22,6 +22,7 @@ model PIQ_Pets {
   PIQ_User         PIQ_User?          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
   PIQ_Pets_Photo   PIQ_Pets_Photo[]
   PIQ_pets_profile PIQ_pets_profile[]
+  PIQ_Appointments PIQ_Appointments[]
 }
 
 model PIQ_Pets_Photo {
@@ -234,4 +235,17 @@ model PIQ_Vaccine_Master {
   is_vaccine_record_valid  Boolean?
   created_at               DateTime  @default(now()) @db.Timestamptz(6)
   last_updated_dtm         DateTime? @db.Timestamp(6)
+}
+
+model PIQ_Appointments {
+  appointment_id       Int       @id @default(autoincrement())
+  pet_id               BigInt
+  appointment_type     String    @db.VarChar(50)
+  appointment_date     DateTime  @db.Timestamptz(6)
+  appointment_status   String    @db.VarChar(50)
+  appointment_comments String?   @db.Text
+  create_dtm           DateTime  @default(now()) @db.Timestamptz(6)
+  last_updated_dtm     DateTime? @db.Timestamp(6)
+
+  PIQ_Pets             PIQ_Pets  @relation(fields: [pet_id], references: [pet_id], onDelete: Cascade, onUpdate: NoAction)
 }
