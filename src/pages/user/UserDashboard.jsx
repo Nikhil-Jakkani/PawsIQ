@@ -18,6 +18,9 @@ import UpcomingSchedule from '../../components/user/UpcomingSchedule';
 import CareReminders from '../../components/user/CareReminders';
 import PetActivityTracker from '../../components/user/PetActivityTracker';
 import UserLayout from '../../components/layout/UserLayout';
+ import { useAuth } from '../../context/AuthContext';
+ 
+ const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -27,6 +30,11 @@ const UserDashboard = () => {
   const [activeService, setActiveService] = useState('suggestions');
   const [showAllTips, setShowAllTips] = useState(false);
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
+  const { currentUser } = useAuth();
+  const accessToken = currentUser?.tokens?.access?.token;
+  const [pets, setPets] = useState([]);
+  const [loadingPets, setLoadingPets] = useState(false);
+  const [petsError, setPetsError] = useState('');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -35,6 +43,62 @@ const UserDashboard = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    setLoadingPets(true);
+    setPetsError('');
+    (async () => {
+      try {
+        const res = await fetch(`${API_URL}/user/profile`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || 'Failed to load pets');
+        const mapped = (data?.pets || []).map((p) => ({
+          id: Number(p.pet_id),
+          name: p.pet_name || 'Pet',
+          type: (p.pet_type || '').toLowerCase(),
+          breed: p.pet_breed || '',
+          age: p.pet_age != null ? `${p.pet_age} years` : '0 years',
+          weight: p.pet_weight != null ? `${p.pet_weight} lbs` : '0 lbs',
+          gender: p.pet_gender || '',
+          birthday: p.pet_birthday || new Date().toISOString().slice(0, 10),
+          imagePath: p.pet_image || '',
+          image: 'https://placehold.co/600x400?text=Pet',
+          lastCheckup: p.last_checkup || new Date().toISOString().slice(0, 10),
+          vaccinations: p.vaccinations || 'Unknown',
+        }));
+        setPets(mapped);
+        // Resolve signed URLs for any stored image paths
+        const withUrls = await Promise.all(
+          mapped.map(async (pet) => {
+            if (!pet.imagePath) return pet;
+            try {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+              const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              });
+              const urlPayload = await urlRes.json().catch(() => ({}));
+              if (urlRes.ok && urlPayload?.url) {
+                return { ...pet, image: urlPayload.url };
+              }
+            } catch {}
+            return pet;
+          })
+        );
+        setPets(withUrls);
+        if (withUrls.length > 0 && !selectedPetForAI) {
+          setSelectedPetForAI(withUrls[0]);
+        }
+      } catch (e) {
+        setPetsError(e.message || 'Failed to load pets');
+        setPets([]);
+      } finally {
+        setLoadingPets(false);
+      }
+    })();
+  }, [accessToken]);
 
   const getGreeting = () => {
     const hour = currentTime.getHours();
@@ -193,36 +257,8 @@ const UserDashboard = () => {
     };
     return seasonTips[season];
   };
-
-  // Mock data for pets (in a real app, this would come from your state management or API)
-  const pets = [
-    {
-      id: 1,
-      name: 'Max',
-      type: 'dog',
-      breed: 'Golden Retriever',
-      age: '3 years',
-      weight: '65 lbs',
-      gender: 'male',
-      birthday: '2022-05-15',
-      image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z29sZGVuJTIwcmV0cmlldmVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-05-01',
-      vaccinations: 'Up to date'
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      type: 'cat',
-      breed: 'Siamese',
-      age: '2 years',
-      weight: '9 lbs',
-      gender: 'female',
-      birthday: '2023-02-10',
-      image: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lhbWVzZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-04-15',
-      vaccinations: 'Up to date'
-    },
-  ];
+ 
+  // Pets are loaded from the API and stored in state
 
   return (
     <UserLayout>
