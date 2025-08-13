@@ -17,22 +17,25 @@ const auth = (...requiredRights: string[]) => {
 
       // Verify token
       const payload: any = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-      
-      // Check if token is in database and not blacklisted
-      const { data: tokenDoc, error } = await db
-        .from('tokens')
-        .select('*')
-        .eq('token', token)
-        .eq('blacklisted', false)
-        .single();
 
-      if (error || !tokenDoc) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token');
-      }
+      // For ACCESS tokens, we rely on JWT verification only.
+      // For other token types (e.g., REFRESH, VERIFY_EMAIL), ensure it's present and valid in DB.
+      if (payload.type !== tokenTypes.ACCESS) {
+        const { data: tokenDoc, error } = await db
+          .from('tokens')
+          .select('*')
+          .eq('token', token)
+          .eq('blacklisted', false)
+          .single();
 
-      // Check if token is expired
-      if (new Date() > new Date(tokenDoc.expires)) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Token expired');
+        if (error || !tokenDoc) {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token');
+        }
+
+        // Check if token is expired (redundant for ACCESS since jwt.verify already checked exp)
+        if (new Date() > new Date(tokenDoc.expires)) {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'Token expired');
+        }
       }
 
       const { role } = payload;
@@ -53,7 +56,12 @@ const auth = (...requiredRights: string[]) => {
           const { data, error } = await db.from('PIQ_User').select('*').eq('user_id', payload.sub).single();
           entity = data;
           entityError = error;
-          if (entity && entity.user_status !== 'active') {
+          if (
+            entity &&
+            typeof entity.user_status === 'string' &&
+            entity.user_status.trim() &&
+            entity.user_status.trim().toLowerCase() !== 'active'
+          ) {
             throw new ApiError(httpStatus.UNAUTHORIZED, 'User account is not active');
           }
           break;
@@ -62,7 +70,12 @@ const auth = (...requiredRights: string[]) => {
           const { data, error } = await db.from('admins').select('*').eq('admin_id', payload.sub).single();
           entity = data;
           entityError = error;
-          if (entity && entity.admin_status !== 'active') {
+          if (
+            entity &&
+            typeof entity.admin_status === 'string' &&
+            entity.admin_status.trim() &&
+            entity.admin_status.trim().toLowerCase() !== 'active'
+          ) {
             throw new ApiError(httpStatus.UNAUTHORIZED, 'User account is not active');
           }
           break;
@@ -71,7 +84,12 @@ const auth = (...requiredRights: string[]) => {
           const { data, error } = await db.from('PIQ_Service_Provider').select('*').eq('provider_id', payload.sub).single();
           entity = data;
           entityError = error;
-          if (entity && entity.provider_status !== 'active') {
+          if (
+            entity &&
+            typeof entity.provider_status === 'string' &&
+            entity.provider_status.trim() &&
+            entity.provider_status.trim().toLowerCase() !== 'active'
+          ) {
             throw new ApiError(httpStatus.UNAUTHORIZED, 'User account is not active');
           }
           break;

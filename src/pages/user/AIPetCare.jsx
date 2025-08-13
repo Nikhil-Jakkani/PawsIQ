@@ -6,6 +6,8 @@ import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
 import AISymptomChecker from '../../components/user/AISymptomChecker';
 import PetSelector from '../../components/user/PetSelector';
 
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
+
 const AIPetCare = () => {
   const [selectedPetForAI, setSelectedPetForAI] = useState(null);
   const [activeTab, setActiveTab] = useState('suggestions');
@@ -25,11 +27,34 @@ const AIPetCare = () => {
           throw new Error('Authentication token not found. Please log in again.');
         }
 
-        const response = await fetch('/api/v1/user/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        // helper to fetch profile with provided access token
+        const getProfile = async (access) => {
+          return fetch(`${API_URL}/user/profile`, {
+            headers: {
+              'Authorization': `Bearer ${access}`,
+            },
+          });
+        };
+
+        let response = await getProfile(token);
+
+        // Attempt a one-time silent refresh if unauthorized
+        if (response.status === 401) {
+          const refreshToken = user?.tokens?.refresh?.token;
+          if (refreshToken) {
+            const refreshResp = await fetch(`${API_URL}/user/auth/refresh-tokens`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refreshToken }),
+            });
+            if (refreshResp.ok) {
+              const newTokens = await refreshResp.json();
+              const updatedUser = { ...user, tokens: newTokens };
+              localStorage.setItem('pawsiq_user', JSON.stringify(updatedUser));
+              response = await getProfile(newTokens?.access?.token);
+            }
+          }
+        }
 
         if (!response.ok) {
           if (response.status === 401) {
@@ -42,8 +67,7 @@ const AIPetCare = () => {
         const userPets = userData.pets || [];
         setPets(userPets);
 
-                if (userPets.length > 0 && !selectedPetForAI) {
-          console.log('AIPetCare: Setting initial pet:', userPets[0]);
+        if (userPets.length > 0 && !selectedPetForAI) {
           setSelectedPetForAI(userPets[0]);
         }
       } catch (err) {
@@ -136,7 +160,6 @@ const AIPetCare = () => {
             pets={pets}
             selectedPet={selectedPetForAI}
             onPetSelect={(pet) => {
-            console.log('AIPetCare: Pet selected via PetSelector:', pet);
             setSelectedPetForAI(pet);
           }}
           />

@@ -21,6 +21,7 @@ import {
 } from 'react-icons/fa';
 import { generatePetCareSuggestions } from '../../services/geminiService';
 import PetCareTable from './PetCareTable';
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const AIPetCareSuggestions = ({ selectedPet }) => {
   const [suggestions, setSuggestions] = useState(null);
@@ -94,21 +95,49 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
         health_details: selectedPet.health_details || 'Not specified',
       };
 
-      const response = await fetch('/api/v1/user/ai/suggestions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(petDataForAI),
-      });
+      // helper to perform the suggestions request with a given access token
+      const doRequest = async (accessToken) => {
+        return fetch(`${API_URL}/user/ai/suggestions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(petDataForAI),
+        });
+      };
+
+      let response = await doRequest(token);
+
+      // If unauthorized, try refresh-token flow once
+      if (response.status === 401) {
+        const refreshToken = user?.tokens?.refresh?.token;
+        if (refreshToken) {
+          const refreshResp = await fetch(`${API_URL}/user/auth/refresh-tokens`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (refreshResp.ok) {
+            const newTokens = await refreshResp.json();
+            // Persist new tokens
+            const updatedUser = { ...user, tokens: newTokens };
+            localStorage.setItem('pawsiq_user', JSON.stringify(updatedUser));
+            // Retry original request with new access token
+            response = await doRequest(newTokens?.access?.token);
+          }
+        }
+      }
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Your session has expired. Please log out and log in again.');
-        }
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch suggestions from the server.');
+        const errorData = await response.json().catch(() => ({}));
+        const msg = response.status === 401
+          ? 'We\'re restoring your session. Please click Refresh.'
+          : (errorData.message || 'Failed to fetch suggestions from the server.');
+        throw new Error(msg);
       }
 
       const data = await response.json();
@@ -121,7 +150,6 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
   };
 
     useEffect(() => {
-    console.log('AIPetCareSuggestions: Received selectedPet prop:', selectedPet);
     if (selectedPet && selectedPet.pet_id) {
       fetchSuggestions();
     } else {
@@ -191,6 +219,15 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
                 <h4 className="font-medium text-gray-800 mb-2">Recommendations:</h4>
                 <ul className="space-y-1">
                   {data.recommendations.map(renderRecommendationItem)}
+                </ul>
+              </div>
+            )}
+            {/* Fallback: show simple suggestion/details if recommendations array is not provided */}
+            {(!data.recommendations || data.recommendations.length === 0) && (data.suggestion || data.details) && (
+              <div className="mb-3">
+                <h4 className="font-medium text-gray-800 mb-2">Recommendation:</h4>
+                <ul className="space-y-1">
+                  {renderRecommendationItem({ suggestion: data.suggestion, details: data.details }, 0)}
                 </ul>
               </div>
             )}
@@ -359,7 +396,7 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
-                AI Care Recommendations for {selectedPet.name}
+                AI Care Recommendations for {selectedPet.pet_name || selectedPet.name}
               </h2>
               <p className="text-sm text-gray-600">
                 Personalized suggestions powered by AI
@@ -383,7 +420,7 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
           <div className="text-center py-8">
             <FaSpinner className="text-pink-600 text-3xl mx-auto mb-4 animate-spin" />
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Generating Recommendations</h3>
-            <p className="text-gray-500">Our AI is analyzing {selectedPet.name}'s profile...</p>
+            <p className="text-gray-500">Our AI is analyzing {(selectedPet.pet_name || selectedPet.name)}'s profile...</p>
           </div>
         )}
 

@@ -4,6 +4,8 @@ import { FaCalendarAlt, FaArrowLeft, FaPaw, FaMapMarkerAlt, FaClock, FaMoneyBill
 import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
 
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
+
 const UserBookAppointment = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,7 +35,7 @@ const UserBookAppointment = () => {
       setLoadingPets(true);
       setError('');
       try {
-        const res = await fetch('/api/v1/user/profile', {
+        const res = await fetch(`${API_URL}/user/profile`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = await res.json().catch(() => ({}));
@@ -43,9 +45,25 @@ const UserBookAppointment = () => {
           name: p.pet_name || 'Pet',
           type: (p.pet_type || '').toLowerCase(),
           breed: p.pet_breed || '',
-          image: p.pet_image || 'https://placehold.co/600x400?text=Pet',
+          imagePath: p.pet_image || '',
+          image: 'https://placehold.co/600x400?text=Pet',
         }));
-        setPets(mapped);
+        // resolve signed image URLs (24h)
+        const withUrls = await Promise.all(
+          mapped.map(async (pet) => {
+            if (!pet.imagePath) return pet;
+            try {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24) }).toString();
+              const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              });
+              const urlPayload = await urlRes.json().catch(() => ({}));
+              if (urlRes.ok && urlPayload?.url) return { ...pet, image: urlPayload.url };
+            } catch {}
+            return pet;
+          })
+        );
+        setPets(withUrls);
       } catch (e) {
         setError(e.message || 'Failed to load pets');
       } finally {
@@ -266,7 +284,7 @@ const UserBookAppointment = () => {
         appointment_date,
         appointment_comments: formData.notes?.trim() || undefined,
       };
-      const res = await fetch('/api/v1/appointments', {
+      const res = await fetch(`${API_URL}/appointments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -274,6 +292,7 @@ const UserBookAppointment = () => {
         },
         body: JSON.stringify(payload),
       });
+
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || 'Failed to create appointment');
       navigate('/user/appointments');
@@ -326,6 +345,23 @@ const UserBookAppointment = () => {
                       src={pet.image} 
                       alt={pet.name} 
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        if (e.currentTarget.dataset.refreshed || !pet.imagePath) return;
+                        e.currentTarget.dataset.refreshed = '1';
+                        // lazy refresh of signed URL
+                        (async () => {
+                          try {
+                            const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24) }).toString();
+                            const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+                              headers: { Authorization: `Bearer ${accessToken}` },
+                            });
+                            const urlPayload = await urlRes.json().catch(() => ({}));
+                            if (urlRes.ok && urlPayload?.url) {
+                              setPets((prev) => prev.map((p) => (p.id === pet.id ? { ...p, image: urlPayload.url } : p)));
+                            }
+                          } catch {}
+                        })();
+                      }}
                     />
                   </div>
                   <div className="p-4">

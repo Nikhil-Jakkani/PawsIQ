@@ -1,4 +1,3 @@
-
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 
@@ -9,7 +8,6 @@ app.use(cors());
 // Log incoming request headers for debugging
 app.use((req, res, next) => {
   if (req.method === 'POST' && req.url === '/api/v1/user/ai/suggestions') {
-    console.log(`Request Content-Type for AI suggestions: ${req.headers['content-type']}`);
   }
   next();
 });
@@ -30,5 +28,4 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
 });

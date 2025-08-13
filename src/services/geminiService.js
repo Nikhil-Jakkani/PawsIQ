@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5173/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 export const generatePetCareSuggestions = async (petData) => {
   try {
@@ -58,7 +58,9 @@ export const generatePetCareSuggestions = async (petData) => {
     Make sure all recommendations are specific to the pet's breed, age, and current health status. Be thorough but practical.
     `;
 
-    const token = localStorage.getItem('token');
+    const stored = localStorage.getItem('pawsiq_user');
+    const parsed = stored ? JSON.parse(stored) : null;
+    const token = parsed?.tokens?.access?.token;
     if (!token) {
       throw new Error('Authentication token not found.');
     }

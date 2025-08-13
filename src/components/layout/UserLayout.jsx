@@ -151,8 +151,12 @@ const UserLayout = ({ children }) => {
               <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <FaUser className="text-pink-600" />
               </div>
-              <span className="text-sm font-medium text-gray-700 truncate">
-                {currentUser?.name || 'Pet Owner'}
+              <span className="text-sm font-medium text-gray-700">
+                {currentUser?.user_full_name
+                  || currentUser?.name
+                  || [currentUser?.first_name, currentUser?.last_name].filter(Boolean).join(' ')
+                  || (currentUser?.email ? currentUser.email.split('@')[0] : '')
+                  || 'User'}
               </span>
             </div>
           </div>

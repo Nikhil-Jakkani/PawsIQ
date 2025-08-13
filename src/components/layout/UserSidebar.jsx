@@ -347,7 +347,11 @@ const UserSidebar = ({ isOpen, toggleSidebar }) => {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-white truncate">
-                    {currentUser?.email || 'Pet Owner'}
+                    {currentUser?.user_full_name
+                      || currentUser?.name
+                      || [currentUser?.first_name, currentUser?.last_name].filter(Boolean).join(' ')
+                      || (currentUser?.email ? currentUser.email.split('@')[0] : '')
+                      || 'User'}
                   </p>
                   <button 
                     onClick={() => {

@@ -5,6 +5,8 @@ import { FaDove } from 'react-icons/fa6';
 import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
 
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
+
 const UserAddPet = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
@@ -70,7 +72,7 @@ const UserAddPet = () => {
         color: formData.color || undefined,
       };
 
-      const res = await fetch('/api/v1/pets', {
+      const res = await fetch(`${API_URL}/pets`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,6 +80,7 @@ const UserAddPet = () => {
         },
         body: JSON.stringify(payload),
       });
+
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || 'Failed to create pet');
 

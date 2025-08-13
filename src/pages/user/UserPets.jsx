@@ -4,6 +4,7 @@ import { FaPaw, FaPlus, FaSearch, FaFilter, FaEdit, FaTrash, FaHeart, FaCalendar
 import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const UserPets = () => {
   const navigate = useNavigate();
@@ -23,6 +24,24 @@ const UserPets = () => {
     return 'overview';
   };
 
+  // Refresh a pet image URL once if it fails (likely expired signed URL)
+  const refreshImage = async (petId, path) => {
+    if (!path) return;
+    try {
+      const qs = new URLSearchParams({ bucket: 'pets-photos', path, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+      const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const urlPayload = await urlRes.json().catch(() => ({}));
+      const signedUrl = urlPayload?.url;
+      if (signedUrl) {
+        setPets((prev) => prev.map((p) => (p.id === petId ? { ...p, image: signedUrl } : p)));
+      }
+    } catch (e) {
+      // ignore; UI keeps previous image or placeholder
+    }
+  };
+
   const currentView = getCurrentView();
 
   useEffect(() => {
@@ -31,7 +50,7 @@ const UserPets = () => {
     setError('');
     (async () => {
       try {
-        const res = await fetch('/api/v1/user/profile', {
+        const res = await fetch(`${API_URL}/user/profile`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = await res.json().catch(() => ({}));
@@ -54,8 +73,8 @@ const UserPets = () => {
           mapped.map(async (pet) => {
             if (!pet.imagePath) return pet;
             try {
-              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath }).toString();
-              const urlRes = await fetch(`/api/v1/media/signed-url?${qs}`, {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+              const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
               });
               const urlPayload = await urlRes.json().catch(() => ({}));
@@ -77,17 +96,16 @@ const UserPets = () => {
   }, [accessToken]);
 
   // Filter pets based on search term and filter type
-  const filteredPets = pets.filter(pet => {
-    const matchesSearch = pet.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          pet.breed.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredPets = pets.filter((pet) => {
+    const matchesSearch = pet.name.toLowerCase().includes(searchTerm.toLowerCase()) || pet.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'all' || pet.type === filterType;
     return matchesSearch && matchesFilter;
   });
-  
+
   // Delete pet handler
   const handleDeletePet = (id) => {
     if (window.confirm('Are you sure you want to remove this pet?')) {
-      setPets(pets.filter(pet => pet.id !== id));
+      setPets(pets.filter((pet) => pet.id !== id));
     }
   };
 
@@ -101,7 +119,7 @@ const UserPets = () => {
     }
     try {
       // 1) get signed upload
-      const res = await fetch('/api/v1/media/signed-upload', {
+      const res = await fetch(`${API_URL}/media/signed-upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -109,28 +127,28 @@ const UserPets = () => {
         },
         body: JSON.stringify({ bucket: 'pets-photos', entity: 'pet', entity_id: petId, file_ext: ext }),
       });
+
       const payload = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(payload?.message || 'Failed to get signed upload');
 
       const { path, token } = payload;
       // 2) upload to storage via signed URL token
-      const { data: upData, error: upErr } = await supabase.storage
-        .from('pets-photos')
-        .uploadToSignedUrl(path, token, file);
+      const { data: upData, error: upErr } = await supabase.storage.from('pets-photos').uploadToSignedUrl(path, token, file);
       if (upErr) throw upErr;
 
       // 3) update pet image path on backend
-      const upd = await fetch(`/api/v1/pets/${petId}/image`, {
+      const upd = await fetch(`${API_URL}/pets/${petId}/image`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ path }),
       });
+
       const updPayload = await upd.json().catch(() => ({}));
       if (!upd.ok) throw new Error(updPayload?.message || 'Failed to update pet');
 
       // 4) get a signed view url and update UI
-      const qs = new URLSearchParams({ bucket: 'pets-photos', path }).toString();
-      const urlRes = await fetch(`/api/v1/media/signed-url?${qs}`, {
+      const qs = new URLSearchParams({ bucket: 'pets-photos', path, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+      const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const urlPayload = await urlRes.json().catch(() => ({}));
@@ -144,7 +162,7 @@ const UserPets = () => {
       alert(err?.message || 'Upload failed');
     }
   };
-  
+
   return (
     <UserLayout>
       <div className="space-y-6">
@@ -158,7 +176,7 @@ const UserPets = () => {
             </div>
             <p className="text-gray-500 mt-1">Manage your pet profiles and health records</p>
           </div>
-          <button 
+          <button
             onClick={() => navigate('/user/pets/add')}
             className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
@@ -166,7 +184,7 @@ const UserPets = () => {
             Add New Pet
           </button>
         </div>
-        
+
         {/* Search and Filter */}
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
           <div className="flex flex-col md:flex-row gap-4">
@@ -197,18 +215,24 @@ const UserPets = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Pet Cards */}
         {filteredPets.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPets.map(pet => (
+            {filteredPets.map((pet) => (
               <div key={pet.id} className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                 <div className="h-48 overflow-hidden relative">
-                  <img 
-                    src={pet.image} 
-                    alt={pet.name} 
+                  <img
+                    src={pet.image}
+                    alt={pet.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      if (e.currentTarget.dataset.refreshed) return;
+                      e.currentTarget.dataset.refreshed = '1';
+                      refreshImage(pet.id, pet.imagePath);
+                    }}
                   />
+
                   <div className="absolute bottom-2 right-2">
                     <input
                       id={`pet-upload-${pet.id}`}

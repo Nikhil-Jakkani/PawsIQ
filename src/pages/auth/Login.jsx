@@ -114,7 +114,6 @@ const Login = () => {
     
     try {
       // In a real app, this would call an API to authenticate with the social provider
-      console.log(`Logging in with ${provider}`);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));

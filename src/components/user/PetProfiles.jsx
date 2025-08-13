@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPaw, FaPlus, FaArrowRight, FaCalendarAlt, FaWeight, FaBirthdayCake, FaVenus, FaMars } from 'react-icons/fa';
 import { PetIcon } from '../layout/PetIcons';
 import { useAuth } from '../../context/AuthContext';
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const PetProfiles = () => {
   const { currentUser } = useAuth();
@@ -11,13 +12,31 @@ const PetProfiles = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const refreshedRef = useRef(new Set());
+
+  const refreshImageUrl = async (petId, imagePath) => {
+    if (!imagePath || refreshedRef.current.has(petId)) return null;
+    try {
+      const qs = new URLSearchParams({ bucket: 'pets-photos', path: imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+      const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const urlPayload = await urlRes.json().catch(() => ({}));
+      if (urlRes.ok && urlPayload?.url) {
+        refreshedRef.current.add(petId);
+        return urlPayload.url;
+      }
+    } catch {}
+    return null;
+  };
+
   useEffect(() => {
     if (!accessToken) return;
     setLoading(true);
     setError('');
     (async () => {
       try {
-        const res = await fetch('/api/v1/user/profile', {
+        const res = await fetch(`${API_URL}/user/profile`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = await res.json().catch(() => ({}));
@@ -41,8 +60,8 @@ const PetProfiles = () => {
           mapped.map(async (pet) => {
             if (!pet.imagePath) return pet;
             try {
-              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath }).toString();
-              const urlRes = await fetch(`/api/v1/media/signed-url?${qs}`, {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+              const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
               });
               const urlPayload = await urlRes.json().catch(() => ({}));
@@ -95,6 +114,12 @@ const PetProfiles = () => {
                 src={pet.image} 
                 alt={pet.name} 
                 className="w-full h-full object-cover"
+                onError={async (e) => {
+                  const newUrl = await refreshImageUrl(pet.id, pet.imagePath);
+                  if (newUrl) {
+                    setPets((prev) => prev.map((p) => (p.id === pet.id ? { ...p, image: newUrl } : p)));
+                  }
+                }}
               />
             </div>
             

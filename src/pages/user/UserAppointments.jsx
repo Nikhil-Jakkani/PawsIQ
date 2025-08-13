@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaPlus, FaSearch, FaFilter, FaEye, FaTimes, FaCheck, FaClock, FaMapMarkerAlt, FaPaw, FaCalendarCheck } from 'react-icons/fa';
 import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const UserAppointments = () => {
   const navigate = useNavigate();
@@ -39,11 +40,12 @@ const UserAppointments = () => {
 
   const fetchPets = async () => {
     try {
-      const res = await fetch('/api/v1/user/profile', {
+      const res = await fetch(`${API_URL}/user/profile`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) return;
       const data = await res.json();
+
       const map = {};
       (data?.pets || []).forEach((p) => {
         map[String(p.pet_id)] = { name: p.pet_name || 'Pet', type: p.pet_type || '' };
@@ -58,10 +60,11 @@ const UserAppointments = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/v1/appointments?limit=50', {
+      const res = await fetch(`${API_URL}/appointments?limit=50`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const payload = await res.json().catch(() => ({}));
+
       // If unauthorized/invalid token, suppress error and show empty state
       if (res.status === 401) {
         setAppointments([]);
@@ -119,7 +122,7 @@ const UserAppointments = () => {
     if (!accessToken) return;
     if (!window.confirm('Are you sure you want to cancel this appointment?')) return;
     try {
-      const res = await fetch(`/api/v1/appointments/${id}`, {
+      const res = await fetch(`${API_URL}/appointments/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

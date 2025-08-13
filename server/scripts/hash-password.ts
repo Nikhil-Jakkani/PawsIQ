@@ -7,8 +7,6 @@ if (!password) {
   process.exit(1);
 }
 
-const salt = bcrypt.genSaltSync(10);
-const hashedPassword = bcrypt.hashSync(password, salt);
+const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+process.stdout.write(hashed + '\n');
 
-console.log('Password:', password);
-console.log('Hashed Password:', hashedPassword);

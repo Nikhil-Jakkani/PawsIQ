@@ -36,7 +36,7 @@ router.get('/signed-url', userAuth as any, async (req: any, res) => {
   if (!bucket || !path) {
     return res.status(httpStatus.BAD_REQUEST).send({ message: 'bucket and path are required' });
   }
-  const exp = Math.min(60 * 60, Math.max(60, Number(expiresIn) || 60 * 10)); // 1–60 mins
+  const exp = Math.min(60 * 60 * 24 * 7, Math.max(60, Number(expiresIn) || 60 * 60 * 24));
   const { data, error } = await db.storage
     .from(String(bucket))
     .createSignedUrl(String(path), exp);

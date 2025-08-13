@@ -6,6 +6,7 @@ import UserStatCard from '../../components/user/UserStatCard';
 // import UserAppointments from '../../components/user/UserAppointments';
 import PetProfiles from '../../components/user/PetProfiles';
 import AIPetCareSuggestions from '../../components/user/AIPetCareSuggestions';
+import AISymptomChecker from '../../components/user/AISymptomChecker';
 import PetSelector from '../../components/user/PetSelector';
 import PetHealthCard from '../../components/user/PetHealthCard';
 import SmartInsights from '../../components/user/SmartInsights';
@@ -25,6 +26,7 @@ const UserDashboard = () => {
   const [showAIPopup, setShowAIPopup] = useState(false);
   const [activeService, setActiveService] = useState('suggestions');
   const [showAllTips, setShowAllTips] = useState(false);
+  const [selectedPetForAI, setSelectedPetForAI] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -365,33 +367,20 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Full Width Sections */}
-        <div className="space-y-6">
-          {/* Enhanced Appointments Section */}
-          {/* <UserAppointments /> */}
-          
-          {/* Pet Activity Tracker */}
-          <PetActivityTracker />
-          
-          {/* AI Pet Care Section */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
-            <h2 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">
-              <FaRobot className="text-indigo-600" />
-              AI Pet Care Assistant 🤖
-            </h2>
-            <div className="space-y-6">
-              <PetSelector 
-                pets={pets}
-                selectedPet={selectedPetForAI}
-                onPetSelect={setSelectedPetForAI}
-              />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <AIPetCareSuggestions selectedPet={selectedPetForAI} />
-                <div id="symptom-checker">
-                  <AISymptomChecker selectedPet={selectedPetForAI} />
+        {/* Main Content Grid with Enhanced Styling */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          {/* Left Column - Pet Health Cards with Smart Insights */}
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-50">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-gradient-to-br from-pink-500 to-red-500 p-2 rounded-xl">
+                  <FaHeart className="text-white text-lg" />
+                </div>
+                My Pets Health
+                <div className="ml-auto bg-pink-100 text-pink-700 text-xs font-semibold px-3 py-1 rounded-full">
+                  {pets.length} pets
                 </div>
               </h2>
-              
               {/* Pet Health Cards with Individual Smart Insights */}
               <div className="space-y-6">
                 {pets.map((pet) => {

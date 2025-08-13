@@ -44,7 +44,6 @@ const generatePetCareSuggestions = async (pet: any) => {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    console.log('Raw AI Response:', text);
 
     try {
       // Find the start and end of the JSON object to handle cases where the AI wraps it in text
