@@ -7,18 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Updated brand blue mapped onto the indigo scale so Home page color changes without refactoring classes
         indigo: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+          50: '#eef4ff',
+          100: '#dbe7ff',
+          200: '#b9d2ff',
+          300: '#93bcff',
+          400: '#6aa1ff',
+          500: '#3f84ff',
+          600: '#145ae6', // primary brand color
+          700: '#0f47b4',
+          800: '#0b3688',
+          900: '#07265d',
+          950: '#041839',
         },
         // Pet-themed colors
         'pet-blue': {

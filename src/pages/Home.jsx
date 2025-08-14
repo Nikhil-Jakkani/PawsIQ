@@ -65,6 +65,21 @@ const Home = () => {
   // State for service type
   const [serviceType, setServiceType] = useState('all');
   
+  // AI demo state
+  const [aiQuery, setAiQuery] = useState('itchy skin');
+  const [aiResponse, setAiResponse] = useState('');
+  const [aiThinking, setAiThinking] = useState(false);
+  const handleAIDemo = () => {
+    if (!aiQuery?.trim()) return;
+    setAiThinking(true);
+    setAiResponse('');
+    setTimeout(() => {
+      const sample = `Suggested next steps for ${selectedPet}:\n• Likely sensitivity or minor irritation\n• Clean the area with pet-safe wipes\n• Monitor for redness or swelling\n• If persists 24-48h, book a vet`;
+      setAiResponse(sample);
+      setAiThinking(false);
+    }, 800);
+  };
+  
   // State for FAQ
   const [openFaq, setOpenFaq] = useState(null);
   
@@ -640,36 +655,231 @@ const Home = () => {
                   <p>Customer Support: <a href="tel: +91 6363047838" className="font-medium hover:text-white transition-colors duration-300">+91 6363047838</a> • <a href="mailto:support@pawsiq.in" className="font-medium hover:text-white transition-colors duration-300">support@pawsiq.in</a></p>
                 </div>
                 
-                {/* Scroll down button */}
-                <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 animate-bounce animation-delay-1500">
-                  <button
-                    onClick={() => scrollToSection(featuresRef)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-3 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 group"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label="Scroll to features"
-                  >
-                    <svg className="h-6 w-6 group-hover:translate-y-1 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                  </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* AI Features section (moved after hero) */}
+        <section id="ai" className="bg-white py-16 sm:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">AI-powered features for pet parents</h2>
+              <p className="mt-3 max-w-3xl mx-auto text-lg text-gray-500">Smart tools that help you care for your pet with confidence — fast, friendly, and always learning.</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {/* AI Symptom Checker */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm border border-indigo-50 hover:shadow-xl transition-all duration-500 [perspective:1200px]">
+                <div className="relative h-full [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateX(6deg)_rotateY(-6deg)]">
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/5 via-transparent to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white [transform:translateZ(30px)]">
+                      <FaRegLifeRing className="text-xl" />
+                    </span>
+                    <h3 className="text-lg font-semibold text-gray-900">AI Symptom Checker</h3>
+                  </div>
+                  <p className="mt-4 text-gray-600">Describe symptoms and get instant triage guidance and next-step recommendations.</p>
+                </div>
+              </div>
+
+              {/* AI Nutrition Planner */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm border border-indigo-50 hover:shadow-xl transition-all duration-500 [perspective:1200px]">
+                <div className="relative h-full [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateX(-6deg)_rotateY(6deg)]">
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-tr from-indigo-500/5 via-transparent to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white [transform:translateZ(30px)]">
+                      <FaRegHeart className="text-xl" />
+                    </span>
+                    <h3 className="text-lg font-semibold text-gray-900">AI Diet & Nutrition</h3>
+                  </div>
+                  <p className="mt-4 text-gray-600">Personalized meal plans based on age, breed, allergies, and activity levels.</p>
+                </div>
+              </div>
+
+              {/* AI Training Coach */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm border border-indigo-50 hover:shadow-xl transition-all duration-500 [perspective:1200px]">
+                <div className="relative h-full [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateX(5deg)_rotateY(3deg)]">
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-bl from-indigo-500/5 via-transparent to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white [transform:translateZ(30px)]">
+                      <FaRegThumbsUp className="text-xl" />
+                    </span>
+                    <h3 className="text-lg font-semibold text-gray-900">AI Training Coach</h3>
+                  </div>
+                  <p className="mt-4 text-gray-600">Step-by-step behavior tips and routines tailored to your pet’s temperament.</p>
+                </div>
+              </div>
+
+              {/* AI Chat Assistant */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm border border-indigo-50 hover:shadow-xl transition-all duration-500 [perspective:1200px]">
+                <div className="relative h-full [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateX(-4deg)_rotateY(-4deg)]">
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-indigo-500/5 via-transparent to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white [transform:translateZ(30px)]">
+                      <FaRegComments className="text-xl" />
+                    </span>
+                    <h3 className="text-lg font-semibold text-gray-900">AI Pet Assistant</h3>
+                  </div>
+                  <p className="mt-4 text-gray-600">Chat for quick answers about care, health, training, and appointments.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive AI demo */}
+            <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Demo card */}
+              <div className="group relative bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 shadow-sm [perspective:1200px]">
+                <div className="relative [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateX(4deg)_rotateY(-4deg)]">
+                  <h3 className="text-xl font-bold text-gray-900">Try the AI Symptom Helper</h3>
+                  <p className="mt-2 text-gray-600">Type a quick symptom and see suggested next steps. Uses your selected pet above.</p>
+                  {/* Mobile image above input */}
+                  <div className="mt-4 sm:hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=80"
+                      alt="AI pet care illustration"
+                      className="w-full h-32 object-cover rounded-xl shadow-md [transform:translateZ(20px)]"
+                    />
+                  </div>
+                  {/* Desktop layout: input + button with side image */}
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          value={aiQuery}
+                          onChange={(e) => setAiQuery(e.target.value)}
+                          placeholder="e.g., itchy skin, vomiting"
+                          className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                        <button
+                          onClick={handleAIDemo}
+                          className="inline-flex items-center justify-center px-5 py-2 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                        >
+                          {aiThinking ? (
+                            <>
+                              <span className="mr-2 inline-block h-4 w-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin"></span>
+                              Analyzing...
+                            </>
+                          ) : 'Get suggestion'}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="hidden sm:block sm:flex-none">
+                      <img
+                        src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=80"
+                        alt="AI pet care illustration"
+                        className="w-28 h-28 object-cover rounded-xl shadow-md [transform:translateZ(20px)]"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="rounded-xl bg-white/70 backdrop-blur p-4 border border-indigo-100 min-h-[88px] whitespace-pre-line text-gray-700 [transform:translateZ(20px)]">
+                      {aiResponse ? aiResponse : 'Your guidance will appear here.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Visual card */}
+              <div className="relative rounded-2xl overflow-hidden shadow-xl min-h-[220px]">
+                <img className="absolute inset-0 w-full h-full object-cover" src="https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="AI care" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/50 via-indigo-700/30 to-transparent"></div>
+                <div className="relative p-6 text-white flex flex-col justify-end h-full">
+                  <div className="flex items-center gap-2 text-indigo-100">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/20">
+                      <FaRegLightbulb />
+                    </span>
+                    <span className="uppercase tracking-wide text-xs">AI Insights</span>
+                  </div>
+                  <h4 className="mt-2 text-2xl font-bold text-white">Smarter care, personalized</h4>
+                  <p className="mt-1 text-indigo-100">Real-time tips powered by your pet profile and behavior.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3D Pet Showcase */}
+        <div className="bg-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-extrabold text-gray-900">Be a part of our Pet Community</h2>
+              {/* <p className="mt-3 text-lg text-gray-500">Hover or tap the cards to flip. Smooth transitions, pet vibes.</p> */}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Dog card */}
+              <div className="group relative h-80 [perspective:1200px]">
+                <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl transition-transform duration-700 ease-out [transform-style:preserve-3d] [transform:rotateY(0deg)] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front */}
+                  <div className="absolute inset-0 [backface-visibility:hidden]">
+                    <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1400&q=80" alt="Happy dog" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/60 via-indigo-700/40 to-transparent"></div>
+                    <div className="absolute bottom-0 p-6 text-white">
+                      <div className="flex items-center gap-3">
+                        {/* <span className="text-2xl"><FaDog /></span> */}
+                        <h3 className="text-xl font-bold text-white">Dogs</h3>
+                      </div>
+                      <p className="text-indigo-100 mt-2">Vets, trainers, walkers & more</p>
+                    </div>
+                  </div>
+                  {/* Back */}
+                  <div className="absolute inset-0 bg-white p-6 flex flex-col items-center justify-center rounded-2xl [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                    <FaDog className="text-5xl text-indigo-600 animate-float" />
+                    <p className="mt-4 text-gray-600 text-center">Book checkups, grooming and training for your dog with trusted pros.</p>
+                    <Link to="/user/login" className="mt-5 inline-flex items-center px-4 py-2 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">Explore</Link>
+                  </div>
+                </div>
+              </div>
+              {/* Cat card */}
+              <div className="group relative h-80 [perspective:1200px]">
+                <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl transition-transform duration-700 ease-out [transform-style:preserve-3d] [transform:rotateY(0deg)] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front */}
+                  <div className="absolute inset-0 [backface-visibility:hidden]">
+                    <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1400&q=80" alt="Cute cat" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/60 via-indigo-700/40 to-transparent"></div>
+                    <div className="absolute bottom-0 p-6 text-white">
+                      <div className="flex items-center gap-3">
+                        {/* <span className="text-2xl"><FaCat /></span> */}
+                        <h3 className="text-xl font-bold text-white">Cats</h3>
+                      </div>
+                      <p className="text-indigo-100 mt-2">Gentle vets, grooming & more</p>
+                    </div>
+                  </div>
+                  {/* Back */}
+                  <div className="absolute inset-0 bg-white p-6 flex flex-col items-center justify-center rounded-2xl [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                    <FaCat className="text-5xl text-indigo-600 animate-float" />
+                    <p className="mt-4 text-gray-600 text-center">Find calm, cat-friendly services that your feline will love.</p>
+                    <Link to="/user/login" className="mt-5 inline-flex items-center px-4 py-2 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">Explore</Link>
+                  </div>
+                </div>
+              </div>
+              {/* Bird card */}
+              <div className="group relative h-80 [perspective:1200px]">
+                <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-xl transition-transform duration-700 ease-out [transform-style:preserve-3d] [transform:rotateY(0deg)] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front */}
+                  <div className="absolute inset-0 [backface-visibility:hidden]">
+                    <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1525253013412-55c1a69a5738?auto=format&fit=crop&w=1400&q=80" alt="Colorful bird" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/60 via-indigo-700/40 to-transparent"></div>
+                    <div className="absolute bottom-0 p-6 text-white">
+                      <div className="flex items-center gap-3">
+                        {/* <span className="text-2xl"><FaKiwiBird /></span> */}
+                        <h3 className="text-xl font-bold text-white">and more</h3>
+                      </div>
+                      <p className="text-indigo-100 mt-2">Exotic-friendly specialists</p>
+                    </div>
+                  </div>
+                  {/* Back */}
+                  <div className="absolute inset-0 bg-white p-6 flex flex-col items-center justify-center rounded-2xl [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                    <FaKiwiBird className="text-5xl text-indigo-600 animate-float" />
+                    <p className="mt-4 text-gray-600 text-center">Access experienced avian vets and tailored care services.</p>
+                    <Link to="/user/login" className="mt-5 inline-flex items-center px-4 py-2 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">Explore</Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Section divider with scroll indicator */}
-        <div className="relative h-24 bg-gradient-to-b from-gray-100 to-gray-200">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-indigo-600 animate-bounce">
-              <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        
         {/* Features section */}
         <div ref={featuresRef} className="bg-gray-100 relative overflow-hidden">
           {/* Decorative paw prints */}
@@ -695,11 +905,12 @@ const Home = () => {
             <div className="mt-12">
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
   {/* Feature 1 */}
-  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '200ms' }}>
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className={`pt-6 transition-all duration-1000 transform group [perspective:1200px]`} style={{ transitionDelay: '200ms' }}>
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(6deg)_rotateY(-6deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaUserMd className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -711,11 +922,12 @@ const Home = () => {
     </div>
   </div>
   {/* Feature 2 */}
-  <div className="pt-6 animate-fadeInUp animation-delay-400">
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className="pt-6 animate-fadeInUp animation-delay-400 group [perspective:1200px]">
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(-6deg)_rotateY(6deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaSearch className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -727,11 +939,12 @@ const Home = () => {
     </div>
   </div>
   {/* Feature 3 */}
-  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '400ms' }}>
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className={`pt-6 transition-all duration-1000 transform group [perspective:1200px]`} style={{ transitionDelay: '400ms' }}>
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(4deg)_rotateY(-4deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaCalendarAlt className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -743,11 +956,12 @@ const Home = () => {
     </div>
   </div>
   {/* Feature 4 */}
-  <div className={`pt-6 transition-all duration-1000 transform `} style={{ transitionDelay: '600ms' }}>
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className={`pt-6 transition-all duration-1000 transform group [perspective:1200px]`} style={{ transitionDelay: '600ms' }}>
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(-5deg)_rotateY(2deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tl from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaPaw className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -759,11 +973,12 @@ const Home = () => {
     </div>
   </div>
   {/* Feature 5 */}
-  <div className="pt-6 animate-fadeInUp animation-delay-700">
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className="pt-6 animate-fadeInUp animation-delay-700 group [perspective:1200px]">
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(8deg)_rotateY(4deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaShieldAlt className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -775,11 +990,12 @@ const Home = () => {
     </div>
   </div>
   {/* Feature 6 */}
-  <div className="pt-6 animate-fadeInUp animation-delay-800">
-    <div className="flow-root bg-white rounded-lg px-6 pb-8 h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+  <div className="pt-6 animate-fadeInUp animation-delay-800 group [perspective:1200px]">
+    <div className="relative flow-root bg-white rounded-2xl px-6 pb-8 h-full transform transition-transform duration-500 hover:shadow-2xl hover:-translate-y-1 [transform-style:preserve-3d] group-hover:[transform:rotateX(-8deg)_rotateY(-2deg)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-indigo-500/10 via-transparent to-indigo-500/10"></div>
       <div className="-mt-6">
         <div>
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300">
+          <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg group-hover:bg-indigo-600 transition-colors duration-300 [transform:translateZ(30px)]">
             <FaHeadset className="h-6 w-6 text-white" />
           </span>
         </div>
@@ -906,196 +1122,6 @@ const Home = () => {
                 </dd>
               </div>
             </dl>
-          </div>
-        </div>
-
-        {/* How it works section */}
-        <div className="bg-white py-16 sm:py-24 lg:py-32 overflow-hidden">
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative">
-              <h2 className="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl animate-fadeInUp">
-                How PawsIQ Works
-              </h2>
-              <p className="mt-4 max-w-3xl mx-auto text-center text-xl text-gray-500 animate-fadeInUp animation-delay-200">
-                Finding and booking quality pet care has never been easier
-              </p>
-            </div>
-
-            {/* Step 1 */}
-            <div className="relative mt-12 lg:mt-20 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
-              <div className="relative animate-fadeInRight animation-delay-300">
-                <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight sm:text-3xl">
-                  1. Create your pet's profile
-                </h3>
-                <p className="mt-3 text-lg text-gray-500">
-                  Add your pet's details, medical history, and care preferences to help providers understand their unique needs.
-                </p>
-
-                <dl className="mt-10 space-y-10">
-                  <div className="relative">
-                    <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse">
-                        <FaDog className="h-6 w-6" />
-                      </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Multiple pets? No problem</p>
-                    </dt>
-                    <dd className="mt-2 ml-16 text-base text-gray-500">
-                      Add all your furry, feathered, or scaly friends to your account and manage their care in one place.
-                    </dd>
-                  </div>
-                  <div className="relative">
-                    <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse animation-delay-300">
-                        <FaRegLightbulb className="h-6 w-6" />
-                      </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Smart recommendations</p>
-                    </dt>
-                    <dd className="mt-2 ml-16 text-base text-gray-500">
-                      Our system learns your pet's needs and recommends the most suitable care providers for them.
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div className="mt-10 -mx-4 relative lg:mt-0 animate-fadeInLeft animation-delay-500" aria-hidden="true">
-                <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
-                  <div className="relative block w-full bg-white rounded-lg overflow-hidden">
-                    <img
-                      className="w-full transform transition-all duration-500 hover:scale-105"
-                      src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-                      alt="Pet profile creation"
-                    />
-                    <div className="absolute inset-0 bg-indigo-500 mix-blend-multiply opacity-10"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white bg-opacity-80 rounded-lg p-4 animate-float">
-                        <div className="flex items-center space-x-2">
-                          <FaPaw className="h-6 w-6 text-indigo-600 animate-wiggle" />
-                          <span className="text-lg font-bold text-indigo-900">Pet Profile</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="relative mt-12 sm:mt-16 lg:mt-24">
-              <div className="lg:grid lg:grid-flow-row-dense lg:grid-cols-2 lg:gap-8 lg:items-center">
-                <div className="lg:col-start-2 animate-fadeInLeft animation-delay-700">
-                  <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight sm:text-3xl">
-                    2. Find the perfect care provider
-                  </h3>
-                  <p className="mt-3 text-lg text-gray-500">
-                    Browse our network of verified pet care professionals and filter by service type, location, availability, and ratings.
-                  </p>
-
-                  <dl className="mt-10 space-y-10">
-                    <div className="relative">
-                      <dt>
-                        <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse animation-delay-500">
-                          <FaSearch className="h-6 w-6" />
-                        </div>
-                        <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Advanced search filters</p>
-                      </dt>
-                      <dd className="mt-2 ml-16 text-base text-gray-500">
-                        Find providers who specialize in your pet's species, breed, or specific health conditions.
-                      </dd>
-                    </div>
-                    <div className="relative">
-                      <dt>
-                        <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse animation-delay-700">
-                          <FaRegThumbsUp className="h-6 w-6" />
-                        </div>
-                        <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Verified reviews</p>
-                      </dt>
-                      <dd className="mt-2 ml-16 text-base text-gray-500">
-                        Read authentic reviews from other pet owners to make informed decisions about your pet's care.
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className="mt-10 -mx-4 relative lg:mt-0 lg:col-start-1 animate-fadeInRight animation-delay-900">
-                  <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
-                    <div className="relative block w-full bg-white rounded-lg overflow-hidden">
-                      <img
-                        className="w-full transform transition-all duration-500 hover:scale-105"
-                        src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
-                        alt="Finding a provider"
-                      />
-                      <div className="absolute inset-0 bg-indigo-500 mix-blend-multiply opacity-10"></div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-white bg-opacity-80 rounded-lg p-4 animate-float animation-delay-500">
-                          <div className="flex items-center space-x-2">
-                            <FaUserMd className="h-6 w-6 text-indigo-600 animate-wiggle animation-delay-300" />
-                            <span className="text-lg font-bold text-indigo-900">Provider Search</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="relative mt-12 lg:mt-24 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
-              <div className="relative animate-fadeInRight animation-delay-1000">
-                <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight sm:text-3xl">
-                  3. Book and manage appointments
-                </h3>
-                <p className="mt-3 text-lg text-gray-500">
-                  Schedule appointments, make secure payments, and communicate with providers all through our platform.
-                </p>
-
-                <dl className="mt-10 space-y-10">
-                  <div className="relative">
-                    <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse animation-delay-900">
-                        <FaCalendarAlt className="h-6 w-6" />
-                      </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Seamless scheduling</p>
-                    </dt>
-                    <dd className="mt-2 ml-16 text-base text-gray-500">
-                      View provider availability in real-time and book appointments with just a few clicks.
-                    </dd>
-                  </div>
-                  <div className="relative">
-                    <dt>
-                      <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white animate-pulse animation-delay-1100">
-                        <FaRegCreditCard className="h-6 w-6" />
-                      </div>
-                      <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Secure payments</p>
-                    </dt>
-                    <dd className="mt-2 ml-16 text-base text-gray-500">
-                      Pay securely through our platform with protection for both pet owners and service providers.
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div className="mt-10 -mx-4 relative lg:mt-0 animate-fadeInLeft animation-delay-1200" aria-hidden="true">
-                <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
-                  <div className="relative block w-full bg-white rounded-lg overflow-hidden">
-                    <img
-                      className="w-full transform transition-all duration-500 hover:scale-105"
-                      src="https://images.unsplash.com/photo-1576765608866-5b51f8509665?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
-                      alt="Booking appointments"
-                    />
-                    <div className="absolute inset-0 bg-indigo-500 mix-blend-multiply opacity-10"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white bg-opacity-80 rounded-lg p-4 animate-float animation-delay-1000">
-                        <div className="flex items-center space-x-2">
-                          <FaCalendarAlt className="h-6 w-6 text-indigo-600 animate-wiggle animation-delay-600" />
-                          <span className="text-lg font-bold text-indigo-900">Appointment Booking</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
