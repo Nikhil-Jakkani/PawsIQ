@@ -1605,9 +1605,7 @@ const Home = () => {
                   </form>
                 </div>
               </div>
-            </div>
-          </div>
-        </div> */}
+            
       </main>
 
       {/* Newsletter section */}
