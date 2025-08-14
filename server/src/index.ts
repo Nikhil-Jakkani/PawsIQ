@@ -1,8 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import config from './config/config.js';
 
 const app: Express = express();
-const port = process.env.PORT || 5173;
+const port = config.port;
 
 app.use(cors());
 // Log incoming request headers for debugging
@@ -28,4 +29,5 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 app.listen(port, () => {
+  console.log(`PawsIQ Backend listening on port ${port}`);
 });
