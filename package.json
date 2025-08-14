@@ -12,7 +12,7 @@
     "build": "npm run build:frontend && npm run build:backend",
     "start": "concurrently \"npm:start:frontend\" \"npm:start:backend\"",
     "start:frontend": "vite preview",
-    "start:backend": "node --import ./dist/preload.js dist/index.js",
+    "start:backend": "node dist/server/index.js",
     "lint": "eslint ."
   },
   "dependencies": {

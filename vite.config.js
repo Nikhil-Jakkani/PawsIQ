@@ -109,8 +109,8 @@ export default defineConfig({
       overlay: true, // Show errors as overlay
     },
     proxy: {
-      '/api': {
-        target: 'http://localhost:5173',
+      '/api/v1': {
+        target: 'http://localhost:4000',
         changeOrigin: true,
         secure: false,
       },

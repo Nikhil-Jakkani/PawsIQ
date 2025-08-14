@@ -4,7 +4,7 @@ import 'dotenv/config';
 const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
-    PORT: Joi.number().default(5173),
+    PORT: Joi.number().default(4000),
     SUPABASE_URL: Joi.string().required().description('Supabase project URL'),
     SUPABASE_ANON_KEY: Joi.string().required().description('Supabase anonymous key'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),

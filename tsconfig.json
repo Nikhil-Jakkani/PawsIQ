@@ -8,7 +8,7 @@
     "paths": {
       "@config/*": ["server/src/config/*"]
     },
-    "outDir": "./dist",
+    "outDir": "./dist/server",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
