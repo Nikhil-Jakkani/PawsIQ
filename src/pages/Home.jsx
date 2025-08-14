@@ -1486,7 +1486,7 @@ const Home = () => {
         </div>
         
         {/* Contact section */}
-        <div ref={contactRef} className="bg-white py-16 sm:py-24">
+        {/* <div ref={contactRef} className="bg-white py-16 sm:py-24">
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative lg:grid lg:grid-cols-2 lg:gap-8">
               <div className="lg:col-span-1 animate-fadeInRight">
@@ -1760,7 +1760,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </main>
 
       {/* Newsletter section */}
