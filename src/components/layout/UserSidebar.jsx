@@ -210,9 +210,9 @@ const UserSidebar = ({ isOpen, toggleSidebar }) => {
       
       {/* Sidebar */}
       <div 
-        className={`fixed top-0 left-0 h-full bg-gradient-to-b from-pink-600 to-purple-600 text-white z-20 transition-all duration-300 ease-in-out shadow-xl
+        className={`fixed top-0 left-0 h-full bg-gradient-to-b from-pink-600 to-purple-600 text-white z-20 transition-transform duration-300 ease-in-out shadow-xl
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          ${minimized ? 'w-20 lg:w-20' : 'w-72'}`}
+          ${minimized ? 'w-20 lg:w-20' : 'w-72'} max-w-full`}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Title */}

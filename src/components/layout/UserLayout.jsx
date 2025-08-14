@@ -78,7 +78,7 @@ const UserLayout = ({ children }) => {
   const WeatherIcon = getWeatherIcon(weather.condition);
   
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex h-full w-full bg-gray-50 overflow-x-hidden">
       {/* Sidebar */}
       <UserSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       
@@ -90,17 +90,17 @@ const UserLayout = ({ children }) => {
         {/* Header */}
         <header className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative">
+            <div className="relative w-full max-w-xs sm:max-w-sm">
               <input
                 type="text"
                 placeholder="Search..."
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-300 w-64"
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-300 w-full"
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Date, Time, and Weather Section */}
             <div className="hidden lg:flex items-center gap-4 mr-2">
               {/* Date */}
@@ -137,21 +137,21 @@ const UserLayout = ({ children }) => {
 
             <button className="relative p-2 text-gray-500 hover:text-pink-600 transition-colors">
               <FaShoppingCart size={20} />
-              <span className="absolute top-0 right-0 bg-pink-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
                 2
               </span>
             </button>
             <button className="relative p-2 text-gray-500 hover:text-pink-600 transition-colors">
               <FaBell size={20} />
-              <span className="absolute top-0 right-0 bg-pink-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
                 3
               </span>
             </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+            <div className="flex items-center gap-2 max-w-[40vw] sm:max-w-none">
+              <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <FaUser className="text-pink-600" />
               </div>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-700 truncate">
                 {currentUser?.name || 'Pet Owner'}
               </span>
             </div>
