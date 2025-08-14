@@ -1486,123 +1486,131 @@ const Home = () => {
         </div>
         
               
-              <div className="mt-12 lg:mt-0 lg:col-span-1 animate-fadeInLeft animation-delay-300">
-                <div className="bg-white py-10 px-6 shadow-xl rounded-lg sm:px-10 transform transition-all duration-500 hover:shadow-2xl">
-                  <h3 className="text-lg font-medium text-gray-900 mb-6">Send us a message</h3>
-                  <form className="space-y-6" onSubmit={handleContactSubmit}>
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                        Your name
-                      </label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <FaRegSmile className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                          type="text"
-                          name="name"
-                          id="name"
-                          required
-                          value={contactForm.name}
-                          onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                          className="block w-full pl-10 pr-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                          placeholder="John Doe"
-                          onFocus={() => setIsHovering(true)}
-                          onBlur={() => setIsHovering(false)}
-                        />
-                      </div>
-                    </div>
+              <div ref={contactRef} className="mt-12 col-span-full flex justify-center items-center animate-fadeInUp">
+                <div className="relative w-full max-w-xl">
+                  {/* Decorative floating paw */}
+                  <div className="absolute -top-6 -right-6 text-indigo-100 text-6xl pointer-events-none select-none">
+                    <FaPaw className="animate-float" />
+                  </div>
 
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email
-                      </label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <FaRegEnvelope className="h-5 w-5 text-gray-400" />
+                  {/* Centered contact card */}
+                  <div className="bg-white py-10 px-6 shadow-xl rounded-2xl sm:px-10 transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 w-full mx-auto animate-fadeInUp">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Send us a message</h3>
+                    <form className="space-y-6" onSubmit={handleContactSubmit}>
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                          Your name
+                        </label>
+                        <div className="mt-1 relative rounded-md shadow-sm">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FaRegSmile className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            required
+                            value={contactForm.name}
+                            onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                            className="block w-full pl-10 pr-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                            placeholder="John Doe"
+                            onFocus={() => setIsHovering(true)}
+                            onBlur={() => setIsHovering(false)}
+                          />
                         </div>
-                        <input
-                          type="email"
-                          name="email"
-                          id="email"
-                          required
-                          value={contactForm.email}
-                          onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                          className="block w-full pl-10 pr-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                          placeholder="you@example.com"
-                          onFocus={() => setIsHovering(true)}
-                          onBlur={() => setIsHovering(false)}
-                        />
                       </div>
-                    </div>
 
-                    <div>
-                      <label htmlFor="pet-type" className="block text-sm font-medium text-gray-700">
-                        Pet type
-                      </label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          {getPetIcon(contactForm.petType)}
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                          Email
+                        </label>
+                        <div className="mt-1 relative rounded-md shadow-sm">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FaRegEnvelope className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            required
+                            value={contactForm.email}
+                            onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                            className="block w-full pl-10 pr-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                            placeholder="you@example.com"
+                            onFocus={() => setIsHovering(true)}
+                            onBlur={() => setIsHovering(false)}
+                          />
                         </div>
-                        <select
-                          id="pet-type"
-                          name="pet-type"
-                          value={contactForm.petType}
-                          onChange={(e) => setContactForm({...contactForm, petType: e.target.value})}
-                          className="block w-full pl-10 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          onFocus={() => setIsHovering(true)}
-                          onBlur={() => setIsHovering(false)}
+                      </div>
+
+                      <div>
+                        <label htmlFor="pet-type" className="block text-sm font-medium text-gray-700">
+                          Pet type
+                        </label>
+                        <div className="mt-1 relative rounded-md shadow-sm">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            {getPetIcon(contactForm.petType)}
+                          </div>
+                          <select
+                            id="pet-type"
+                            name="pet-type"
+                            value={contactForm.petType}
+                            onChange={(e) => setContactForm({...contactForm, petType: e.target.value})}
+                            className="block w-full pl-10 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            onFocus={() => setIsHovering(true)}
+                            onBlur={() => setIsHovering(false)}
+                          >
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="bird">Bird</option>
+                            <option value="fish">Fish</option>
+                            <option value="horse">Horse</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                          Message
+                        </label>
+                        <div className="mt-1">
+                          <textarea
+                            id="message"
+                            name="message"
+                            rows={4}
+                            required
+                            value={contactForm.message}
+                            onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                            className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                            placeholder="How can we help you?"
+                            onFocus={() => setIsHovering(true)}
+                            onBlur={() => setIsHovering(false)}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <button
+                          type="submit"
+                          className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-all duration-300 hover:scale-105 group"
+                          onMouseEnter={() => setIsHovering(true)}
+                          onMouseLeave={() => setIsHovering(false)}
                         >
-                          <option value="dog">Dog</option>
-                          <option value="cat">Cat</option>
-                          <option value="bird">Bird</option>
-                          <option value="fish">Fish</option>
-                          <option value="horse">Horse</option>
-                          <option value="other">Other</option>
-                        </select>
+                          <FaRegEnvelope className="mr-2 group-hover:animate-bounce" />
+                          Send Message
+                        </button>
                       </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                        Message
-                      </label>
-                      <div className="mt-1">
-                        <textarea
-                          id="message"
-                          name="message"
-                          rows={4}
-                          required
-                          value={contactForm.message}
-                          onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                          className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-                          placeholder="How can we help you?"
-                          onFocus={() => setIsHovering(true)}
-                          onBlur={() => setIsHovering(false)}
-                        />
+                      
+                      {/* Form status indicator */}
+                      <div className="text-center text-sm">
+                        <div className="flex items-center justify-center text-indigo-600">
+                          <FaShieldAlt className="h-4 w-4 mr-1" />
+                          <span>Your information is secure and encrypted</span>
+                        </div>
                       </div>
-                    </div>
-
-                    <div>
-                      <button
-                        type="submit"
-                        className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-all duration-300 hover:scale-105 group"
-                        onMouseEnter={() => setIsHovering(true)}
-                        onMouseLeave={() => setIsHovering(false)}
-                      >
-                        <FaRegEnvelope className="mr-2 group-hover:animate-bounce" />
-                        Send Message
-                      </button>
-                    </div>
-                    
-                    {/* Form status indicator */}
-                    <div className="text-center text-sm">
-                      <div className="flex items-center justify-center text-indigo-600">
-                        <FaShieldAlt className="h-4 w-4 mr-1" />
-                        <span>Your information is secure and encrypted</span>
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
             
