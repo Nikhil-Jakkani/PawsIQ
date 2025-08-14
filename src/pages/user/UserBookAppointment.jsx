@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaArrowLeft, FaPaw, FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaCheck, FaChevronRight } from 'react-icons/fa';
+import { FaCalendarAlt, FaArrowLeft, FaPaw, FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaCheck, FaChevronRight, FaCalendarCheck, FaSearch, FaFilter, FaStar } from 'react-icons/fa';
 import UserLayout from '../../components/layout/UserLayout';
 
 const UserBookAppointment = () => {
@@ -203,9 +203,26 @@ const UserBookAppointment = () => {
     
     // Simulate API call
     setTimeout(() => {
+      const selectedPet = getSelectedPet();
+      const selectedService = getSelectedService();
+      const selectedProvider = getSelectedProvider();
+      const total = Math.round((selectedService?.price || 0) * 1.08 * 100) / 100;
+
       setIsSubmitting(false);
-      navigate('/user/appointments');
-    }, 1500);
+      navigate('/user/appointments/confirmation', {
+        state: {
+          appointment: {
+            pet: selectedPet,
+            service: selectedService,
+            provider: selectedProvider,
+            date: formData.date,
+            timeSlot: formData.timeSlot,
+            notes: formData.notes,
+            total
+          }
+        }
+      });
+    }, 1200);
   };
   
   // Get selected service details
@@ -298,73 +315,97 @@ const UserBookAppointment = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">Select Service Type</h2>
-            <p className="text-gray-600">What type of service does your pet need?</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {serviceTypes.map(type => (
-                <div 
-                  key={type.id}
-                  onClick={() => handleServiceTypeSelect(type.id)}
-                  className={`bg-white rounded-xl p-4 border cursor-pointer transition-all
-                    ${formData.serviceType === type.id 
-                      ? 'border-purple-500 ring-2 ring-purple-200 shadow-md' 
-                      : 'border-gray-200 hover:border-purple-300 hover:shadow-sm'}`}
-                >
-                  <div className="text-3xl mb-2">{type.icon}</div>
-                  <h3 className="text-lg font-semibold text-gray-800">{type.name}</h3>
-                  <p className="text-gray-500 text-sm mt-1">{type.description}</p>
-                  
-                  {formData.serviceType === type.id && (
-                    <div className="mt-2 text-purple-600 flex items-center gap-1">
-                      <FaCheck />
-                      <span className="text-sm font-medium">Selected</span>
-                    </div>
-                  )}
+            <h2 className="text-xl font-semibold text-gray-800">Find a Service</h2>
+            <p className="text-gray-600">Search and select a service to continue booking</p>
+
+            {/* Inline Find Services (merged) */}
+            <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search services (e.g., vaccination, grooming, training)"
+                    className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    onChange={(e) => {
+                      const q = e.target.value.toLowerCase();
+                      // if user types, soft-select the first matching type
+                      const typeMatch = serviceTypes.find(t => t.name.toLowerCase().includes(q));
+                      if (typeMatch) {
+                        handleServiceTypeSelect(typeMatch.id);
+                      }
+                    }}
+                  />
                 </div>
-              ))}
-            </div>
-            
-            {formData.serviceType && (
-              <div className="mt-8 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800">Select Specific Service</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {services[formData.serviceType].map(service => (
-                    <div 
-                      key={service.id}
-                      onClick={() => handleServiceSelect(service.id)}
-                      className={`bg-white rounded-lg p-4 border cursor-pointer transition-all
-                        ${formData.serviceId === service.id 
-                          ? 'border-purple-500 ring-2 ring-purple-200 shadow-sm' 
-                          : 'border-gray-200 hover:border-purple-300'}`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium text-gray-800">{service.name}</h4>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <FaClock />
-                              <span>{service.duration}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <FaMoneyBillWave />
-                              <span>${service.price}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {formData.serviceId === service.id && (
-                          <div className="text-purple-600">
-                            <FaCheck />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2">
+                  <FaFilter className="text-gray-500" />
+                  <select
+                    value={formData.serviceType}
+                    onChange={(e) => handleServiceTypeSelect(e.target.value)}
+                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  >
+                    <option value="">All Types</option>
+                    {serviceTypes.map(type => (
+                      <option key={type.id} value={type.id}>{type.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
-            )}
-            
+
+              {/* Service Type quick-picks */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                {serviceTypes.map(type => (
+                  <button
+                    key={type.id}
+                    type="button"
+                    onClick={() => handleServiceTypeSelect(type.id)}
+                    className={`text-left p-3 rounded-lg border transition-all hover:shadow-sm ${formData.serviceType === type.id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+                  >
+                    <div className="text-xl">{type.icon}</div>
+                    <div className="text-sm font-medium mt-1">{type.name}</div>
+                    <div className="text-xs text-gray-500 line-clamp-2">{type.description}</div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Specific services list */}
+              {formData.serviceType && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Select Specific Service</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {services[formData.serviceType].map(service => (
+                      <div
+                        key={service.id}
+                        onClick={() => handleServiceSelect(service.id)}
+                        className={`bg-white rounded-lg p-4 border cursor-pointer transition-all ${formData.serviceId === service.id ? 'border-purple-500 ring-2 ring-purple-200 shadow-sm' : 'border-gray-200 hover:border-purple-300'}`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-gray-800">{service.name}</h4>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                              <div className="flex items-center gap-1">
+                                <FaClock />
+                                <span>{service.duration}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <FaMoneyBillWave />
+                                <span>${service.price}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {formData.serviceId === service.id && (
+                            <div className="text-purple-600">
+                              <FaCheck />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-between">
               <button
                 onClick={prevStep}
@@ -375,8 +416,7 @@ const UserBookAppointment = () => {
               <button
                 onClick={nextStep}
                 disabled={!formData.serviceId}
-                className={`px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center gap-2
-                  ${!formData.serviceId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center gap-2 ${!formData.serviceId ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <span>Continue</span>
                 <FaChevronRight />

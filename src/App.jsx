@@ -8,6 +8,7 @@ import UserPets from './pages/user/UserPets.jsx';
 import UserAddPet from './pages/user/UserAddPet.jsx';
 import UserAppointments from './pages/user/UserAppointments.jsx';
 import UserBookAppointment from './pages/user/UserBookAppointment.jsx';
+import UserAppointmentConfirmation from './pages/user/UserAppointmentConfirmation.jsx';
 import UserServices from './pages/user/UserServices.jsx';
 import UserMarketplace from './pages/user/UserMarketplace.jsx';
 import UserOrders from './pages/user/UserOrders.jsx';
@@ -187,6 +188,7 @@ function App() {
           {/* Appointment Routes */}
           <Route path="/user/appointments" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           <Route path="/user/appointments/new" element={<UserProtectedRoute><UserBookAppointment /></UserProtectedRoute>} />
+          <Route path="/user/appointments/confirmation" element={<UserProtectedRoute><UserAppointmentConfirmation /></UserProtectedRoute>} />
           <Route path="/user/appointments/upcoming" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           <Route path="/user/appointments/history" element={<UserProtectedRoute><UserAppointments /></UserProtectedRoute>} />
           

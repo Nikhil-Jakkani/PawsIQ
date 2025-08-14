@@ -172,7 +172,7 @@ const UserAppointments = () => {
         
          {/* Appointment Cards */}
          {filteredAppointments.length > 0 ? (
-           <div className="space-y-4">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {filteredAppointments.map(appointment => {
                const statusBadge = getStatusBadge(appointment.status);
                const appointmentDate = new Date(appointment.date);
@@ -181,58 +181,56 @@ const UserAppointments = () => {
                return (
                  <div 
                    key={appointment.id} 
-                   className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                   className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col"
                  >
-                   <div className="p-5">
-                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                       <div className="flex items-center gap-4">
-                         <div className="bg-purple-100 p-3 rounded-full">
+                   <div className="p-5 flex-1">
+                     <div className="flex items-start justify-between gap-4">
+                       <div className="flex items-center gap-3">
+                         <div className="bg-purple-100 p-3 rounded-xl">
                            <FaCalendarCheck className="text-purple-600 text-xl" />
                          </div>
                          <div>
-                           <h3 className="text-lg font-semibold text-gray-800">{appointment.serviceType}</h3>
+                           <h3 className="text-base font-semibold text-gray-800 line-clamp-1">{appointment.serviceType}</h3>
                            <div className="flex items-center gap-2 text-gray-600 text-sm">
                              <FaPaw />
-                             <span>For {appointment.petName} ({appointment.petType})</span>
+                             <span className="truncate">For {appointment.petName} ({appointment.petType})</span>
                            </div>
                          </div>
                        </div>
                       
-                       <div className={`px-3 py-1 rounded-full ${statusBadge.bgColor} ${statusBadge.textColor} text-sm font-medium flex items-center gap-1`}>
+                       <div className={`px-2.5 py-1 rounded-full ${statusBadge.bgColor} ${statusBadge.textColor} text-xs font-semibold flex items-center gap-1 whitespace-nowrap`}>
                          {statusBadge.icon}
                          <span>{appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
                        </div>
                      </div>
                     
-                     <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                     <div className="mt-4 space-y-3">
                        <div className="flex items-center gap-3">
-                         <div className="flex-shrink-0">
-                           <img 
-                             src={appointment.providerImage} 
-                             alt={appointment.providerName} 
-                             className="w-10 h-10 rounded-full object-cover"
-                           />
-                         </div>
+                         <img 
+                           src={appointment.providerImage} 
+                           alt={appointment.providerName} 
+                           className="w-9 h-9 rounded-full object-cover"
+                         />
                          <div>
                            <p className="text-sm font-medium text-gray-800">{appointment.providerName}</p>
                            <p className="text-xs text-gray-500">Provider</p>
                          </div>
                        </div>
                       
-                       <div className="flex items-start gap-3">
+                       <div className="flex items-start gap-3 text-sm">
                          <FaCalendarAlt className="text-purple-500 mt-1" />
                          <div>
-                           <p className="text-sm font-medium text-gray-800">
-                             {appointmentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                           <p className="font-medium text-gray-800">
+                             {appointmentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
                            </p>
                            <p className="text-xs text-gray-500">{appointment.time}</p>
                          </div>
                        </div>
                       
-                       <div className="flex items-start gap-3">
+                       <div className="flex items-start gap-3 text-sm">
                          <FaMapMarkerAlt className="text-purple-500 mt-1" />
                          <div>
-                           <p className="text-sm font-medium text-gray-800">{appointment.location}</p>
+                           <p className="font-medium text-gray-800">{appointment.location}</p>
                            <p className="text-xs text-gray-500">{appointment.address}</p>
                          </div>
                        </div>
@@ -241,39 +239,38 @@ const UserAppointments = () => {
                      {appointment.notes && (
                        <div className="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                          <p className="font-medium mb-1">Notes:</p>
-                         <p>{appointment.notes}</p>
+                         <p className="line-clamp-2">{appointment.notes}</p>
                        </div>
                      )}
+                   </div>
+                   <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex flex-wrap gap-2 justify-end">
+                     <button 
+                       onClick={() => navigate(`/user/appointments/${appointment.id}`)}
+                       className="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-1"
+                     >
+                       <FaEye />
+                       View
+                     </button>
                     
-                     <div className="mt-4 flex flex-wrap gap-2 justify-end">
-                       <button 
-                         onClick={() => navigate(`/user/appointments/${appointment.id}`)}
-                         className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-1"
-                       >
-                         <FaEye />
-                         View Details
-                       </button>
-                      
-                       {isUpcoming && (
-                         <>
-                           <button 
-                             onClick={() => navigate(`/user/appointments/reschedule/${appointment.id}`)}
-                             className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-1"
-                           >
-                             <FaCalendarAlt />
-                             Reschedule
-                           </button>
-                          
-                           <button 
-                             onClick={() => handleCancelAppointment(appointment.id)}
-                             className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-1"
-                           >
-                             <FaTimes />
-                             Cancel
-                           </button>
-                         </>
-                       )}
-                     </div>
+                     {isUpcoming && (
+                       <>
+                         <button 
+                           onClick={() => navigate(`/user/appointments/reschedule/${appointment.id}`)}
+                           className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1"
+                         >
+                           <FaCalendarAlt />
+                           Reschedule
+                         </button>
+                        
+                         <button 
+                           onClick={() => handleCancelAppointment(appointment.id)}
+                           className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-1"
+                         >
+                           <FaTimes />
+                           Cancel
+                         </button>
+                       </>
+                     )}
                    </div>
                  </div>
                );
