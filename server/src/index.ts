@@ -1,13 +1,17 @@
 import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 
-dotenv.config();
-
 const app: Express = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5173;
 
 app.use(cors());
+// Log incoming request headers for debugging
+app.use((req, res, next) => {
+  if (req.method === 'POST' && req.url === '/api/v1/user/ai/suggestions') {
+  }
+  next();
+});
+
 app.use(express.json());
 
 import apiRoutes from './api/routes/index.js';
@@ -24,5 +28,4 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
 });

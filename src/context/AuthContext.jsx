@@ -1,183 +1,207 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const AuthContext = createContext(null);
 
-// Mock user data for demonstration
-const USERS = [
-  {
-    email: 'admin@pawsiq.com',
-    password: 'admin123',
-    role: 'admin',
-    name: 'Admin User',
-    avatar: '/avatar-admin.png'
-  },
-  {
-    email: 'user@pawsiq.com',
-    password: 'user123',
-    role: 'user',
-    name: 'Sarah Johnson',
-    avatar: '/avatar-user.png',
-    pets: [
-      {
-        id: 1,
-        name: 'Max',
-        type: 'dog',
-        breed: 'Golden Retriever'
-      },
-      {
-        id: 2,
-        name: 'Luna',
-        type: 'cat',
-        breed: 'Siamese'
-      }
-    ]
-  },
-  {
-    email: 'user@pawsiq.in',
-    password: 'user1234',
-    role: 'user',
-    name: 'PawsIQ User',
-    avatar: '/avatar-user.png',
-    pets: [
-      {
-        id: 3,
-        name: 'Buddy',
-        type: 'dog',
-        breed: 'Labrador'
-      }
-    ]
-  }
-];
-
-// Mock provider data for demonstration
-const PROVIDERS = [
-  {
-    email: 'vet@pawsiq.com',
-    password: 'provider123',
-    role: 'provider',
-    providerType: 'Veterinarian',
-    name: 'Dr. James Wilson',
-    avatar: '/avatar-vet.png',
-    verified: true,
-    applicationStatus: 'approved'
-  },
-  {
-    email: 'trainer@pawsiq.com',
-    password: 'provider123',
-    role: 'provider',
-    providerType: 'Trainer',
-    name: 'Emma Roberts',
-    avatar: '/avatar-trainer.png',
-    verified: true,
-    applicationStatus: 'approved'
-  },
-  {
-    email: 'groomer@pawsiq.com',
-    password: 'provider123',
-    role: 'provider',
-    providerType: 'Groomer',
-    name: 'Michael Chen',
-    avatar: '/avatar-groomer.png',
-    verified: true,
-    applicationStatus: 'approved'
-  }
-];
-
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(false); // Set to false initially
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const refreshTimeout = useRef(null);
+  const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
-  // Initialize auth state
+  const clearRefreshTimeout = () => {
+    if (refreshTimeout.current) {
+      clearTimeout(refreshTimeout.current);
+      refreshTimeout.current = null;
+    }
+  };
+
+  const decodeJwt = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const scheduleAccessTokenRefresh = (accessToken) => {
+    const payload = decodeJwt(accessToken);
+    if (!payload?.exp) return;
+    const nowSec = Math.floor(Date.now() / 1000);
+    const leadSec = 60; // refresh 60s before expiry
+    const delayMs = Math.max(payload.exp - nowSec - leadSec, 0) * 1000;
+    clearRefreshTimeout();
+    refreshTimeout.current = setTimeout(() => {
+      refreshTokens();
+    }, delayMs);
+  };
+
+  const refreshTokens = async () => {
+    try {
+      const latestUser = JSON.parse(localStorage.getItem('pawsiq_user'));
+      const refreshToken = latestUser?.tokens?.refresh?.token;
+      if (!refreshToken) return false;
+      const resp = await fetch(`${API_URL}/user/auth/refresh-tokens`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (!resp.ok) return false;
+      const newTokens = await resp.json();
+      const updatedUser = { ...latestUser, tokens: newTokens };
+      localStorage.setItem('pawsiq_user', JSON.stringify(updatedUser));
+      setCurrentUser(updatedUser);
+      const accessToken = newTokens?.access?.token;
+      if (accessToken) scheduleAccessTokenRefresh(accessToken);
+      return true;
+    } catch (e) {
+      console.warn('Silent token refresh failed', e);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    // Check if user is already logged in (from localStorage)
     try {
       const storedUser = localStorage.getItem('pawsiq_user');
       if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setCurrentUser(parsedUser);
+        const parsed = JSON.parse(storedUser);
+        setCurrentUser(parsed);
+        const accessToken = parsed?.tokens?.access?.token;
+        if (accessToken) {
+          // schedule proactive refresh
+          scheduleAccessTokenRefresh(accessToken);
+        }
       }
-    } catch (err) {
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
       localStorage.removeItem('pawsiq_user');
     } finally {
-      // Hide loading screen after auth check is complete
-      setTimeout(() => {
-        const loadingElement = document.getElementById('loading');
-        if (loadingElement && loadingElement.style.display !== 'none') {
-          console.log('AuthContext: Hiding loading screen after auth check');
-          loadingElement.style.opacity = '0';
-          loadingElement.style.transition = 'opacity 0.3s ease-out';
-          setTimeout(() => {
-            if (loadingElement) {
-              loadingElement.style.display = 'none';
-            }
-          }, 300);
-        }
-      }, 100);
+      setLoading(false);
     }
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        // On tab focus, attempt a silent refresh if possible
+        const stored = JSON.parse(localStorage.getItem('pawsiq_user') || 'null');
+        const token = stored?.tokens?.access?.token;
+        const payload = token ? decodeJwt(token) : null;
+        const nowSec = Math.floor(Date.now() / 1000);
+        if (!payload?.exp || payload.exp <= nowSec + 60) {
+          refreshTokens();
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      clearRefreshTimeout();
+    };
   }, []);
 
   const login = async (email, password) => {
     setError('');
     setLoading(true);
-
     try {
-      // First try API authentication
-      const response = await fetch('http://localhost:8080/api/v1/admin/auth/login', {
+      const response = await fetch(`${API_URL}/user/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to login');
+      }
+      const { user, tokens } = data;
+      const userData = { ...user, tokens, role: 'user' };
+      setCurrentUser(userData);
+      localStorage.setItem('pawsiq_user', JSON.stringify(userData));
+      if (tokens?.access?.token) scheduleAccessTokenRefresh(tokens.access.token);
+      return { success: true, userType: user.role };
+    } catch (err) {
+      setError(err.message);
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const adminLogin = async (email, password) => {
+    setError('');
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/admin/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to login as admin');
+      }
+      const { user, token } = data;
+      const adminData = { ...user, tokens: { access: { token } }, role: 'admin' };
+      setCurrentUser(adminData);
+      localStorage.setItem('pawsiq_user', JSON.stringify(adminData));
+      return { success: true, userType: 'admin' };
+    } catch (err) {
+      setError(err.message);
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const providerLogin = async (email, password) => {
+    setError('');
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/provider/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider_email: email, provider_password: password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to login as provider');
+      }
+      const { provider, tokens } = data;
+      const providerData = { ...provider, tokens, role: 'provider' };
+      setCurrentUser(providerData);
+      localStorage.setItem('pawsiq_user', JSON.stringify(providerData));
+      if (tokens?.access?.token) scheduleAccessTokenRefresh(tokens.access.token);
+      return { success: true, userType: 'provider' };
+    } catch (err) {
+      setError(err.message);
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const providerRegister = async (userData) => {
+    try {
+      const response = await fetch(`${API_URL}/provider/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(userData),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const { user, token } = data;
-        
-        // Combine user data and token for storage
-        const userData = { ...user, token };
-
-        setCurrentUser(userData);
-        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
-        setLoading(false);
-        return { success: true, userType: user.role };
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to register');
       }
-    } catch (apiError) {
-      // API failed, fallback to mock authentication
-      console.log('API authentication failed, using mock data');
-    }
-
-    // Fallback to mock authentication
-    try {
-      // Check in USERS array
-      const user = USERS.find(u => u.email === email && u.password === password);
-      if (user) {
-        const userData = { ...user, token: 'mock-token-' + Date.now() };
-        setCurrentUser(userData);
-        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
-        setLoading(false);
-        return { success: true, userType: user.role };
-      }
-
-      // Check in PROVIDERS array
-      const provider = PROVIDERS.find(p => p.email === email && p.password === password);
-      if (provider) {
-        const userData = { ...provider, token: 'mock-token-' + Date.now() };
-        setCurrentUser(userData);
-        localStorage.setItem('pawsiq_user', JSON.stringify(userData));
-        setLoading(false);
-        return { success: true, userType: provider.role };
-      }
-
-      // No user found
-      throw new Error('Invalid email or password');
-
+      return await response.json();
     } catch (error) {
-      setError(error.message || 'An error occurred during login');
-      setLoading(false);
-      return { success: false };
+      console.error('Provider registration error:', error);
+      throw error;
     }
   };
 
@@ -186,35 +210,27 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('pawsiq_user');
   };
 
-  // Check if user is a provider
-  const isProvider = () => {
-    return currentUser && currentUser.role === 'provider';
-  };
-
-  // Check if user is a regular user
-  const isUser = () => {
-    return currentUser && currentUser.role === 'user';
-  };
-
-  // Check if user is an admin
-  const isAdmin = () => {
-    return currentUser && currentUser.role === 'admin';
-  };
-
   const value = {
     currentUser,
-    login,
-    logout,
-    isProvider,
-    isUser,
-    isAdmin,
+    loading,
     error,
-    loading
+    login,
+    providerLogin,
+    adminLogin,
+    providerRegister,
+    logout,
+    isProvider: () => currentUser?.role === 'provider',
+    isUser: () => currentUser?.role === 'user',
+    isAdmin: () => currentUser?.role === 'admin',
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

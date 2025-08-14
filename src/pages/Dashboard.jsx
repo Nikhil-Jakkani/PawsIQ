@@ -5,7 +5,7 @@ import { PetIcon, PetIconButton } from '../components/layout/PetIcons';
 import StatCard from '../components/dashboard/StatCard';
 import OverviewChart from '../components/dashboard/OverviewChart';
 import RecentActivity from '../components/dashboard/RecentActivity';
-import UpcomingAppointments from '../components/dashboard/UpcomingAppointments';
+//import UpcomingAppointments from '../components/dashboard/UpcomingAppointments';
 import CalendarView from '../components/dashboard/CalendarView';
 import DashboardLayout from '../components/layout/DashboardLayout';
 
@@ -171,14 +171,9 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Calendar and Upcoming Appointments */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div>
-          <CalendarView />
-        </div>
-        <div>
-          <UpcomingAppointments />
-        </div>
+      {/* Calendar View */}
+      <div className="grid grid-cols-1 gap-6">
+        <CalendarView />
       </div>
       
       {/* Pet Care Tips */}

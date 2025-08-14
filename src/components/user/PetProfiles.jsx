@@ -1,38 +1,84 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPaw, FaPlus, FaArrowRight, FaCalendarAlt, FaWeight, FaBirthdayCake, FaVenus, FaMars } from 'react-icons/fa';
 import { PetIcon } from '../layout/PetIcons';
+import { useAuth } from '../../context/AuthContext';
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const PetProfiles = () => {
-  // Mock data for pet profiles
-  const pets = [
-    {
-      id: 1,
-      name: 'Max',
-      type: 'dog',
-      breed: 'Golden Retriever',
-      age: '3 years',
-      weight: '65 lbs',
-      gender: 'male',
-      birthday: '2022-05-15',
-      image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z29sZGVuJTIwcmV0cmlldmVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-05-01',
-      vaccinations: 'Up to date'
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      type: 'cat',
-      breed: 'Siamese',
-      age: '2 years',
-      weight: '9 lbs',
-      gender: 'female',
-      birthday: '2023-02-10',
-      image: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lhbWVzZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      lastCheckup: '2025-04-15',
-      vaccinations: 'Up to date'
-    }
-  ];
+  const { currentUser } = useAuth();
+  const accessToken = currentUser?.tokens?.access?.token;
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const refreshedRef = useRef(new Set());
+
+  const refreshImageUrl = async (petId, imagePath) => {
+    if (!imagePath || refreshedRef.current.has(petId)) return null;
+    try {
+      const qs = new URLSearchParams({ bucket: 'pets-photos', path: imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+      const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const urlPayload = await urlRes.json().catch(() => ({}));
+      if (urlRes.ok && urlPayload?.url) {
+        refreshedRef.current.add(petId);
+        return urlPayload.url;
+      }
+    } catch {}
+    return null;
+  };
+
+  useEffect(() => {
+    if (!accessToken) return;
+    setLoading(true);
+    setError('');
+    (async () => {
+      try {
+        const res = await fetch(`${API_URL}/user/profile`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || 'Failed to load pets');
+        const mapped = (data?.pets || []).map((p) => ({
+          id: Number(p.pet_id),
+          name: p.pet_name || 'Pet',
+          type: (p.pet_type || '').toLowerCase(),
+          breed: p.pet_breed || '',
+          age: '3 years',
+          weight: '20 lbs',
+          gender: 'female',
+          birthday: new Date().toISOString().slice(0, 10),
+          imagePath: p.pet_image || '',
+          image: 'https://placehold.co/600x400?text=Pet',
+          lastCheckup: new Date().toISOString().slice(0, 10),
+          vaccinations: 'Unknown',
+        }));
+        // resolve signed URLs for private images
+        const withUrls = await Promise.all(
+          mapped.map(async (pet) => {
+            if (!pet.imagePath) return pet;
+            try {
+              const qs = new URLSearchParams({ bucket: 'pets-photos', path: pet.imagePath, expiresIn: String(60 * 60 * 24 * 6) }).toString();
+              const urlRes = await fetch(`${API_URL}/media/signed-url?${qs}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              });
+              const urlPayload = await urlRes.json().catch(() => ({}));
+              if (urlRes.ok && urlPayload?.url) return { ...pet, image: urlPayload.url };
+            } catch {}
+            return pet;
+          })
+        );
+        setPets(withUrls);
+      } catch (e) {
+        setError(e.message || 'Failed to load pets');
+        setPets([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [accessToken]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-pink-100">
@@ -68,6 +114,12 @@ const PetProfiles = () => {
                 src={pet.image} 
                 alt={pet.name} 
                 className="w-full h-full object-cover"
+                onError={async (e) => {
+                  const newUrl = await refreshImageUrl(pet.id, pet.imagePath);
+                  if (newUrl) {
+                    setPets((prev) => prev.map((p) => (p.id === pet.id ? { ...p, image: newUrl } : p)));
+                  }
+                }}
               />
             </div>
             

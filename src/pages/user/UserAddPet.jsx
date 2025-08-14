@@ -3,12 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { FaPaw, FaArrowLeft, FaUpload, FaCalendarAlt, FaDog, FaCat, FaFish, FaHorse } from 'react-icons/fa';
 import { FaDove } from 'react-icons/fa6';
 import UserLayout from '../../components/layout/UserLayout';
+import { useAuth } from '../../context/AuthContext';
+
+const API_URL = import.meta?.env?.VITE_API_URL || '/api/v1';
 
 const UserAddPet = () => {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const accessToken = currentUser?.tokens?.access?.token;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     name: '',
@@ -29,7 +34,7 @@ const UserAddPet = () => {
     vetPhone: '',
     notes: ''
   });
-  
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -38,7 +43,7 @@ const UserAddPet = () => {
       [name]: type === 'checkbox' ? checked : value
     });
   };
-  
+
   // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -50,19 +55,43 @@ const UserAddPet = () => {
       reader.readAsDataURL(file);
     }
   };
-  
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      if (!accessToken) throw new Error('You must be logged in to add a pet.');
+
+      const payload = {
+        name: formData.name.trim(),
+        type: formData.type || undefined,
+        breed: formData.breed || undefined,
+        gender: formData.gender || undefined,
+        birthdate: formData.birthdate || undefined,
+        color: formData.color || undefined,
+      };
+
+      const res = await fetch(`${API_URL}/pets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || 'Failed to create pet');
+
       navigate('/user/pets');
-    }, 1500);
+    } catch (err) {
+      alert(err?.message || 'Failed to create pet');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-  
+
   // Pet type options with icons
   const petTypes = [
     { value: 'dog', label: 'Dog', icon: <FaDog /> },

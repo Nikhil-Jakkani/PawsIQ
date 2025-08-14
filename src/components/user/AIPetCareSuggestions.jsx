@@ -21,6 +21,7 @@ import {
 } from 'react-icons/fa';
 import { generatePetCareSuggestions } from '../../services/geminiService';
 import PetCareTable from './PetCareTable';
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const AIPetCareSuggestions = ({ selectedPet }) => {
   const [suggestions, setSuggestions] = useState(null);
@@ -28,12 +29,12 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
   const [error, setError] = useState(null);
   const [expandedSections, setExpandedSections] = useState({
     health: true,
-    grooming: false,
-    vaccinations: false,
-    nutrition: false,
-    exercise: false,
-    behavioral: false,
-    preventive: false
+    grooming: true,
+    vaccinations: true,
+    nutrition: true,
+    exercise: true,
+    behavioral: true,
+    preventive: true
   });
 
   const categoryIcons = {
@@ -61,10 +62,86 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
     
     setLoading(true);
     setError(null);
-    
+    setSuggestions(null);
+
     try {
-      const aiSuggestions = await generatePetCareSuggestions(selectedPet);
-      setSuggestions(aiSuggestions);
+      const user = JSON.parse(localStorage.getItem('pawsiq_user'));
+      const token = user?.tokens?.access?.token;
+
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+
+      const calculateAge = (birthDate) => {
+        if (!birthDate) return 'Unknown';
+        const birthDateObj = new Date(birthDate);
+        const today = new Date();
+        let age = today.getFullYear() - birthDateObj.getFullYear();
+        const monthDifference = today.getMonth() - birthDateObj.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+          age--;
+        }
+        if (age > 0) return `${age} year(s)`;
+        const months = today.getMonth() - birthDateObj.getMonth() + (12 * (today.getFullYear() - birthDateObj.getFullYear()));
+        return `${months <= 0 ? 0 : months} month(s)`;
+      };
+
+      const petDataForAI = {
+        name: selectedPet.pet_name,
+        type: selectedPet.pet_type,
+        breed: selectedPet.pet_breed,
+        age: calculateAge(selectedPet.pet_birth_dtm),
+        gender: selectedPet.pet_gender,
+        health_details: selectedPet.health_details || 'Not specified',
+      };
+
+      // helper to perform the suggestions request with a given access token
+      const doRequest = async (accessToken) => {
+        return fetch(`${API_URL}/user/ai/suggestions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(petDataForAI),
+        });
+      };
+
+      let response = await doRequest(token);
+
+      // If unauthorized, try refresh-token flow once
+      if (response.status === 401) {
+        const refreshToken = user?.tokens?.refresh?.token;
+        if (refreshToken) {
+          const refreshResp = await fetch(`${API_URL}/user/auth/refresh-tokens`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (refreshResp.ok) {
+            const newTokens = await refreshResp.json();
+            // Persist new tokens
+            const updatedUser = { ...user, tokens: newTokens };
+            localStorage.setItem('pawsiq_user', JSON.stringify(updatedUser));
+            // Retry original request with new access token
+            response = await doRequest(newTokens?.access?.token);
+          }
+        }
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const msg = response.status === 401
+          ? 'We\'re restoring your session. Please click Refresh.'
+          : (errorData.message || 'Failed to fetch suggestions from the server.');
+        throw new Error(msg);
+      }
+
+      const data = await response.json();
+      setSuggestions(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,8 +149,15 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
     }
   };
 
-  useEffect(() => {
-    fetchSuggestions();
+    useEffect(() => {
+    if (selectedPet && selectedPet.pet_id) {
+      fetchSuggestions();
+    } else {
+      // Clear suggestions and stop loading if no valid pet is selected
+      setSuggestions(null);
+      setLoading(false);
+      setError(null);
+    }
   }, [selectedPet]);
 
   const toggleSection = (section) => {
@@ -93,9 +177,12 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
   };
 
   const renderRecommendationItem = (item, index) => (
-    <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-      <FaStar className="text-yellow-500 mt-1 flex-shrink-0" size={10} />
-      <span>{item}</span>
+    <li key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+      <FaStar className="text-yellow-500 mt-1 flex-shrink-0" size={12} />
+      <div>
+        <p className="font-semibold text-gray-800">{item.suggestion}</p>
+        <p className="text-gray-600 text-xs">{item.details}</p>
+      </div>
     </li>
   );
 
@@ -132,6 +219,15 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
                 <h4 className="font-medium text-gray-800 mb-2">Recommendations:</h4>
                 <ul className="space-y-1">
                   {data.recommendations.map(renderRecommendationItem)}
+                </ul>
+              </div>
+            )}
+            {/* Fallback: show simple suggestion/details if recommendations array is not provided */}
+            {(!data.recommendations || data.recommendations.length === 0) && (data.suggestion || data.details) && (
+              <div className="mb-3">
+                <h4 className="font-medium text-gray-800 mb-2">Recommendation:</h4>
+                <ul className="space-y-1">
+                  {renderRecommendationItem({ suggestion: data.suggestion, details: data.details }, 0)}
                 </ul>
               </div>
             )}
@@ -300,7 +396,7 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
-                AI Care Recommendations for {selectedPet.name}
+                AI Care Recommendations for {selectedPet.pet_name || selectedPet.name}
               </h2>
               <p className="text-sm text-gray-600">
                 Personalized suggestions powered by AI
@@ -324,7 +420,7 @@ const AIPetCareSuggestions = ({ selectedPet }) => {
           <div className="text-center py-8">
             <FaSpinner className="text-pink-600 text-3xl mx-auto mb-4 animate-spin" />
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Generating Recommendations</h3>
-            <p className="text-gray-500">Our AI is analyzing {selectedPet.name}'s profile...</p>
+            <p className="text-gray-500">Our AI is analyzing {(selectedPet.pet_name || selectedPet.name)}'s profile...</p>
           </div>
         )}
 

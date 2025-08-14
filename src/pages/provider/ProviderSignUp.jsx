@@ -21,7 +21,7 @@ const logoImage = "/1.svg";
 
 const ProviderSignUp = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, providerRegister } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -186,21 +186,18 @@ const ProviderSignUp = () => {
     setIsSubmitting(true);
     
     try {
-      // In a real app, this would call an API to register the user
-      console.log('Submitting provider registration:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For demo purposes, store in localStorage
-      localStorage.setItem('provider_registration', JSON.stringify({
-        ...formData,
-        registrationStep: 1,
-        registrationDate: new Date().toISOString()
-      }));
-      
-      // Navigate to the next step
-      navigate('/provider/onboarding/professional-info');
+      const registrationData = {
+        provider_name: `${formData.firstName} ${formData.lastName}`,
+        provider_email: formData.email,
+        provider_password: formData.password,
+        provider_contact_number: formData.phoneNumber,
+        services_offered: formData.providerType,
+      };
+
+      await providerRegister(registrationData);
+
+      // Navigate to the next step upon successful registration
+      navigate('/provider/login');
     } catch (error) {
       console.error('Registration error:', error);
       setErrors(prev => ({

@@ -8,7 +8,7 @@ const logoImage = "/1.svg";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, currentUser, error: authError } = useAuth();
+  const { adminLogin, currentUser, error: authError } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -85,21 +85,12 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Call the login function with isProvider=false (for regular users)
-      const result = await login(formData.email, formData.password, false);
+      // Call the adminLogin function
+      const result = await adminLogin(formData.email, formData.password);
       
       if (result.success) {
-        // Login successful
-        if (result.userType === 'user') {
-          // Redirect to user dashboard
-          navigate('/user/dashboard');
-        } else if (result.userType === 'admin') {
-          // Redirect to admin dashboard
-          navigate('/dashboard');
-        } else if (result.userType === 'provider') {
-          // If somehow a provider logged in through user login
-          navigate('/provider/dashboard');
-        }
+        // Login successful, redirect to admin dashboard
+        navigate('/dashboard');
       } else {
         setErrors(prev => ({
           ...prev,
@@ -123,7 +114,6 @@ const Login = () => {
     
     try {
       // In a real app, this would call an API to authenticate with the social provider
-      console.log(`Logging in with ${provider}`);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
