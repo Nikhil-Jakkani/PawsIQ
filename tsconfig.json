@@ -8,7 +8,12 @@
     "paths": {
       "@config/*": ["server/src/config/*"]
     },
-    "outDir": "./dist/server",
+    "outDir": "./server/dist/server",
+    "types": ["node"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./server/node_modules/@types"
+    ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
