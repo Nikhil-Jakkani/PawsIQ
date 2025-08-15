@@ -1,5 +1,15 @@
 {
   "rewrites": [
     { "source": "/api/v1/(.*)", "destination": "https://pawsiq-cdnh.onrender.com/api/v1/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/api/v1/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://www.pawsiq.in" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,PATCH,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
+      ]
+    }
   ]
 }
