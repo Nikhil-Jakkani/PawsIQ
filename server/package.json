@@ -9,7 +9,7 @@
     "build": "tsc --project ../tsconfig.json && tsc-alias -p ../tsconfig.json",
     "ensure-types": "test -d node_modules/@types/node || npm i @types/node@^20 -S",
     "start": "node dist/server/index.js",
-    "render-build": "npm run ensure-types && npm run build && prisma migrate deploy --schema ../prisma/schema.prisma",
+    "render-build": "npm run ensure-types && npm run build && prisma generate --schema ../prisma/schema.prisma",
     "postinstall": "prisma generate --schema ../prisma/schema.prisma"
   },
   "dependencies": {
